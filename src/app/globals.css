@@ -10,6 +10,16 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-point: rgb(59 130 246);
+  --color-sub1: rgb(239 245 254);
+  --color-sub2: rgb(230 239 255);
+  --color-sub3: rgb(155 193 255);
+  --color-gray1: rgb(245 247 250);
+  --color-gray2: rgb(216 218 221);
+  --color-gray3: rgb(180 181 181);
+  --color-gray4: rgb(101 103 107);
+  --color-gray5: rgb(90 93 97);
+  --color-gray6: rgb(85 87 92);
 }
 
 @media (prefers-color-scheme: dark) {

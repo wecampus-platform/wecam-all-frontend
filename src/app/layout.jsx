@@ -1,5 +1,5 @@
-
 import './globals.css';
+import AuthInitializer from './AuthInitializer';
 
 export const metadata = {
   title: '위캠',
@@ -9,7 +9,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <AuthInitializer />
+        {children}
+      </body>
     </html>
   );
 }
