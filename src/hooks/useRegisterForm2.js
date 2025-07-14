@@ -1,24 +1,25 @@
 import { useEffect, useState } from 'react';
-import { getDuplicate } from '../app/api/register2Api';
+import { getDuplicate } from '../app/register/step2/registerapi2';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,20}$/;
 
-export function useRegisterForm() {
+export function useRegisterForm2() {
   const [email, setEmail] = useState('');
-  const [isEmailValid, setIsEmailValid] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+
   const [emailMessage, setEmailMessage] = useState('');
   const [checkingEmail, setCheckingEmail] = useState(false);
   const [phoneMessage, setPhoneMessage] = useState('');
   const [checkingPhone, setCheckingPhone] = useState(false);
+
   const [emailCodeInputEnabled, setEmailCodeInputEnabled] = useState(false);
   const [phoneCodeInputEnabled, setPhoneCodeInputEnabled] = useState(false);
 
-
+  const [isEmailValid, setIsEmailValid] = useState(false);
 
   useEffect(() => {
     setIsEmailValid(emailRegex.test(email));
@@ -39,13 +40,11 @@ export function useRegisterForm() {
     phone &&
     isPhoneValid;
 
-
   const handleCheckEmail = async () => {
     if (!isEmailValid) {
       setEmailMessage('※ 이메일 형식이 올바르지 않습니다.');
       return;
     }
-
     try {
       setCheckingEmail(true);
       const res = await getDuplicate('email', email);
@@ -69,7 +68,6 @@ export function useRegisterForm() {
       setPhoneMessage('※ 전화번호 형식이 올바르지 않습니다.');
       return;
     }
-
     try {
       setCheckingPhone(true);
       const res = await getDuplicate('phone', phone);
@@ -80,14 +78,13 @@ export function useRegisterForm() {
         setPhoneMessage('※ 인증번호가 발송되었습니다.');
         setPhoneCodeInputEnabled(true);
       }
-    } catch (err) {
+    } catch {
       setPhoneMessage('※ 전화번호 확인 중 오류가 발생했습니다.');
       setPhoneCodeInputEnabled(false);
     } finally {
       setCheckingPhone(false);
     }
   };
-
 
   return {
     email,
