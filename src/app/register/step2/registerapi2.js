@@ -8,7 +8,7 @@ export const getDuplicate = async (type, value) => {
 };
 
 export const registerUser = async (data) => {
-  const res = await authapi('/register', {
+  const res = await publicapi('/auth/sign/student', {
     method: 'POST',
     body: JSON.stringify(data),
     headers: {

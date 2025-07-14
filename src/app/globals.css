@@ -20,6 +20,11 @@
   --color-gray4: rgb(101 103 107);
   --color-gray5: rgb(90 93 97);
   --color-gray6: rgb(85 87 92);
+  --color-gray8: #ABAEB4;
+  --color-gray9: #E8EAED;
+  --color-red: #F34F4F;
+  --color-green: #2CC970;
+  
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,6 +40,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+
 .input-common {
   @apply border border-gray2 rounded-xl px-4 text-base text-black bg-white;
 }
@@ -48,15 +54,11 @@ body {
 }
 
 .button-common {
-  @apply rounded-lg py-4 bg-point text-white text-base font-semibold cursor-pointer;
+  @apply rounded-lg py-4 bg-point text-white text-base font-semibold;
 }
 
 .button-common:disabled {
-  @apply bg-gray3;
-}
-
-.button-common:not(:disabled) {
-  @apply bg-point;
+  @apply bg-gray3 text-white;
 }
 
 .button-small {
@@ -67,5 +69,12 @@ body {
   @apply bg-white border-gray3 text-gray3;
 }
 
+.button-very-round {
+  @apply rounded-[32px] bg-gray9 text-gray8 cursor-pointer;
+}
+
+.button-very-round.active {
+  @apply bg-point text-white cursor-pointer;
+}
 
 

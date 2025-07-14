@@ -6,7 +6,8 @@ import { registerUser } from './registerapi2';
 import { useRegisterStore } from '@/stores/registerStore';
 
 export default function RegisterStep2Page() {
-  const { school, college, department } = useRegisterStore();
+  const { registerInfo } = useRegisterStore();
+  const { school, college, department } = registerInfo || {};
   const router = useRouter();
 
   const handleSubmit = async (form2Data) => {

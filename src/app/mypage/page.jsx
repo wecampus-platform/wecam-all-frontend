@@ -1,27 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import MyPageCard from './mypagecard';
 import MyPageBox from './mypagebox';
 import { getMyPageBoxes } from '../../utils/getmypagebox';
 import { clientapi } from '../../lib/fetchClient';
 import { useAuthStore } from '../../stores/authStore';
 import SideBarPage from '@/app/mypage/side-bar';
-
-// const mockUser = {
-//   email: "mock@user.com",
-//   role: "STUDENT",
-//   isAuthentication: true,
-//   organizationHierarchyList: ["테스트 학교 > 테스트 학과"],
-//   councilList: [],
-// };
+import InputModal from '../components/modals/Inputmodal'
 
 export default function MyPage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const { accessToken, ready } = useAuthStore();
+
+  const [modalType, setModalType] = useState(null);
 
   useEffect(() => {
     if (!ready) return;
@@ -35,16 +29,8 @@ export default function MyPage() {
       try {
         setLoading(true);
         const res = await clientapi('/user/mypage');
-
-        console.log('[MyPage] fetchUser 응답 상태:', res.status);
-
-        if (!res.ok) {
-          throw new Error(`상태코드: ${res.status}`);
-        }
-
+        if (!res.ok) throw new Error(`상태코드: ${res.status}`);
         const data = await res.json();
-        console.log('[MyPage] 유저 정보:', data);
-
         setUser(data);
       } catch (err) {
         console.error('[MyPage] 에러 발생:', err);
@@ -57,11 +43,11 @@ export default function MyPage() {
     fetchUser();
   }, [ready, accessToken]);
 
-  if (!user) return <div>사용자 정보가 없습니다.</div>;
   if (loading) return <div>로딩중...</div>;
   if (error) return <div>에러가 발생했습니다.</div>;
+  if (!user) return <div>사용자 정보가 없습니다.</div>;
 
-  const authLinks = getAuthLinks(user.role, user.isAuthentication);
+  const authLinks = getAuthLinks(user.role, user.isAuthentication, setModalType);
   const boxList = getMyPageBoxes(user, authLinks);
 
   return (
@@ -80,25 +66,36 @@ export default function MyPage() {
           />
         ))}
       </div>
+
+      {modalType && (
+        <InputModal
+          title={`${modalType === 'organization' ? '소속 인증' : modalType === 'schoolEmail' ? '학교 이메일 인증' : '학생회 인증'}`}
+          onClose={() => setModalType(null)}
+        />
+      )}
     </div>
   );
 }
 
-function getAuthLinks(role, isAuth) {
-  const link = (text, to) => <Link href={to} className="text-point underline">{text}</Link>;
+function getAuthLinks(role, isAuth, handleModalOpen) {
+  const button = (text, type) => (
+    <button onClick={() => handleModalOpen(type)} className="text-point underline">
+      {text}
+    </button>
+  );
 
   if (role === 'UNAUTH' && !isAuth) {
     return {
-      organization: link('인증하기', '/auth/org'),
-      schoolEmail: link('인증하기', '/auth/email'),
-      studentCouncil: link('인증하기', '/auth/council'),
+      organization: button('인증하기', 'organization'),
+      schoolEmail: button('인증하기', 'schoolEmail'),
+      studentCouncil: button('인증하기', 'studentCouncil'),
     };
   }
   if (role === 'GUEST_STUDENT' && isAuth) {
     return {
       organization: <span className="text-point font-semibold">임시완료</span>,
-      schoolEmail: link('인증하기', '/auth/email'),
-      studentCouncil: link('인증하기', '/auth/council'),
+      schoolEmail: button('인증하기', 'schoolEmail'),
+      studentCouncil: button('인증하기', 'studentCouncil'),
     };
   }
   if (role === 'STUDENT' && isAuth) {
