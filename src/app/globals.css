@@ -48,7 +48,7 @@ body {
 }
 
 .button-common {
-  @apply rounded-lg py-4 bg-point text-white text-base font-semibold;
+  @apply rounded-lg py-4 bg-point text-white text-base font-semibold cursor-pointer;
 }
 
 .button-common:disabled {

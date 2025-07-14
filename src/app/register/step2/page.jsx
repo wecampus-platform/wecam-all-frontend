@@ -24,8 +24,7 @@ export default function RegisterStep2Page() {
 
     try {
       await registerUser(data);
-      alert('회원가입이 완료되었습니다!');
-      router.push('/main');
+      router.push('/register/success');
     } catch (err) {
       alert('회원가입 중 문제가 발생했습니다.');
       console.error(err);

@@ -26,12 +26,13 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            const data = await publicapi('/auth/login', {
+            const res = await publicapi('/auth/login', {
                 method: 'POST',
                 body: JSON.stringify({ email, password }),
                 credentials: 'include',
             });
 
+            const data = await res.json();
             console.log('로그인 응답 확인:', data);
 
             useAuthStore.getState().setAuth({
@@ -122,8 +123,8 @@ export default function LoginPage() {
                         </button>
                         <button
                             type="button"
-                            onClick={() => router.push('/register')}
-                            className="w-full rounded-lg bg-white border border-point py-4 font-semibold text-point"
+                            onClick={() => router.push('/register/step1')}
+                            className="w-full rounded-lg bg-white border border-point py-4 font-semibold text-point cursor-pointer "
                         >
                             회원가입
                         </button>
