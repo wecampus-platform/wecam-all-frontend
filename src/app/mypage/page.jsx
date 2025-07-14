@@ -51,7 +51,7 @@ export default function MyPage() {
   const boxList = getMyPageBoxes(user, authLinks);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 p-6">
+    <div className="flex flex-col lg:flex-ro`w` gap-6 p-6">
       <SideBarPage />
       <div className="w-full lg:w-1/3">
         <MyPageCard user={user} />

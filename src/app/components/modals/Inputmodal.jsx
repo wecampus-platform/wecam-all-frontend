@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-
+//작은 모달
 export default function InputModal({
   title = '제목',
   label = '입력하세요',
