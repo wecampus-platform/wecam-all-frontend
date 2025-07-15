@@ -14,6 +14,8 @@ export function useRegisterForm() {
   const [departmentList, setDepartmentList] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
 
+  const [studentNumberInput, setStudentNumberInput] = useState("");
+
   const [showSchoolList, setShowSchoolList] = useState(false);
   const [showCollegeList, setShowCollegeList] = useState(false);
   const [showDepartmentList, setShowDepartmentList] = useState(false);
@@ -59,6 +61,7 @@ export function useRegisterForm() {
     departmentInput, setDepartmentInput, departmentList, selectedDepartment, setSelectedDepartment,
     showSchoolList, setShowSchoolList, showCollegeList, setShowCollegeList, showDepartmentList, setShowDepartmentList,
     fetchSchools, fetchColleges, fetchDepartments,
+    studentNumberInput, setStudentNumberInput,
     isFormComplete
   };
 }

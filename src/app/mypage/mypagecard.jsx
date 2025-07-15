@@ -8,9 +8,9 @@ export default function MyPageCard({ user }) {
           <img src="/default-profile.png" alt="프로필" className="w-full h-full object-cover" />
         </div>
         <h2 className="text-xl font-bold text-gray-800 mb-1">{user.username}</h2>
-        <div className="text-sm text-gray-600 mb-0.5">{user.organizationHierarchyList[0] ?? '소속 없음'}</div>
+        <div className="text-sm text-gray-600 mb-0.5">{user.organizationHierarchyList?.[0] ?? '소속 없음'}</div>
         <div className="text-sm text-gray-600">
-          {user.organizationHierarchyList[1] ?? '소속 없음'} | {user.organizationHierarchyList[2] ?? '소속 없음'}
+          {user.organizationHierarchyList?.[1] ?? '소속 없음'} | {user.organizationHierarchyList?.[2] ?? '소속 없음'}
         </div>
       </div>
     </div>

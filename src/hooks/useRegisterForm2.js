@@ -9,12 +9,12 @@ export function useRegisterForm2() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   const [emailMessage, setEmailMessage] = useState('');
   const [checkingEmail, setCheckingEmail] = useState(false);
   const [phoneMessage, setPhoneMessage] = useState('');
-  const [checkingPhone, setCheckingPhone] = useState(false);
+  const [checkingPhoneNumber, setCheckingPhoneNumber] = useState(false);
 
   const [emailCodeInputEnabled, setEmailCodeInputEnabled] = useState(false);
   const [phoneCodeInputEnabled, setPhoneCodeInputEnabled] = useState(false);
@@ -27,7 +27,7 @@ export function useRegisterForm2() {
 
   const isPasswordValid = passwordRegex.test(password);
   const isPasswordMatch = password === confirmPassword;
-  const isPhoneValid = /^\d{10,11}$/.test(phone);
+  const isPhoneNumberValid = /^\d{10,11}$/.test(phoneNumber);
 
   const isFormValid =
     email &&
@@ -37,8 +37,8 @@ export function useRegisterForm2() {
     confirmPassword &&
     isPasswordMatch &&
     name &&
-    phone &&
-    isPhoneValid;
+    phoneNumber &&
+    isPhoneNumberValid;
 
   const handleCheckEmail = async () => {
     if (!isEmailValid) {
@@ -63,14 +63,14 @@ export function useRegisterForm2() {
     }
   };
 
-  const handleCheckPhone = async () => {
-    if (!isPhoneValid) {
+  const handleCheckPhoneNumber = async () => {
+    if (!isPhoneNumberValid) {
       setPhoneMessage('※ 전화번호 형식이 올바르지 않습니다.');
       return;
     }
     try {
-      setCheckingPhone(true);
-      const res = await getDuplicate('phone', phone);
+      setCheckingPhoneNumber(true);
+      const res = await getDuplicate('phoneNumber', phoneNumber);
       if (res.result.isDuplicate) {
         setPhoneMessage('※ 이미 가입된 계정이 있습니다.');
         setPhoneCodeInputEnabled(false);
@@ -82,7 +82,7 @@ export function useRegisterForm2() {
       setPhoneMessage('※ 전화번호 확인 중 오류가 발생했습니다.');
       setPhoneCodeInputEnabled(false);
     } finally {
-      setCheckingPhone(false);
+      setCheckingPhoneNumber(false);
     }
   };
 
@@ -98,16 +98,16 @@ export function useRegisterForm2() {
     isPasswordMatch,
     name,
     setName,
-    phone,
-    setPhone,
-    isPhoneValid,
+    phoneNumber,
+    setPhoneNumber,
+    isPhoneNumberValid,
     isFormValid,
     emailMessage,
     handleCheckEmail,
     checkingEmail,
     phoneMessage,
-    handleCheckPhone,
-    checkingPhone,
+    handleCheckPhoneNumber,
+    checkingPhoneNumber,
     emailCodeInputEnabled,
     phoneCodeInputEnabled,
   };

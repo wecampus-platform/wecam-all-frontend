@@ -1,4 +1,4 @@
-import { authapi } from '@/lib/fetchClient';
+import { authapi,publicapi } from '@/lib/fetchClient';
 
 export const getDuplicate = async (type, value) => {
   const res = await authapi(`/check/${type}?${type}=${encodeURIComponent(value)}`, {

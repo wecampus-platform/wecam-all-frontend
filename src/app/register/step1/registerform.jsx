@@ -10,6 +10,7 @@ function RegisterForm({ onSubmit }) {
         schoolInput, setSchoolInput, schoolList, selectedSchool, setSelectedSchool,
         collegeInput, setCollegeInput, collegeList, selectedCollege, setSelectedCollege,
         departmentInput, setDepartmentInput, departmentList, selectedDepartment, setSelectedDepartment,
+        studentNumberInput, setStudentNumberInput,
         showSchoolList, setShowSchoolList, showCollegeList, setShowCollegeList, showDepartmentList, setShowDepartmentList,
         fetchSchools, fetchColleges, fetchDepartments, isFormComplete
     } = useRegisterForm();
@@ -20,6 +21,7 @@ function RegisterForm({ onSubmit }) {
             school: selectedSchool,
             college: selectedCollege,
             department: selectedDepartment,
+            studentNumber: studentNumberInput,
         });
     };
 
@@ -82,6 +84,15 @@ function RegisterForm({ onSubmit }) {
                         setShowList={setShowDepartmentList}
                         disabled={!selectedCollege || !collegeInput}
                     />
+                    <div className="w-[656px] relative">
+                        <input
+                            type="text"
+                            value={studentNumberInput}
+                            onChange={(e) => setStudentNumberInput(e.target.value)}
+                            placeholder="학번을 입력하세요."
+                            className="rounded-xl bg-white border-gray2 border-[1px] flex items-center justify-between py-3 px-4 w-full focus:border-point outline-none"
+                        />
+                    </div>
 
                     <button
                         type="submit"
@@ -159,6 +170,7 @@ function InputWithStyledList({
                     ))}
                 </ul>
             )}
+
         </div>
     );
 }

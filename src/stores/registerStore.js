@@ -5,6 +5,7 @@ export const useRegisterStore = create((set) => ({
     school: null,
     college: null,
     department: null,
+    studentNumber: null,
   },
   setRegisterInfo: (info) => set({ registerInfo: info }),
 }));

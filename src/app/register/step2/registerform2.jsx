@@ -12,10 +12,10 @@ export default function RegisterForm2({ onSubmit }) {
     password, setPassword,
     confirmPassword, setConfirmPassword,
     name, setName,
-    phone, setPhone,
-    isEmailValid, isPasswordValid, isPasswordMatch, isPhoneValid, isFormValid,
+    phoneNumber, setPhoneNumber,
+    isEmailValid, isPasswordValid, isPasswordMatch, isPhoneNumberValid, isFormValid,
     emailMessage, handleCheckEmail, checkingEmail,
-    phoneMessage, handleCheckPhone, checkingPhone,
+    phoneMessage, handleCheckPhoneNumber, checkingPhoneNumber,
     emailCodeInputEnabled, phoneCodeInputEnabled,
   } = useRegisterForm2();
 
@@ -29,7 +29,7 @@ export default function RegisterForm2({ onSubmit }) {
         onSubmit={(e) => {
           e.preventDefault();
           if (!isFormValid) return;
-          onSubmit({ email, password, name, phone });
+          onSubmit({ email, password, name, phoneNumber });
         }}
         className="absolute top-[231px] left-[calc(50%-328px)] w-[656px] flex flex-col gap-[52px]"
       >
@@ -85,7 +85,7 @@ export default function RegisterForm2({ onSubmit }) {
               <b>이메일 인증코드</b>
               <div className="w-[656px] h-[43px] rounded-xl bg-white border border-gray2 flex justify-between items-center px-4 text-base text-silver">
                 <input
-                  disabled={!emailCodeInputEnabled}
+                  // disabled={!emailCodeInputEnabled}
                   className="flex-1 outline-none"
                   placeholder="작성한 이메일로 받은 인증번호를 입력하세요."
                 />
@@ -143,15 +143,15 @@ export default function RegisterForm2({ onSubmit }) {
               <div className="flex gap-2">
                 <input
                   type="text"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ''))}
                   className="w-[556px] h-[43px] rounded-xl bg-white border border-gray2 px-4 text-base text-black input-common"
                   placeholder="전화번호를 입력하세요 (예: 01012345678)"
                 />
                 <button
                   type="button"
-                  disabled={checkingPhone || !isPhoneValid}
-                  onClick={handleCheckPhone}
+                  disabled={checkingPhoneNumber || !isPhoneNumberValid}
+                  onClick={handleCheckPhoneNumber}
                   className="w-[92px] h-[43px] button-small cursor-pointer"
                 >
                   중복확인
@@ -169,7 +169,7 @@ export default function RegisterForm2({ onSubmit }) {
               <b>전화번호 인증번호</b>
               <input
                 type="text"
-                disabled={!phoneCodeInputEnabled}
+                // disabled={!phoneCodeInputEnabled}
                 maxLength={6}
                 className="w-[656px] h-[43px] rounded-xl bg-white border border-gray2 px-4 text-base text-black input-common"
                 placeholder="인증번호 6자리를 입력하세요"

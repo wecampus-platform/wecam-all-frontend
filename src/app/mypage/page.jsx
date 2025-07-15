@@ -8,7 +8,8 @@ import { clientapi } from '../../lib/fetchClient';
 import { useAuthStore } from '../../stores/authStore';
 import SideBarPage from '@/app/mypage/side-bar';
 import InputModal from '../components/modals/Inputmodal';
-import OrganizationModal from './modals/organizationModal'
+import { OrganizationModal } from './modals/organizationModal';
+import { LogOut } from '@/app/components/logout';
 
 export default function MyPage() {
   const [user, setUser] = useState(null);
@@ -80,7 +81,9 @@ export default function MyPage() {
             blurred={box.title === '소속 정보' && !user.isAuthentication}
           />
         ))}
+        <LogOut/>
       </div>
+
 
       {/* 모달 타입 분리 */}
       {modalType === 'organization' && (

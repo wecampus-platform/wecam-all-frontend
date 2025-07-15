@@ -14,8 +14,8 @@ export default function MyPageBox({ title, contents, blurred = false }) {
           </div>
         </>
       )}
-      <div className= {blurred ? 'pointer-events-none select-none' : ''}>
-        {contents.map((item, idx) => (
+      <div className={blurred ? 'pointer-events-none select-none' : ''}>
+        {Array.isArray(contents) && contents.map((item, idx) => (
           <div key={idx} className="flex justify-between items-start px-4 py-3 border-t border-gray-200 bg-gray-50">
             <div className="text-gray-700 font-medium whitespace-nowrap">{item.subtitle}</div>
             <div className="text-gray-600 text-right flex-1 break-words">{item.body}</div>

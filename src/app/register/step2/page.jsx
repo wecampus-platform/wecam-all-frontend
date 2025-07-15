@@ -7,7 +7,7 @@ import { useRegisterStore } from '@/stores/registerStore';
 
 export default function RegisterStep2Page() {
   const { registerInfo } = useRegisterStore();
-  const { school, college, department } = registerInfo || {};
+  const { school, college, department, studentNumber } = registerInfo || {};
   const router = useRouter();
 
   const handleSubmit = async (form2Data) => {
@@ -18,9 +18,9 @@ export default function RegisterStep2Page() {
 
     const data = {
       ...form2Data,
-      schoolId: school.id,
-      collegeId: college.id,
-      departmentId: department.id,
+      selectedSchoolId: school.id,
+      selectedOrganizationId: department.id,
+      enrollYear: studentNumber,
     };
 
     try {
