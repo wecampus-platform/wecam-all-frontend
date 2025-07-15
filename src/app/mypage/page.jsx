@@ -7,15 +7,18 @@ import { getMyPageBoxes } from '../../utils/getmypagebox';
 import { clientapi } from '../../lib/fetchClient';
 import { useAuthStore } from '../../stores/authStore';
 import SideBarPage from '@/app/mypage/side-bar';
-import InputModal from '../components/modals/Inputmodal'
+import InputModal from '../components/modals/Inputmodal';
+import OrganizationModal from './modals/organizationModal'
 
 export default function MyPage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
   const { accessToken, ready } = useAuthStore();
 
   const [modalType, setModalType] = useState(null);
+  const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     if (!ready) return;
@@ -43,6 +46,18 @@ export default function MyPage() {
     fetchUser();
   }, [ready, accessToken]);
 
+  const handleModalConfirm = () => {
+    if (modalType === 'organization') {
+      console.log('소속 인증 요청:', inputValue);
+    } else if (modalType === 'schoolEmail') {
+      console.log('학교 이메일 인증 요청:', inputValue);
+    } else if (modalType === 'studentCouncil') {
+      console.log('학생회 인증 요청:', inputValue);
+    }
+    setModalType(null);
+    setInputValue('');
+  };
+
   if (loading) return <div>로딩중...</div>;
   if (error) return <div>에러가 발생했습니다.</div>;
   if (!user) return <div>사용자 정보가 없습니다.</div>;
@@ -51,7 +66,7 @@ export default function MyPage() {
   const boxList = getMyPageBoxes(user, authLinks);
 
   return (
-    <div className="flex flex-col lg:flex-ro`w` gap-6 p-6">
+    <div className="flex flex-col lg:flex-row gap-6 p-6">
       <SideBarPage />
       <div className="w-full lg:w-1/3">
         <MyPageCard user={user} />
@@ -67,12 +82,23 @@ export default function MyPage() {
         ))}
       </div>
 
-      {modalType && (
-        <InputModal
-          title={`${modalType === 'organization' ? '소속 인증' : modalType === 'schoolEmail' ? '학교 이메일 인증' : '학생회 인증'}`}
+      {/* 모달 타입 분리 */}
+      {modalType === 'organization' && (
+        <OrganizationModal
           onClose={() => setModalType(null)}
         />
       )}
+
+      {(modalType === 'schoolEmail' || modalType === 'studentCouncil') && (
+        <InputModal
+          title={modalType === 'schoolEmail' ? '학교 이메일을 등록하세요.' : '발급받은 학생회 코드를 입력하세요.'}
+          value={inputValue}
+          setValue={setInputValue}
+          onConfirm={handleModalConfirm}
+          onCancel={() => setModalType(null)}
+        />
+      )}
+
     </div>
   );
 }

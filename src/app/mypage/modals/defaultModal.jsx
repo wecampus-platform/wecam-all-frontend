@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { PaperIcon, MedalIcon, SharpIcon } from "../components/icons/affiliationIcons";
+import { PaperIcon, MedalIcon, SharpIcon } from "../../components/icons/affiliationIcons";
 
 
-const Component1 = () => {
+export function DefaultModal() {
     return (
         <div className="flex flex-col items-center justify-center text-center gap-5 p-10">
             <div className="w-full relative text-2xl font-semibold font-pretendard text-darkslategray text-center">소속 인증 하기</div>
@@ -58,8 +58,6 @@ const Component1 = () => {
 
                 </div>
 
-
-
             </div>
             <div className="text-gray3">
                 명의 도용, 학번, 증명서 위조 등 올바르지 않은 경로를 통해 인증을 시도할 경우, <br /> 공문서 위조 등 관련법에 따라 법적 책임이 있을 수 있습니다.</div>
@@ -67,4 +65,3 @@ const Component1 = () => {
     );
 };
 
-export default Component1;
