@@ -6,8 +6,8 @@ import Chatpage from '@/app/components/chat';
 
 export default function SideBarPage(){
     return(
-        <div className="flex w-[400px] h-screen">
-            <div className="w-[100px] h-screen bg-white items-center flex flex-col border-r border-slate-100">
+        <div className="flex w-[400px] min-h-screen">
+            <div className="w-[100px] bg-white items-center flex flex-col border-r border-slate-100">
                 <div className="flex flex-col items-center mt-[48px] gap-[8px]">
                     <div className="w-16 h-16 bg-zinc-300 rounded-xl"/>
                     <div className="w-16 h-16 bg-zinc-300 rounded-xl"/>
@@ -28,7 +28,7 @@ export default function SideBarPage(){
                     </div>
                 </div>
             </div>
-            <div className="w-[300px] h-screen flex flex-col bg-white items-center border-r border-slate-100">
+            <div className="w-[300px]  flex flex-col bg-white items-center border-r border-slate-100 overflow-y-auto">
                 <div className="w-[244px] mt-[28px]">
                     <div className="  justify-start text-neutral-500 text-sm font-normal mb-[16px]">학생회 관리자 페이지</div>
                     <div className="self-stretch justify-start text-zinc-800 text-base font-medium mb[8px]">부산대학교 정보컴퓨터공학부</div>
@@ -66,7 +66,7 @@ export default function SideBarPage(){
                 </div>
                 <div className="mt-[60px] mx-[16px]">
                     <div className="w-64 h-0 outline outline-1 outline-offset-[-0.50px] outline-zinc-300 mb-[24px]"/>
-                    <div className="flex flex-col mx-[8px]">
+                    <div className="flex flex-col mx-[8px] overflow-y-auto">
                         <div className="flex mb-[20px] justify-between items-center">
                             <div className="text-center justify-start text-zinc-800 text-base font-semibold">팀 채팅</div>
                             <div className="text-center justify-start text-neutral-400 text-xs font-medium">새 채팅 생성하기</div>
