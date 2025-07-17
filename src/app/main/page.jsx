@@ -1,9 +1,17 @@
+"use client"
 
-
+import { useRouter } from 'next/navigation';
 import SideBarPage from '@/app/main/side-bar';
 import Task from '@/app/main/task';
 
 export default function MainPage(){
+    const router = useRouter(); // 라우터 객체
+
+    const goToAddPage = () => {
+        router.push('/add'); // 원하는 경로로 이동 
+    };
+    
+
     return(
        <div className="h-screen w-full bg-[#F5F7FA] flex overflow-hidden">
             <SideBarPage/>
@@ -14,7 +22,11 @@ export default function MainPage(){
                         <div className="w-6 h-6 relative overflow-hidden">
                             <div className="w-3 h-3 left-[5.50px] top-[5.50px] absolute bg-white" />
                         </div>
-                        <div className="text-center justify-start text-white text-xl font-semibold">할 일 등록하기</div>
+                        <button
+                            onClick = {goToAddPage} 
+                            className="text-center justify-start text-white text-xl font-semibold">할 일 등록하기</button>
+
+
                     </div>
                 </div>
                 <div className="w-[1300px] h-64 bg-white rounded-3xl">

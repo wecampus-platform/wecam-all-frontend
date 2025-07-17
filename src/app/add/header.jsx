@@ -1,11 +1,33 @@
+"use client"
+
+import useTaskStore from '@/app/store/task-store';
+import { useRouter } from 'next/navigation';
+
 export default function Header({ submitLabel = "등록하기" }) {
+    const { newTask, addTask } = useTaskStore();
+    const router = useRouter();
+
+    const handleSubmit = () => {
+        const completeTask = {
+          ...newTask,
+          id: Date.now(),
+          status: '진행 전',
+        };
+        addTask(completeTask);
+
+        router.push('/main'); //페이지 전환
+      };
+
     return (
+        
       <div className="w-full flex mt-[64px] justify-between ">
         <div className="text-zinc-800 text-4xl font-bold">할 일 등록하기</div>
         <div className="flex gap-3 h-12">
-          <div className="w-[102px] px-4 py-3 bg-blue-500 rounded inline-flex justify-center items-center gap-2">
+          <button
+            onClick={handleSubmit} 
+            className="w-[102px] px-4 py-3 bg-blue-500 rounded inline-flex justify-center items-center gap-2">
             <div className="text-white text-xl font-bold">{submitLabel}</div>
-          </div>
+          </button>
           <div className="w-[102px] h-12 px-4 py-3 bg-white rounded outline outline-1 outline-offset-[-1px] outline-zinc-400 inline-flex justify-center items-center gap-2">
             <div className="text-zinc-400 text-xl font-bold">나가기</div>
           </div>
