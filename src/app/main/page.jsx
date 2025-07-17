@@ -1,15 +1,24 @@
 "use client"
 
+import { getAllTasks } from '@/app/lib/api';
 import { useRouter } from 'next/navigation';
 import SideBarPage from '@/app/main/side-bar';
 import Task from '@/app/main/task';
+import { useEffect, useState } from 'react';
+
 
 export default function MainPage(){
     const router = useRouter(); // 라우터 객체
+    const [tasks, setTasks] = useState([]);
+    const councilName = "test-council";
 
     const goToAddPage = () => {
         router.push('/add'); // 원하는 경로로 이동 
     };
+
+    useEffect(() => {
+        getAllTasks(councilName).then(setTasks).catch(console.error);
+      }, []);
     
 
     return(
@@ -72,7 +81,12 @@ export default function MainPage(){
                         </div>
                     </div>
                 </div>
-                <Task/>
+                <div className="grid grid-cols-3 gap-x-[28px] gap-y-[24px]">
+                    {tasks.map((task) => (
+                        <Task key={task.todoId} task={task} />
+                    ))}
+                </div>
+
 
             </div>
        </div>

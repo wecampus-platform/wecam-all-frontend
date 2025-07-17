@@ -2,21 +2,33 @@
 
 import useTaskStore from '@/app/store/task-store';
 import { useRouter } from 'next/navigation';
+import { createTask } from '@/lib/api';
 
 export default function Header({ submitLabel = "등록하기" }) {
     const { newTask, addTask } = useTaskStore();
     const router = useRouter();
 
-    const handleSubmit = () => {
-        const completeTask = {
-          ...newTask,
-          id: Date.now(),
-          status: '진행 전',
+    const handleSubmit = async () => {
+      try {
+        const apiData = {
+          title: newTask.title,
+          content: newTask.description,
+          dueAt: newTask.deadline,
+          managers: [newTask.assignee], // 배열이면 여기 수정
         };
-        addTask(completeTask);
 
-        router.push('/main'); //페이지 전환
-      };
+      const councilId = 1;
+      const councilName = "test-council";
+      const token = "abc123";
+  
+      const createdTask = await createTask(councilId, councilName, apiData, token);
+  
+        addTask(createdTask); // 상태에 반영
+        router.push('/main'); // 페이지 이동
+      } catch (error) {
+        console.error('제출 에러:', error);
+        alert('업로드 중 에러가 발생했습니다.');
+      }
 
     return (
         
@@ -35,4 +47,4 @@ export default function Header({ submitLabel = "등록하기" }) {
       </div>
     );
   }
-  
+}
