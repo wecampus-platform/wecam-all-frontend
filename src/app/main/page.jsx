@@ -8,16 +8,20 @@ import { useEffect, useState } from 'react';
 
 
 export default function MainPage(){
+
+    
+
     const router = useRouter(); // 라우터 객체
     const [tasks, setTasks] = useState([]);
-    const councilName = "test-council";
+    const councilName = "위캠퍼스";
+    const councilId = 2;
 
     const goToAddPage = () => {
         router.push('/add'); // 원하는 경로로 이동 
     };
 
     useEffect(() => {
-        getAllTasks(councilName).then(setTasks).catch(console.error);
+        getAllTasks(councilName, councilId).then(setTasks).catch(console.error);
       }, []);
     
 
