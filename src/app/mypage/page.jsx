@@ -20,20 +20,12 @@ export default function MyPage() {
 
   const [modalType, setModalType] = useState(null);
   const [inputValue, setInputValue] = useState('');
-
+  
   useEffect(() => {
-    if (!ready) return;
-    if (!accessToken) {
-      setError(true);
-      setLoading(false);
-      return;
-    }
-
     const fetchUser = async () => {
       try {
         setLoading(true);
         const res = await clientapi('/user/mypage');
-        if (!res.ok) throw new Error(`상태코드: ${res.status}`);
         const data = await res.json();
         setUser(data);
       } catch (err) {
@@ -45,7 +37,8 @@ export default function MyPage() {
     };
 
     fetchUser();
-  }, [ready, accessToken]);
+  }, []);
+
 
   const handleModalConfirm = () => {
     if (modalType === 'organization') {
@@ -81,7 +74,7 @@ export default function MyPage() {
             blurred={box.title === '소속 정보' && !user.isAuthentication}
           />
         ))}
-        <LogOut/>
+        <LogOut />
       </div>
 
 
