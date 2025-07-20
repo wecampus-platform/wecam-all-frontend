@@ -1,9 +1,30 @@
+"use client"
 
-
+import { getAllTasks } from '@/app/lib/api';
+import { useRouter } from 'next/navigation';
 import SideBarPage from '@/app/main/side-bar';
 import Task from '@/app/main/task';
+import { useEffect, useState } from 'react';
+
 
 export default function MainPage(){
+
+    
+
+    const router = useRouter(); // 라우터 객체
+    const [tasks, setTasks] = useState([]);
+    const councilName = "위캠퍼스";
+    const councilId = 2;
+
+    const goToAddPage = () => {
+        router.push('/add'); // 원하는 경로로 이동 
+    };
+
+    useEffect(() => {
+        getAllTasks(councilName, councilId).then(setTasks).catch(console.error);
+      }, []);
+    
+
     return(
        <div className="h-screen w-full bg-[#F5F7FA] flex overflow-hidden">
             <SideBarPage/>
@@ -14,7 +35,11 @@ export default function MainPage(){
                         <div className="w-6 h-6 relative overflow-hidden">
                             <div className="w-3 h-3 left-[5.50px] top-[5.50px] absolute bg-white" />
                         </div>
-                        <div className="text-center justify-start text-white text-xl font-semibold">할 일 등록하기</div>
+                        <button
+                            onClick = {goToAddPage} 
+                            className="text-center justify-start text-white text-xl font-semibold">할 일 등록하기</button>
+
+
                     </div>
                 </div>
                 <div className="w-[1300px] h-64 bg-white rounded-3xl">
@@ -60,7 +85,12 @@ export default function MainPage(){
                         </div>
                     </div>
                 </div>
-                <Task/>
+                <div className="grid grid-cols-3 gap-x-[28px] gap-y-[24px]">
+                    {tasks.map((task) => (
+                        <Task key={task.todoId} task={task} />
+                    ))}
+                </div>
+
 
             </div>
        </div>

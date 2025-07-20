@@ -3,13 +3,14 @@
 import { useState, forwardRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import useTaskStore from '@/app/store/task-store'
 
 
 export default function Form(){
-    const [todo, setTodo] = useState('');
-    const [assignee, setAssignee] = useState('');
-    const [file, setFile] = useState('');
-    const [deadline, setDeadline] = useState(null);
+    const { newTask, setNewTask } = useTaskStore();
+
+
+    
 
    // 커스텀 인풋 컴포넌트
     const CustomDateInput = forwardRef(({ value, onClick }, ref) => (
@@ -34,9 +35,9 @@ export default function Form(){
             >
                 <input
                     type="text"
-                    placeholder="할 일의 내용을 입력하세요."
-                    value={todo}
-                    onChange={(e) => setTodo(e.target.value)}
+                    placeholder="할 일의 제목을 입력하세요."
+                    value={newTask.title}
+                    onChange={(e) => setNewTask('title', e.target.value)}
                     className="w-full text-zinc-800 text-xl font-normal focus:outline-none"
                 />
             </div>
@@ -44,8 +45,8 @@ export default function Form(){
             <div className="self-stretch justify-start text-zinc-600 text-2xl font-semibold ">마감일 선택하기</div>
 
             <DatePicker
-                selected={deadline}
-                onChange={(date) => setDeadline(date)}
+                selected={newTask.deadline} 
+                onChange={(date) => setNewTask('deadline', date)}
                 customInput={<CustomDateInput />}
                 dateFormat="yyyy-MM-dd"
                 popperPlacement="bottom-start"
@@ -61,8 +62,8 @@ export default function Form(){
                 <input
                     type="text"
                     placeholder="@를 입력하고 담당자 이름을 입력하세요."
-                    value={assignee}
-                    onChange={(e) => setAssignee(e.target.value)}
+                    value={newTask.assignee}
+                    onChange={(e) => setNewTask('assignee', e.target.value)}
                     className="w-full text-zinc-800 text-xl font-normal focus:outline-none"
                 />
             </div>
@@ -77,8 +78,8 @@ export default function Form(){
                 <input
                     type="text"
                     placeholder="@를 입력하고 담당자 이름을 입력하세요."
-                    value={file}
-                    onChange={(e) => setFile(e.target.value)}
+                    value={newTask.file}
+                    onChange={(e) => setNewTask('file', e.target.value)}
                     className="w-full text-zinc-800 text-xl font-normal focus:outline-none"
                 />
             </div>
@@ -91,6 +92,8 @@ export default function Form(){
                 >
                 <textarea
                     placeholder="할 일의 내용을 입력하세요."
+                    value={newTask.description}
+                    onChange={(e) => setNewTask('description', e.target.value)}
                     className="w-full h-full resize-none text-zinc-800 text-xl font-normal focus:outline-none"
                 />
                 </div>
