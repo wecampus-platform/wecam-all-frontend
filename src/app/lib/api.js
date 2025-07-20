@@ -1,24 +1,41 @@
-const API_BASE = process.env.NEXT_PUBLIC_API;
+const API_BASE = process.env.NEXT_PUBLIC_BASE_API;
 const token = process.env.NEXT_PUBLIC_API_TOKEN;
 
-export async function createTask(councilId, councilName, taskData) {
-    const url = `${API_BASE}/admin/council/${councilName}/todo/${councilId}/create`;
-  
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'X-Council-Id': councilId, 
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify(taskData),
-    });
-  
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error("❌ 서버 응답 오류:", res.status, errText);
-      throw new Error('할 일 등록 실패')};
-      return res.json();
+export async function createTask(councilId, councilName, taskData, file) {
+  const url = `${API_BASE}/admin/council/${councilName}/todo/${councilId}/create`;
+
+  const formData = new FormData();
+
+  // JSON → Blob
+  const jsonBlob = new Blob([JSON.stringify(taskData)], {
+    type: "application/json",
+  });
+  formData.append("request", jsonBlob);
+
+  // 파일 있으면 추가
+  if (file) {
+    formData.append("files", file); // name="files"는 백엔드가 요구한 그대로
   }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'X-Council-Id': councilId,
+      // ❌ 'Content-Type': multipart 직접 설정하지 말기!
+    },
+    body: formData,
+  });
+
+  const contentType = res.headers.get("content-type");
+  const isJson = contentType?.includes("application/json");
+  const body = isJson ? await res.json() : await res.text();
+
+  console.log("📬 응답 코드:", res.status);
+  console.log("📋 응답 내용:", body);
+
+  return { status: res.status, body };
+}
 
 
 export async function getAllTasks(councilName, councilId) {
