@@ -24,8 +24,10 @@ export default function SideBarPage(){
       try {
         const councilId = councilList[0].id;
         console.log(councilId);
-        await getCouncilHome(councilId, accessToken);
-  
+        const resText = await getCouncilHome(councilId, accessToken);
+        console.log('학생회 홈 호출 성공:', resText);
+        useAuthStore.getState().setCurrentCouncil(councilId);
+        console.log('useAuthStore:', resText);
         // 성공 시 관리자 페이지로 이동
         router.push('/adminmain');
       } catch (err) {

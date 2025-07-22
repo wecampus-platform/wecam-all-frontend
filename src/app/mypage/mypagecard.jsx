@@ -1,6 +1,17 @@
 import { UserProfile } from '../../types/types';
+import { useAuthStore } from '@/stores/authStore';
+import { useEffect } from 'react';
 
 export default function MyPageCard({ user }) {
+
+  const setUserProfile = useAuthStore((state) => state.setUserProfile);
+
+  useEffect(() => {
+    if (user) {
+      setUserProfile(user);
+    }
+  }, [user, setUserProfile]);
+
   return (
     <div className="h-full flex items-center justify-center">
       <div className="w-full h-full max-w-lg bg-white rounded-lg p-6 text-center flex flex-col justify-center">
