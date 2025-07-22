@@ -16,7 +16,7 @@ export default function MyPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const { accessToken, ready } = useAuthStore();
+  // const { accessToken, ready } = useAuthStore();
 
   const [modalType, setModalType] = useState(null);
   const [inputValue, setInputValue] = useState('');

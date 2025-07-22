@@ -16,7 +16,7 @@ export default function Task(){
 
             </div>
             <div className="self-stretch justify-start text-zinc-600 text-base font-medium leading-snug">할일의 내용(40자까지 표시 가능) 할일의 내용(40자까지 표시 가능) 할일의 내용(40자까지 표시 가능) 할일의 내용(40자까지 표시 가능) 할일의 내용(40자까지 표시 가능)</div>
-            <div className="flex mt-[28px] w-full justify-between">
+            <div className="flex mt-[28px] w-full justify-betwee`n`">
                 <div className="flex gap-[2px] items-center">
                     <div className="justify-start text-zinc-400 text-base font-normal">담당자:</div>
                     <div className="justify-start text-neutral-400 text-base font-semibold">김위캠</div>
