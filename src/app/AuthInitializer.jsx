@@ -1,7 +1,7 @@
 //access token 재발급
 'use client';
 import { useEffect } from 'react';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from './store/authStore';
 
 export default function AuthInitializer() {
   const setAuth = useAuthStore((state) => state.setAuth);

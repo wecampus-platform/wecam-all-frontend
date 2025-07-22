@@ -5,7 +5,7 @@ import MyPageCard from './mypagecard';
 import MyPageBox from './mypagebox';
 import { getMyPageBoxes } from '../../utils/getmypagebox';
 import { clientapi } from '../../lib/fetchClient';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '../store/authStore';
 import SideBarPage from '@/app/mypage/side-bar';
 import InputModal from '../components/modals/Inputmodal';
 import { OrganizationModal } from './modals/organizationModal';
