@@ -1,10 +1,14 @@
 
+'use client'; 
 
+import { useRouter } from 'next/navigation'; //라우팅
 
 import { ProfileIcon, NotificationIcon, CallIcon } from '@/app/components/icons/mainpage-icons';
 import Chatpage from '@/app/components/chat';
 
 export default function SideBarPage(){
+    const router = useRouter(); // 라우팅 
+
     return(
         <div className="flex w-[400px] min-h-screen">
             <div className="w-[100px] bg-white items-center flex flex-col border-r border-slate-100">
@@ -44,12 +48,25 @@ export default function SideBarPage(){
                         <div data-hover="hovered" className="mt-[32px] w-full px-4 py-3 bg-gray-100 rounded-lg inline-flex justify-start items-center gap-2">
                             <div className="text-center justify-start text-blue-500 text-xl font-bold">관리자페이지 홈</div>
                         </div>
-                        <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
-                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold">할 일 관리</div>
-                        </div>
-                        <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
-                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold">소속 인증 관리</div>
-                        </div>
+                        <div
+        data-hover="unhovered"
+        className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer hover:bg-gray-100"
+        onClick={() => router.push('/main')}
+      >
+        <div className="text-center justify-start text-zinc-600 text-xl font-semibold">
+          할 일 관리
+        </div>
+      </div>
+
+      <div
+        data-hover="unhovered"
+        className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer hover:bg-gray-100"
+        onClick={() => router.push('/councilaffiliation')}
+      >
+        <div className="text-center justify-start text-zinc-600 text-xl font-semibold">
+          소속 인증 관리
+        </div>
+      </div>
                         <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
                             <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">공지 관리</div>
                         </div>

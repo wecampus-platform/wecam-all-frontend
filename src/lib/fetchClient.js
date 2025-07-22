@@ -45,3 +45,8 @@ export const publicapi = (path, options = {}) => {
 export const authapi = (path, options = {}) => {
   return fetchClient('/auth', path, options);
 };
+
+
+export const adminapi = (path, options = {}) => {
+  return fetchClient('/admin', path, options);
+};
