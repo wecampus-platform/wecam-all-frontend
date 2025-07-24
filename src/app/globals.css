@@ -5,6 +5,7 @@
   --foreground: #171717;
 }
 
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -24,7 +25,6 @@
   --color-gray9: #E8EAED;
   --color-red: #F34F4F;
   --color-green: #2CC970;
-  
 }
 
 @media (prefers-color-scheme: dark) {
@@ -54,10 +54,18 @@ body {
 }
 
 .button-common {
-  @apply rounded-lg py-4 bg-point text-white text-base font-semibold;
+  @apply rounded-lg px-3 py-4 bg-point text-white text-base font-semibold;
 }
 
 .button-common:disabled {
+  @apply bg-gray3 text-white;
+}
+
+.button-common2 {
+  @apply rounded-lg px-3 py-4 border border-point text-point text-base font-semibold;
+}
+
+.button-common2:disabled {
   @apply bg-gray3 text-white;
 }
 

@@ -1,8 +1,8 @@
 "use client"
 
-import { getAllTasks } from '@/app/lib/api';
+import { getAllTasks } from '../api-service/api';
 import { useRouter } from 'next/navigation';
-import SideBarPage from '@/app/main/side-bar';
+import SideBarPage from '@/app/components/side-bar';
 import Task from '@/app/main/task';
 import { useEffect, useState } from 'react';
 

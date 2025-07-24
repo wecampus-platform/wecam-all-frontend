@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '../store/authStore';
 import { clientapi } from '../../lib/fetchClient';
 import { useRouter } from 'next/navigation';
 
