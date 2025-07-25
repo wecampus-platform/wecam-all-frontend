@@ -1,6 +1,6 @@
 "use client"
 
-import { getAllTasks } from '@/app/lib/api';
+import { getAllTasks } from '@/app/api-service/api';
 import { useRouter } from 'next/navigation';
 import SideBarPage from '@/app/main/side-bar';
 import Task from '@/app/main/task';
