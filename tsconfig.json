@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/layout.jsx", "src/app/register/step1/page.jsxge.jsx", "src/app/mypage/page.jsx", "src/app/mypage/mypagebox.jsx", "src/lib/fetchClient.js", "src/hooks/useRegisterForm2.js", "src/hooks/useRegisterForm.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/layout.jsx", "src/app/register/step1/page.jsxge.jsx", "src/app/mypage/page.jsx", "src/app/mypage/mypagebox.jsx", "src/lib/fetchClient.js", "src/hooks/useRegisterForm2.js", "src/hooks/useRegisterForm.js", "src/app/page.jsx"],
   "exclude": ["node_modules"]
 }

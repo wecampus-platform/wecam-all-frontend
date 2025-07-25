@@ -45,28 +45,33 @@ export default function SideBarPage() {
                         </div>
                     </div>
                     <div className="flex flex-col gap-[8px]">
-                        <div data-hover="hovered" className="mt-[32px] w-full px-4 py-3 bg-gray-100 rounded-lg inline-flex justify-start items-center gap-2">
-                            <div className="text-center justify-start text-blue-500 text-xl font-bold">관리자페이지 홈</div>
+                        <div data-hover="unhovered" className="w-full mt-[32px] px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 transition-colors duration-300 ease-in-out hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
+                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold">관리자 페이지 홈</div>
                         </div>
+                        {/* <div data-hover="hovered" className="mt-[32px] w-full px-4 py-3 bg-gray-100 rounded-lg inline-flex justify-start items-center gap-2">
+                            <div className="text-center justify-start text-blue-500 text-xl font-bold">관리자페이지 홈</div>
+                        </div> */}
                         <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
                             <div className="text-center justify-start text-zinc-600 text-xl font-semibold">할 일 관리</div>
                         </div>
-                        <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
-                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold">소속 인증 관리</div>
-                        </div>
-                        <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
-                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">공지 관리</div>
-                        </div>
-                        <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
+                        <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 transition-colors duration-300 ease-in-out hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
                             <button
                                 onClick={() => router.push('/councilaffiliation')}
                                 className="text-center justify-start text-zinc-600 text-xl font-semibold"
                             >
-                                구성원 관리
+                                소속 인증 관리
                             </button>
-                            {/* 나림 수정 - <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">구성원 관리</div> */}
+                        </div>
+                        {/* <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
+                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold">소속 인증 관리</div>
+                        </div> */}
+                        <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
+                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">공지 관리</div>
                         </div>
                         <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
+                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">구성원 관리</div>
+                        </div>
+                        <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 transition-colors duration-300 ease-in-out hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
                             <button
                                 onClick={() => router.push('/invitation')}
                                 className="text-center justify-start text-zinc-600 text-xl font-semibold"

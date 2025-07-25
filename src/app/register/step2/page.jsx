@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import RegisterForm2 from './registerform2';
-import { registerUser } from './registerapi2';
-import { useRegisterStore } from '@/stores/registerStore';
+import { registerUser } from '@/app/api-service/registerapi2';
+import { useRegisterStore } from '@/app/store/registerStore';
 
 export default function RegisterStep2Page() {
   const { registerInfo } = useRegisterStore();

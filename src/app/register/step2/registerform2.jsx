@@ -2,7 +2,7 @@
 
 import { BlueCheckIcon } from '../../components/icons/check-icons';
 import { useRegisterForm2 } from '@/hooks/useRegisterForm2';
-import { useRegisterStore } from '@/stores/registerStore';
+import { useRegisterStore } from '@/app/store/registerStore';
 
 export default function RegisterForm2({ onSubmit }) {
   const { registerInfo } = useRegisterStore();

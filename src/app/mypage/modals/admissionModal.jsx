@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import ModalLayout from './modalLayout';
 import { MedalIcon } from "../../components/icons/affiliationIcons";
-import { requestFreshmanAffiliation } from '@/app/api-service/affiliation';
+import { requestFreshmanAffiliation } from '@/app/api-service/studentAffiliationApi';
 import { Input } from '../../components/search';
 
 export function AdmissionModal({ onClose, onBack }) {

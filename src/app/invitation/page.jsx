@@ -12,7 +12,7 @@ export default function InvitationPage() {
         <div className="h-screen w-full flex">
             <SideBarPage />
             {/* 가장 오른쪽 공간 */}
-            <div className="p-[76px] w-full flex flex-col gap-8 bg-cream">
+            <div className="px-[76px] w-full flex flex-col gap-8">
                 <div className="w-full flex flex-col gap-2">
                     <div className="flex flex-row justify-center items-center">
                         <b className="relative text-[40px] font-pretendard text-darkslategray text-left">초대코드 생성 및 관리</b>

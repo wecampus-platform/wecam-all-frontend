@@ -6,10 +6,9 @@ import MyPageBox from './mypagebox';
 import { getMyPageBoxes } from '../../utils/getmypagebox';
 import { clientapi } from '../../lib/fetchClient';
 import { useAuthStore } from '../store/authStore';
-import SideBarPage from '@/app/components/side-bar';
+import SideBarPage from './side-bar';
 import InputModal from '../components/modals/Inputmodal';
 import { OrganizationModal } from './modals/organizationModal';
-import { LogOut } from '@/app/components/logout';
 
 export default function MyPage() {
   const [user, setUser] = useState(null);
@@ -59,7 +58,7 @@ export default function MyPage() {
   const boxList = getMyPageBoxes(user, authLinks);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 p-6">
+    <div className="flex flex-col lg:flex-row gap-6">
       <SideBarPage />
       <div className="w-full lg:w-1/3">
         <MyPageCard user={user} />
@@ -74,7 +73,6 @@ export default function MyPage() {
             onVerifyClick={() => setModalType('organization')}
           />
         ))}
-        <LogOut />
       </div>
 
 
