@@ -1,4 +1,4 @@
-import SideBarPage from '@/app/main/side-bar';
+import SideBarPage from '@/app/side-bar';
 import Header from '@/app/add/header'
 import Form from '@/app/add/form'
 

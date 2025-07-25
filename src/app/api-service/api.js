@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_BASE_API;
+const API_BASE = process.env.NEXT_PUBLIC_BASE_URL;
 const token = process.env.NEXT_PUBLIC_API_TOKEN;
 
 export async function createTask(councilId, councilName, taskData, file) {

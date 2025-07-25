@@ -5,15 +5,11 @@ import { clientapi } from '../../lib/fetchClient';
 import { useRouter } from 'next/navigation';
 
 export function LogOut() {
-  const { ready, clearAuth } = useAuthStore();
+  const { ready, clearAuth, refreshToken } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = async () => {
     if (!ready) return;
-
-    const refreshToken = typeof window !== 'undefined'
-      ? localStorage.getItem('refreshToken')
-      : null;
 
     if (!refreshToken) {
       console.error('refreshToken 없음');
@@ -29,7 +25,6 @@ export function LogOut() {
         headers: { 'Content-Type': 'application/json' },
       });
 
-      localStorage.removeItem('refreshToken');
       clearAuth();
       router.push('/login');
     } catch (err) {

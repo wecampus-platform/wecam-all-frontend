@@ -16,7 +16,7 @@ export function OrganizationModal({ onClose }) {
           <button onClick={onClose} className="flex ml-auto">
             <XIcon />
           </button>
-          <div className="w-full relative text-2xl font-semibold font-pretendard text-darkslategray text-center">
+          <div className="w-full relative text-2xl font-semibold font-pretendard text-center">
             소속 인증 하기
           </div>
           {step === "default" && <DefaultModal onSelectStep={setStep} onClose={onClose} />}

@@ -6,7 +6,7 @@ import MyPageBox from './mypagebox';
 import { getMyPageBoxes } from '../../utils/getmypagebox';
 import { clientapi } from '../../lib/fetchClient';
 import { useAuthStore } from '../store/authStore';
-import SideBarPage from '@/app/mypage/side-bar';
+import SideBarPage from '@/app/components/side-bar';
 import InputModal from '../components/modals/Inputmodal';
 import { OrganizationModal } from './modals/organizationModal';
 import { LogOut } from '@/app/components/logout';
@@ -35,7 +35,6 @@ export default function MyPage() {
         setLoading(false);
       }
     };
-
     fetchUser();
   }, []);
 
@@ -72,6 +71,7 @@ export default function MyPage() {
             title={box.title}
             contents={box.contents}
             blurred={box.title === '소속 정보' && !user.isAuthentication}
+            onVerifyClick={() => setModalType('organization')}
           />
         ))}
         <LogOut />

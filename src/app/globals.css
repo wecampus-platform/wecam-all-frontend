@@ -5,6 +5,14 @@
   --foreground: #171717;
 }
 
+@layer base {
+  button {
+    @apply cursor-pointer;
+  }
+  button:disabled {
+    @apply cursor-default
+  }
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -25,6 +33,8 @@
   --color-gray9: #E8EAED;
   --color-red: #F34F4F;
   --color-green: #2CC970;
+  --color-lightgreen: #DCF8E8;
+  --color-cream: #F5F7FA;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,6 +43,7 @@
     --foreground: #ededed;
   }
 }
+
 
 body {
   background: var(--background);
@@ -52,6 +63,7 @@ body {
 .input-common.valid {
   @apply border-point;
 }
+
 
 .button-common {
   @apply rounded-lg px-3 py-4 bg-point text-white text-base font-semibold;
@@ -78,11 +90,11 @@ body {
 }
 
 .button-very-round {
-  @apply rounded-[32px] bg-gray9 text-gray8 cursor-pointer;
+  @apply rounded-[32px] bg-gray9 text-gray8;
 }
 
 .button-very-round.active {
-  @apply bg-point text-white cursor-pointer;
+  @apply bg-point text-white;
 }
 
 

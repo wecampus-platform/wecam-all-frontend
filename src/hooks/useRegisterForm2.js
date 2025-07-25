@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getDuplicate } from '../app/register/step2/registerapi2';
+import { getDuplicate } from '../app/api-service/registerapi2';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,20}$/;

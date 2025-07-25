@@ -1,30 +1,34 @@
+'use client';
 
 
 
 import { ProfileIcon, NotificationIcon, CallIcon } from '@/app/components/icons/mainpage-icons';
+import { useRouter } from 'next/navigation';
 import Chatpage from '@/app/components/chat';
 
-export default function SideBarPage(){
-    return(
+export default function SideBarPage() {
+    const router = useRouter();
+
+    return (
         <div className="flex w-[400px] min-h-screen">
             <div className="w-[100px] bg-white items-center flex flex-col border-r border-slate-100">
                 <div className="flex flex-col items-center mt-[48px] gap-[8px]">
-                    <div className="w-16 h-16 bg-zinc-300 rounded-xl"/>
-                    <div className="w-16 h-16 bg-zinc-300 rounded-xl"/>
-                    <div className="w-16 h-16 bg-zinc-300 rounded-xl"/>
+                    <div className="w-16 h-16 bg-zinc-300 rounded-xl" />
+                    <div className="w-16 h-16 bg-zinc-300 rounded-xl" />
+                    <div className="w-16 h-16 bg-zinc-300 rounded-xl" />
                 </div>
                 <div className="w-16 h-0 border border-zinc-400 my-[16px]" />
                 <div className="flex flex-col items-center gap-[8px]">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full"/>
-                    <div className="w-16 h-16 bg-gray-200 rounded-full"/>
+                    <div className="w-16 h-16 bg-gray-200 rounded-full" />
+                    <div className="w-16 h-16 bg-gray-200 rounded-full" />
                 </div>
                 <div className="flex flex-col mt-auto mb-[48px] items-center">
                     <div>
-                        <ProfileIcon/>
+                        <ProfileIcon />
                     </div>
                     <div className="flex flex-col pt-[24px] gap-[16px]">
-                        <NotificationIcon/>
-                        <CallIcon/>
+                        <NotificationIcon />
+                        <CallIcon />
                     </div>
                 </div>
             </div>
@@ -54,10 +58,22 @@ export default function SideBarPage(){
                             <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">공지 관리</div>
                         </div>
                         <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
-                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">구성원 관리</div>
+                            <button
+                                onClick={() => router.push('/councilaffiliation')}
+                                className="text-center justify-start text-zinc-600 text-xl font-semibold"
+                            >
+                                구성원 관리
+                            </button>
+                            {/* 나림 수정 - <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">구성원 관리</div> */}
                         </div>
                         <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
-                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">초대코드 생성</div>
+                            <button
+                                onClick={() => router.push('/invitation')}
+                                className="text-center justify-start text-zinc-600 text-xl font-semibold"
+                            >
+                                초대코드 생성
+                            </button>
+                            {/*나림 수정 -  <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">초대코드 생성</div> */}
                         </div>
                     </div>
                     <div className="mt-[16px] w-full px-4 inline-flex justify-start items-center gap-1">
@@ -65,17 +81,17 @@ export default function SideBarPage(){
                     </div>
                 </div>
                 <div className="mt-[60px] mx-[16px]">
-                    <div className="w-64 h-0 outline outline-1 outline-offset-[-0.50px] outline-zinc-300 mb-[24px]"/>
+                    <div className="w-64 h-0 outline outline-1 outline-offset-[-0.50px] outline-zinc-300 mb-[24px]" />
                     <div className="flex flex-col mx-[8px] overflow-y-auto">
                         <div className="flex mb-[20px] justify-between items-center">
                             <div className="text-center justify-start text-zinc-800 text-base font-semibold">팀 채팅</div>
                             <div className="text-center justify-start text-neutral-400 text-xs font-medium">새 채팅 생성하기</div>
                         </div>
-                        <Chatpage/>
-                        <Chatpage/>
-                        <Chatpage/>
-                        <Chatpage/>
-                        <Chatpage/>
+                        <Chatpage />
+                        <Chatpage />
+                        <Chatpage />
+                        <Chatpage />
+                        <Chatpage />
                     </div>
                 </div>
             </div>

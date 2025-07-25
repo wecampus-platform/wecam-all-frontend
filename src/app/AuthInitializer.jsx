@@ -1,21 +1,27 @@
-//access token 재발급
 'use client';
+
 import { useEffect } from 'react';
 import { useAuthStore } from './store/authStore';
 
 export default function AuthInitializer() {
-  const setAuth = useAuthStore((state) => state.setAuth);
-  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const setAccessTokenOnly = (accessToken) => {
+    useAuthStore.setState({
+      accessToken,
+      ready: true,
+    });
+  };
 
+  const clearAuth = useAuthStore((state) => state.clearAuth);
 
   useEffect(() => {
     const refreshAccessToken = async () => {
-      const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null;
+      const refreshToken = useAuthStore.getState().refreshToken;
       console.log('[AuthInitializer] refreshToken:', refreshToken);
 
       if (!refreshToken) {
         clearAuth();
         console.log('[AuthInitializer] refreshToken 없음 → clearAuth 실행');
+        useAuthStore.setState({ ready: true });
         return;
       }
 
@@ -27,27 +33,18 @@ export default function AuthInitializer() {
           credentials: 'include',
         });
 
-        console.log('[AuthInitializer] fetch 응답 상태:', res.status);
-
         if (!res.ok) throw new Error('Refresh token 요청 실패');
 
         const data = await res.json();
-        console.log('[AuthInitializer] 받은 데이터:', data);
-
-        setAuth({
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken || refreshToken,
-        });
+        setAccessTokenOnly(data.accessToken);
 
         if (data.refreshToken) {
-          localStorage.setItem('refreshToken', data.refreshToken);
-          console.log('[AuthInitializer] refreshToken 업데이트');
+          useAuthStore.setState({ refreshToken: data.refreshToken });
         }
-
       } catch (err) {
         console.error('[AuthInitializer] 에러:', err);
         clearAuth();
-        localStorage.removeItem('refreshToken');
+        useAuthStore.setState({ refreshToken: null, ready: true });
       }
     };
 
