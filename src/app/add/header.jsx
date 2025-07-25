@@ -2,7 +2,7 @@
 
 import useTaskStore from '@/app/store/task-store';
 import { useRouter } from 'next/navigation';
-import { createTask } from '@/app/lib/api';
+import { createTask } from '@/app/api-service/api';
 
 export default function Header({ submitLabel = "등록하기" }) {
   const { newTask, addTask } = useTaskStore();
