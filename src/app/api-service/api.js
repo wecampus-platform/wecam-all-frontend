@@ -59,8 +59,17 @@ export async function getAllTasks(councilName, councilId) {
   
 }
 
-export async function getTaskDetail(councilName, todoId) {
-  const res = await fetch(`${API_BASE}/admin/council/${councilName}/todo/${todoId}`);
+export async function getTaskDetail(councilName, todoId,councilId) {
+
+  const url =`${API_BASE}/admin/council/${councilName}/todo/${todoId}`
+
+  const res = await fetch(url,{
+    headers: {
+      'X-Council-Id': councilId,
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  
   if (!res.ok) throw new Error('Task detail fetch failed');
   return res.json();
 }
