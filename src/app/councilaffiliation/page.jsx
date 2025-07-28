@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
-import SideBarPage from '@/app/main/side-bar';
-import Search from '../components/search';
+import SideBarPage from '@/app/components/side-bar';
+import { Search } from '@/app/components/search';
 import { DefaultSection } from './defaultSection';
 
 export default function CouncilAffiliationPage() {

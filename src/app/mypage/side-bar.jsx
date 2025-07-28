@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/app/store/authStore';
 import { ProfileIcon, NotificationIcon, CallIcon } from '@/app/components/icons/mainpage-icons';
 import { useRouter } from 'next/navigation';
 import { getCouncilHome } from '@/app/mypage/api';  

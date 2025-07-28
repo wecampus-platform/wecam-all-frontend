@@ -1,5 +1,5 @@
 import { UserProfile } from '../../types/types';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/app/store/authStore';
 import { useEffect } from 'react';
 
 export default function MyPageCard({ user }) {
