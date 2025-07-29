@@ -6,42 +6,34 @@ import { useRouter } from 'next/navigation';
 import { getAllTasks } from '@/app/api-service/api';
 import SideBarPage from '@/app/main/side-bar';
 import Task from '@/app/main/task';
+import TaskModal from '@/app/modal/task-modal'
 
 export default function MainPage() {
   const router = useRouter();
 
-  /** 상태 ----------------------------------------------------------- */
+
   const [tasks, setTasks] = useState([]);
 
-  // 임시 하드코딩 — 실제론 로그인 정보·context 등에서 가져오면 됨
+
   const councilName = '위캠퍼스';
   const councilId = 2;
 
-  /** 사이드 이펙트 -------------------------------------------------- */
   useEffect(() => {
     getAllTasks(councilName, councilId)
       .then(res => {
-        // 응답 구조가 배열인지 객체인지 확인
-        //   - 배열:   [{…}, {…}]
-        //   - 객체:   { data: [{…}] }
         const taskArray = Array.isArray(res) ? res : res.data;
         setTasks(taskArray);
       })
       .catch(console.error);
   }, []);
 
-  /** 네비게이션 ------------------------------------------------------ */
   const goToAddPage = () => router.push('/add');
 
-  /** 렌더 ----------------------------------------------------------- */
   return (
     <div className="h-screen w-full bg-[#F5F7FA] flex overflow-hidden">
-      {/* 사이드바 --------------------------------------------------- */}
       <SideBarPage />
 
-      {/* 메인 영역 -------------------------------------------------- */}
       <div className="mt-[60px] px-[60px] w-full flex flex-col">
-        {/* 헤더 (제목 + 버튼) ------------------------------------- */}
         <div className="flex justify-between items-center w-full mb-[24px]">
           <h1 className="w-40 h-14 text-zinc-800 text-4xl font-bold">
             할 일 관리
@@ -90,10 +82,8 @@ export default function MainPage() {
             </div>
           </div>
 
-          {/* 세로 구분선 ------------------------------------- */}
           <div className="w-px h-16 bg-zinc-300 mx-[48px]" />
 
-          {/* 상태별 ------------------------------------------- */}
           <div className="flex flex-col gap-[12px]">
             <div className="text-neutral-400 text-base font-bold">
               상태별 필터
@@ -120,12 +110,12 @@ export default function MainPage() {
           </div>
         </div>
 
-        {/* 카드 그리드 ---------------------------------------- */}
         <div className="grid grid-cols-3 gap-x-[28px] gap-y-[24px]">
           {tasks.map(task => (
             <Task key={task.todoId} task={task} />
           ))}
         </div>
+        <TaskModal />
       </div>
     </div>
   );

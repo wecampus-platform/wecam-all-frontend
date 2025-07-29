@@ -1,16 +1,19 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useTaskModalStore } from '@/app/store/task-modal-store';
 import { getTaskDetail } from '@/app/api-service/api';
 
 export default function Task({ task }) {
-  const router = useRouter();
+  const openModal = useTaskModalStore((s) => s.open);
   const councilId = 2;
 
   /** 카드 클릭 → 상세 페이지 이동 ------------------------------ */
   const handleClick = async () => {
-    // 상세 데이터 패칭 (필요 없으면 제거 가능)
-    router.push(`/modal?id=${task.todoId}`, { scroll: false });
+    const detail = await getTaskDetail('위캠퍼스', task.todoId, councilId);
+
+    // ② 스토어에 저장 + 모달 열기
+    openModal(detail);
+    
     
   };
 
