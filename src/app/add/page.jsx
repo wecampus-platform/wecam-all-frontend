@@ -11,12 +11,10 @@ export default function AddPage() {
             <SideBarPage/>
             <div className="h-screen w-full flex flex-col mx-[60px]">
                 <Header
-                    submitLabel="등록하기"
-                    titleComponent={
-                    <h2 className="text-zinc-800 text-4xl font-bold">할 일 등록하기</h2>
-                    }
+                    mode="create"
+                    titleComponent={<h2 className="text-4xl font-bold">할 일 등록하기</h2>}
                 />
-                <Form/>
+                    <Form/>
             </div>  
             
         </div>
