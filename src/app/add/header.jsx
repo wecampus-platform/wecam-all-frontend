@@ -1,16 +1,41 @@
-"use client"
+'use client';
 
-import useTaskStore from '@/app/store/task-store';
 import { useRouter } from 'next/navigation';
-import { createTask } from '@/app/api-service/api';
 import { useAuthStore } from '@/app/store/authStore';
+import useTaskStore from '@/app/store/task-store';
+import { createTask, updateTask } from '@/app/api-service/api';
 
-export default function Header({ submitLabel = "등록하기" }) {
+
+/**
+ * @param {{
+ *   mode?: 'create' | 'edit',
+ *   todoId?: number,               // edit 모드일 때 필수
+ *   submitLabel?: string,
+ *   titleComponent?: React.ReactNode
+ * }} props
+ */
+export default function Header({
+  mode = 'create',
+  todoId,
+  submitLabel = mode === 'edit' ? '수정하기' : '등록하기',
+  titleComponent,
+}) {
   const { newTask, addTask } = useTaskStore();
   const router = useRouter();
   const { accessToken, role, councilList } = useAuthStore();
 
+  const councilId   = 2;
+  const councilName = '위캠퍼스';
 
+  /* ---------- 공통 payload ---------- */
+  const apiData = {
+    title: newTask.title,
+    content: newTask.description,
+    dueAt: newTask.deadline,
+    managers: [newTask.assignee],
+  };
+
+  /* ---------- 제출 ---------- */
   const handleSubmit = async () => {
     try {
       const apiData = {
@@ -24,28 +49,42 @@ export default function Header({ submitLabel = "등록하기" }) {
       const councilName = "위캠퍼스";
       
 
-      const createdTask = await createTask(accessToken,councilId, councilName, apiData);
-
-      addTask(createdTask);
+      if (mode === 'create') {
+        const created = await createTask(accessToken,councilId, councilName, apiData);
+        addTask(created);              // 목록에 즉시 추가
+      } else {
+        if (!todoId) throw new Error('todoId missing for edit');
+        await updateTask(accessToken,councilId, councilName, todoId, apiData);
+      }
       router.push('/main');
-    } catch (error) {
-      console.log('제출 에러:', error);
-      alert('업로드 중 에러가 발생했습니다.');
+      router.refresh();                // 메인 새로고침
+    } catch (err) {
+      console.error(err);
+      alert('저장 중 오류가 발생했습니다.');
     }
   };
 
+  /* ---------- 렌더 ---------- */
+  const wrapperClass = `flex justify-between ${titleComponent ? 'mt-[64px]' : ''}`;
+
   return (
-    <div className="w-full flex mt-[64px] justify-between">
-      <div className="text-zinc-800 text-4xl font-bold">할 일 등록하기</div>
+    <div className={wrapperClass}>
+      {titleComponent ?? null}
+
       <div className="flex gap-3 h-12">
         <button
           onClick={handleSubmit}
-          className="w-[102px] px-4 py-3 bg-blue-500 rounded inline-flex justify-center items-center gap-2">
-          <div className="text-white text-xl font-bold">{submitLabel}</div>
+          className="w-[102px] px-4 py-3 bg-blue-500 rounded inline-flex justify-center items-center"
+        >
+          <span className="text-white text-xl font-bold">{submitLabel}</span>
         </button>
-        <div className="w-[102px] h-12 px-4 py-3 bg-white rounded outline outline-1 outline-offset-[-1px] outline-zinc-400 inline-flex justify-center items-center gap-2">
-          <div className="text-zinc-400 text-xl font-bold">나가기</div>
-        </div>
+
+        <button
+          onClick={() => router.back()}
+          className="w-[102px] h-12 px-4 py-3 bg-white rounded outline outline-1 outline-zinc-400 inline-flex justify-center items-center"
+        >
+          <span className="text-zinc-400 text-xl font-bold">나가기</span>
+        </button>
       </div>
     </div>
   );

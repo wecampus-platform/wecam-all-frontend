@@ -94,3 +94,67 @@ export async function getTaskDetail(accessToken,councilName, todoId,councilId) {
   if (!res.ok) throw new Error('Task detail fetch failed');
   return res.json();
 }
+
+export async function deleteTask(councilName, todoId, councilId) {
+  if (!API_BASE) throw new Error('API_BASE is not defined');
+
+  const url = `${API_BASE}/admin/council/${councilName}/todo/${todoId}/delete`;
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'X-Council-Id': councilId,
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const msg = await res.text().catch(() => '');
+    throw new Error(`❌ Delete failed (${res.status}) ${msg}`);
+  }
+
+  return true;          // 필요하면 res.json() 또는 res.text()
+}
+
+
+export async function updateTask(
+  councilId,
+  councilName,
+  todoId,
+  taskData,           // { title, content, dueAt, managers }
+  deleteFileIds = [], // 옵션
+  newFiles      = []  // 옵션(새 첨부파일)
+) {
+  const url = `${API_BASE}/admin/council/${councilName}/todo/${todoId}/edit`;
+
+  // files 가 있으면 multipart, 없으면 JSON 으로 전송
+  if (newFiles.length) {
+    const form = new FormData();
+    form.append(
+      'request',
+      new Blob([JSON.stringify(taskData)], { type: 'application/json' })
+    );
+    deleteFileIds.forEach((id) => form.append('deleteFileIds', id));
+    newFiles.forEach((f) => form.append('newFiles', f));
+
+    await fetch(url, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}`, 'X-Council-Id': councilId },
+      body: form,
+    });
+  } else {
+    const payload = { request: taskData, deleteFileIds, newFiles };
+    await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'X-Council-Id' : councilId,
+        'Content-Type' : 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+  }
+
+  // 204 No‑Content일 수도 있으므로 별도 데이터는 안 돌려줌
+  return true;
+}
