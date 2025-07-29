@@ -5,7 +5,7 @@ import MyPageCard from './mypagecard';
 import MyPageBox from './mypagebox';
 import { getMyPageBoxes } from '../../utils/getmypagebox';
 import { clientapi } from '../../lib/fetchClient';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '../store/authStore';
 import SideBarPage from '@/app/mypage/side-bar';
 import InputModal from '../components/modals/Inputmodal';
 import { OrganizationModal } from './modals/organizationModal';
@@ -16,24 +16,16 @@ export default function MyPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const { accessToken, ready } = useAuthStore();
+  // const { accessToken, ready } = useAuthStore();
 
   const [modalType, setModalType] = useState(null);
   const [inputValue, setInputValue] = useState('');
-
+  
   useEffect(() => {
-    if (!ready) return;
-    if (!accessToken) {
-      setError(true);
-      setLoading(false);
-      return;
-    }
-
     const fetchUser = async () => {
       try {
         setLoading(true);
         const res = await clientapi('/user/mypage');
-        if (!res.ok) throw new Error(`상태코드: ${res.status}`);
         const data = await res.json();
         setUser(data);
       } catch (err) {
@@ -45,7 +37,8 @@ export default function MyPage() {
     };
 
     fetchUser();
-  }, [ready, accessToken]);
+  }, []);
+
 
   const handleModalConfirm = () => {
     if (modalType === 'organization') {
@@ -81,7 +74,7 @@ export default function MyPage() {
             blurred={box.title === '소속 정보' && !user.isAuthentication}
           />
         ))}
-        <LogOut/>
+        <LogOut />
       </div>
 
 

@@ -1,10 +1,9 @@
 'use client';
 
+import { getAllTasks } from '../api-service/api';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-import { getAllTasks } from '@/app/api-service/api';
-import SideBarPage from '@/app/main/side-bar';
+import SideBarPage from '@/app/components/side-bar';
 import Task from '@/app/main/task';
 
 export default function MainPage() {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../app/store/authStore';
 
 export const fetchClient = async (basePath, path, options = {}, token = null) => {
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -28,10 +28,15 @@ export const fetchClient = async (basePath, path, options = {}, token = null) =>
   return res;
 };
 
-export const clientapi = (path, options = {}) => {
-  const accessToken = useAuthStore.getState().accessToken;
+export const clientapi = async (path, options = {}) => {
+  const { accessToken, ready } = useAuthStore.getState();
+
+  if (!ready) throw new Error('Auth 상태가 아직 준비되지 않았습니다.');
+  if (!accessToken) throw new Error('AccessToken이 없습니다.');
+
   return fetchClient('/client', path, options, accessToken);
 };
+
 
 export const publicapi = (path, options = {}) => {
   return fetchClient('/public', path, options);

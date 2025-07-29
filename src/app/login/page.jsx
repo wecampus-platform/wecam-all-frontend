@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { publicapi } from '../../lib/fetchClient';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '../store/authStore';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -57,7 +57,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="w-full relative bg-whitesmoke min-h-screen overflow-hidden text-center text-4xl text-darkslategray font-pretendard">
+        <div className="w-full relative bg-[#F5F7FA] min-h-screen overflow-hidden text-center text-4xl text-darkslategray font-pretendard">
             <form
                 onSubmit={handleSubmit}
                 className="absolute top-[120px] left-1/2 -translate-x-1/2 shadow-[0px_0px_4px_rgba(44,_45,_47,_0.24)] rounded-[20px] border border-gray2 bg-white flex flex-col items-center justify-center py-24 px-[72px] gap-12 max-w-[500px]"
