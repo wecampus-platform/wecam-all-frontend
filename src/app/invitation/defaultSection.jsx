@@ -31,8 +31,9 @@ export function DefaultSection() {
             try {
                 const data = await fetchInvitationList(currentCouncil.id);
                 const mapped = data.map((item) => ({
+                    id: item.invitationId,
                     code: item.code,
-                    type: item.codeType === 'council_member' ? '일반 학생용' : '기타',
+                    type: item.codeType === 'council_member' ? '학생회 용' : '일반 학생용',
                     makeUser: item.makeUser,
                     requestedAt: item.createdAt?.slice(0, 10) || '-',
                     expiredAt: item.expiredAt?.slice(0, 10) || '-',
@@ -98,7 +99,7 @@ export function DefaultSection() {
                             <button className="border border-gray8 rounded px-2 py-1 text-sm text-gray8 bg-white">
                                 사용 내역 보기
                             </button>
-                            <button onClick={() => handleExtendExpiry(req.code)}>
+                            <button onClick={() => handleExtendExpiry(req.id)}>
                                 <TimerIcon />
                             </button>
                         </div>
