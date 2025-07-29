@@ -24,6 +24,7 @@ export default function RegisterStep2Page() {
     };
 
     try {
+      console.log(data);
       await registerUser(data);
       router.push('/register/success');
     } catch (err) {
