@@ -18,8 +18,8 @@ export default function RegisterStep2Page() {
 
     const data = {
       ...form2Data,
-      selectedSchoolId: school.id,
-      selectedOrganizationId: department.id,
+      selectSchoolId: Number(school.id),
+      selectOrganizationId: Number(department.id),
       enrollYear: studentNumber,
     };
 
