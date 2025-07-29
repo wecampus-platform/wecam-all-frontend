@@ -1,98 +1,133 @@
-"use client"
+'use client';
 
 import { getAllTasks } from '../api-service/api';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import SideBarPage from '@/app/components/side-bar';
 import Task from '@/app/main/task';
-import { useEffect, useState } from 'react';
+import { useAuthStore } from '@/app/store/authStore';
+import TaskModal from '@/app/modal/task-modal';
+
+export default function MainPage() {
+  const router = useRouter();
 
 
-export default function MainPage(){
-
-    
-
-    const router = useRouter(); // 라우터 객체
-    const [tasks, setTasks] = useState([]);
-    const councilName = "위캠퍼스";
-    const councilId = 2;
-
-    const goToAddPage = () => {
-        router.push('/add'); // 원하는 경로로 이동 
-    };
-
-    useEffect(() => {
-        getAllTasks(councilName, councilId).then(setTasks).catch(console.error);
-      }, []);
-    
-
-    return(
-       <div className="h-screen w-full bg-[#F5F7FA] flex overflow-hidden">
-            <SideBarPage/>
-            <div className="mt-[60px] px-[60px] w-full flex flex-col">
-                <div className="flex justify-between items-center w-full mb-[24px]">
-                    <div className="w-40 h-14 justify-start text-zinc-800 text-4xl font-bold">할 일 관리</div>
-                    <div data-hover="unhovered" className="pl-4 pr-5 py-3 bg-blue-500 rounded-lg inline-flex justify-start items-center gap-1">
-                        <div className="w-6 h-6 relative overflow-hidden">
-                            <div className="w-3 h-3 left-[5.50px] top-[5.50px] absolute bg-white" />
-                        </div>
-                        <button
-                            onClick = {goToAddPage} 
-                            className="text-center justify-start text-white text-xl font-semibold">할 일 등록하기</button>
+  const [tasks, setTasks] = useState([]);
 
 
-                    </div>
-                </div>
-                <div className="w-[1300px] h-64 bg-white rounded-3xl">
+  const councilName = '위캠퍼스';
+  const councilId = 2;
+  const {accessToken} = useAuthStore();
 
-                </div>
-                <div className="mt-[56px] mb-[28px] w-full flex">
-                    <div className="flex flex-col gap-[12px] ">
-                        <div className="self-stretch justify-start text-neutral-400 text-base font-bold">역할별 필터</div>
-                        <div className="flex gap-[12px]">
-                            <div data-available="available" data-status="전체 할 일" className="px-4 py-2 bg-blue-500 rounded-[32px] inline-flex justify-center items-center gap-2">
-                                <div className="justify-start text-white text-xl font-semibold">전체 할 일</div>
-                            </div>
-                            <div data-available="unavailable" data-status="내 할 일" className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex justify-center items-center gap-2">
-                                <div className="justify-start text-zinc-400 text-xl font-normal">내 할 일</div>
-                            </div>
-                            <div data-available="unavailable" data-status="받은 할 일" className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex justify-center items-center gap-2">
-                                <div className="justify-start text-zinc-400 text-xl font-normal">받은 할 일</div>
-                            </div>
-                            <div data-available="unavailable" data-status="보낸 할 일" className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex justify-center items-center gap-2">
-                                <div className="justify-start text-zinc-400 text-xl font-normal">보낸 할 일</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="w-px h-16 bg-zinc-300 mx-[48px] justify-center items-center" />
-                    <div className="flex flex-col gap-[12px] ">
-                        <div className="self-stretch justify-start text-neutral-400 text-base font-bold">상태별 필터</div>
-                        <div className="flex gap-[12px]">
-                            <div data-available="available" data-status="오늘까지" className="px-4 py-2 bg-blue-500 rounded-[32px] inline-flex justify-center items-center gap-2">
-                                <div className="justify-start text-white text-xl font-semibold ">오늘까지</div>
-                            </div>
-                            <div data-available="unavailable" data-status="전체" className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex justify-center items-center gap-2">
-                                <div className="justify-start text-zinc-400 text-xl font-normal ">전체</div>
-                            </div>
-                            <div data-available="unavailable" data-status="진행 전" className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex justify-center items-center gap-2">
-                                <div className="justify-start text-zinc-400 text-xl font-normal ">진행 전</div>
-                            </div>
-                            <div data-available="unavailable" data-status="진행 중" className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex justify-center items-center gap-2">
-                                <div className="justify-start text-zinc-400 text-xl font-normal">진행 중</div>
-                            </div>
-                            <div data-available="unavailable" data-status="진행 완료" className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex justify-center items-center gap-2">
-                                <div className="justify-start text-zinc-400 text-xl font-normal ">진행 완료</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="grid grid-cols-3 gap-x-[28px] gap-y-[24px]">
-                    {tasks.map((task) => (
-                        <Task key={task.todoId} task={task} />
-                    ))}
-                </div>
+  useEffect(() => {
+    getAllTasks(accessToken,councilName, councilId)
+      .then(res => {
+        const taskArray = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+          ? res.data
+          : [];
+  
 
+        setTasks(taskArray);
+      })
+      .catch(error => {
+        console.error('할 일 목록 가져오기 실패:', error);
+        setTasks([]); // 에러 시에도 빈 배열로 초기화
+      });
+  }, []);
+  
 
+  const goToAddPage = () => router.push('/add');
+
+  return (
+    <div className="h-screen w-full bg-[#F5F7FA] flex overflow-hidden">
+      <SideBarPage />
+
+      <div className="mt-[60px] px-[60px] w-full flex flex-col">
+        <div className="flex justify-between items-center w-full mb-[24px]">
+          <h1 className="w-40 h-14 text-zinc-800 text-4xl font-bold">
+            할 일 관리
+          </h1>
+
+          <button
+            onClick={goToAddPage}
+            className="pl-4 pr-5 py-3 bg-blue-500 rounded-lg inline-flex items-center gap-1"
+          >
+            <span className="w-6 h-6 relative overflow-hidden">
+              <span className="w-3 h-3 absolute left-[5.5px] top-[5.5px] bg-white" />
+            </span>
+            <span className="text-white text-xl font-semibold">
+              할 일 등록하기
+            </span>
+          </button>
+        </div>
+
+        {/* (예시) 검색·필터 바 ------------------------------------ */}
+        <div className="w-[1300px] h-64 bg-white rounded-3xl" />
+
+        {/* 역할별 + 상태별 필터 UI ------------------------------- */}
+        {/* …필터 UI 그대로 유지 (생략 없음) … */}
+        {/* === 역할별 필터 ===================================== */}
+        <div className="mt-[56px] mb-[28px] w-full flex">
+          {/* 역할별 ------------------------------------------ */}
+          <div className="flex flex-col gap-[12px]">
+            <div className="text-neutral-400 text-base font-bold">
+              역할별 필터
             </div>
-       </div>
-    )
+            <div className="flex gap-[12px]">
+              <div className="px-4 py-2 bg-blue-500 rounded-[32px] inline-flex items-center gap-2">
+                <span className="text-white text-xl font-semibold">
+                  전체 할 일
+                </span>
+              </div>
+              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
+                <span className="text-zinc-400 text-xl">내 할 일</span>
+              </div>
+              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
+                <span className="text-zinc-400 text-xl">받은 할 일</span>
+              </div>
+              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
+                <span className="text-zinc-400 text-xl">보낸 할 일</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-px h-16 bg-zinc-300 mx-[48px]" />
+
+          <div className="flex flex-col gap-[12px]">
+            <div className="text-neutral-400 text-base font-bold">
+              상태별 필터
+            </div>
+            <div className="flex gap-[12px]">
+              <div className="px-4 py-2 bg-blue-500 rounded-[32px] inline-flex items-center gap-2">
+                <span className="text-white text-xl font-semibold">
+                  오늘까지
+                </span>
+              </div>
+              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
+                <span className="text-zinc-400 text-xl">전체</span>
+              </div>
+              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
+                <span className="text-zinc-400 text-xl">진행 전</span>
+              </div>
+              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
+                <span className="text-zinc-400 text-xl">진행 중</span>
+              </div>
+              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
+                <span className="text-zinc-400 text-xl">진행 완료</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-x-[28px] gap-y-[24px]">
+          {tasks.map(task => (
+            <Task key={task.todoId} task={task} />
+          ))}
+        </div>
+        <TaskModal />
+      </div>
+    </div>
+  );
 }

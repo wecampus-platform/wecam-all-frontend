@@ -70,4 +70,3 @@ export const adminapi = async (path, options = {}) => {
 
   return fetchClient('/admin', path, mergedOptions, accessToken);
 };
-
