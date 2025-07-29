@@ -3,10 +3,13 @@
 import useTaskStore from '@/app/store/task-store';
 import { useRouter } from 'next/navigation';
 import { createTask } from '@/app/api-service/api';
+import { useAuthStore } from '@/app/store/authStore';
 
 export default function Header({ submitLabel = "등록하기" }) {
   const { newTask, addTask } = useTaskStore();
   const router = useRouter();
+  const { accessToken, role, councilList } = useAuthStore();
+
 
   const handleSubmit = async () => {
     try {
@@ -21,7 +24,7 @@ export default function Header({ submitLabel = "등록하기" }) {
       const councilName = "위캠퍼스";
       
 
-      const createdTask = await createTask(councilId, councilName, apiData);
+      const createdTask = await createTask(accessToken,councilId, councilName, apiData);
 
       addTask(createdTask);
       router.push('/main');

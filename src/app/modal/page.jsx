@@ -5,19 +5,21 @@ import { useEffect, useState } from 'react';
 import { getTaskDetail } from '@/app/api-service/api';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { useAuthStore } from '@/app/store/authStore';
 
 export default function ModalPage() {
   const params = useSearchParams();
   const todoId = params.get('id');         // ?id=123
   const councilName = '위캠퍼스';
   const councilId = 2;
+  const {accessToken} = useAuthStore();
 
   const [detail, setDetail] = useState(null);
 
   /* ───────────────────────────── API 호출 */
   useEffect(() => {
     if (!todoId) return;
-    getTaskDetail(councilName, todoId, councilId)
+    getTaskDetail(accessToken,councilName, todoId, councilId)
       .then(setDetail)
       .catch(console.error);
   }, [todoId]);

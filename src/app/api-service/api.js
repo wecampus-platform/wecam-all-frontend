@@ -1,7 +1,6 @@
-const API_BASE = process.env.NEXT_PUBLIC_BASE_API;
-const token = process.env.NEXT_PUBLIC_API_TOKEN;
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export async function createTask(councilId, councilName, taskData, file) {
+export async function createTask(accessToken,councilId, councilName, taskData, file) {
   const url = `${API_BASE}/admin/council/${councilName}/todo/${councilId}/create`;
 
   const formData = new FormData();
@@ -20,7 +19,7 @@ export async function createTask(councilId, councilName, taskData, file) {
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${accessToken}`,
       'X-Council-Id': councilId,
       // ❌ 'Content-Type': multipart 직접 설정하지 말기!
     },
@@ -38,7 +37,7 @@ export async function createTask(councilId, councilName, taskData, file) {
 }
 
 
-export async function getAllTasks(councilName, councilId) {
+export async function getAllTasks(accessToken,councilName, councilId) {
   if (!API_BASE) {
     throw new Error("API_BASE is not defined. Check your .env settings.");
   }
@@ -49,7 +48,7 @@ export async function getAllTasks(councilName, councilId) {
     cache: 'no-store', // 항상 fresh data
     headers: {
       'X-Council-Id': councilId,
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${accessToken}`
     },
   });
   
@@ -59,14 +58,14 @@ export async function getAllTasks(councilName, councilId) {
   
 }
 
-export async function getTaskDetail(councilName, todoId,councilId) {
+export async function getTaskDetail(accessToken,councilName, todoId,councilId) {
 
   const url =`${API_BASE}/admin/council/${councilName}/todo/${todoId}`
 
   const res = await fetch(url,{
     headers: {
       'X-Council-Id': councilId,
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${accessToken}`
     }
   });
   

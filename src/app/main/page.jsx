@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import SideBarPage from '@/app/components/side-bar';
 import Task from '@/app/main/task';
+import { useAuthStore } from '@/app/store/authStore';
 
 export default function MainPage() {
   const router = useRouter();
@@ -15,19 +16,26 @@ export default function MainPage() {
   // 임시 하드코딩 — 실제론 로그인 정보·context 등에서 가져오면 됨
   const councilName = '위캠퍼스';
   const councilId = 2;
+  const {accessToken} = useAuthStore();
 
   /** 사이드 이펙트 -------------------------------------------------- */
   useEffect(() => {
-    getAllTasks(councilName, councilId)
+    getAllTasks(accessToken,councilName, councilId)
       .then(res => {
-        // 응답 구조가 배열인지 객체인지 확인
-        //   - 배열:   [{…}, {…}]
-        //   - 객체:   { data: [{…}] }
-        const taskArray = Array.isArray(res) ? res : res.data;
+        const taskArray = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+          ? res.data
+          : [];
+  
         setTasks(taskArray);
       })
-      .catch(console.error);
+      .catch(error => {
+        console.error('할 일 목록 가져오기 실패:', error);
+        setTasks([]); // 에러 시에도 빈 배열로 초기화
+      });
   }, []);
+  
 
   /** 네비게이션 ------------------------------------------------------ */
   const goToAddPage = () => router.push('/add');
