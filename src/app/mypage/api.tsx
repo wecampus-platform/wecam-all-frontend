@@ -1,5 +1,5 @@
 import { adminapi } from '@/lib/fetchClient';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/app/store/authStore';
 
 export async function getCouncilHome(councilId: number, accessToken: string) {
   const res = await adminapi('/council/home', {
