@@ -36,6 +36,7 @@ export const useAuthStore = create(
     {
       name: 'auth-storage',
       partialize: (state) => ({
+        role: state.role,
         auth: state.auth,
         councilList: state.councilList,
         refreshToken: state.refreshToken,

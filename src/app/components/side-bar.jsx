@@ -1,7 +1,6 @@
 'use client';
 
-'use client'; 
-
+import Link from 'next/link';
 import { useRouter } from 'next/navigation'; //라우팅
 
 import { ProfileIcon, NotificationIcon, CallIcon } from '@/app/components/icons/mainpage-icons';
@@ -9,11 +8,11 @@ import Chatpage from '@/app/components/chat';
 import { useAuthStore } from '@/app/store/authStore'; // 실제 경로에 맞게 수정
 
 
-export default function SideBarPage(){
+export default function SideBarPage() {
     const router = useRouter(); // 라우팅 
-    const { currentCouncilName, currentCouncilRole,username,organizationHierarchyList} = useAuthStore();
-
-    return(
+    const role = useAuthStore((state) => state.role);
+    const councilList = useAuthStore((state) => state.councilList);
+    return (
         <div className="flex w-[400px] min-h-screen">
             <div className="w-[100px] bg-white items-center flex flex-col border-r border-slate-100">
                 <div className="flex flex-col items-center mt-[48px] gap-[8px]">
@@ -40,20 +39,21 @@ export default function SideBarPage(){
             <div className="w-[300px] flex flex-col bg-white items-center border-r border-slate-100 overflow-y-auto">
                 <div className="w-[244px] mt-[28px]">
                     <div className="  justify-start text-neutral-500 text-sm font-normal mb-[16px]">학생회 관리자 페이지</div>
-                    <div className="self-stretch justify-start text-zinc-800 text-base font-medium mb[8px]">                    
-                    {organizationHierarchyList?.[0] ?? '소속 없음'}{organizationHierarchyList?.[1] ?? '소속 없음'} | {organizationHierarchyList?.[2] ?? '소속 없음'}
+                    <div className="self-stretch justify-start text-zinc-800 text-base font-medium mb[8px]">
+                    {/* 소속 수정 필요 */}
                     </div>
                     <div className="justify-start text-zinc-800 text-base font-bold mb-[16px]">
-                    {currentCouncilName || '학생회 이름'}
+                        {councilList?.[0]?.name || '학생회 이름'}
                     </div>
                     <div className="w-full h-16 px-5 py-5 bg-blue-50 rounded-xl outline outline-1 outline-offset-[-1px] outline-sky-100 inline-flex flex-col justify-start items-start gap-2">
                         <div className="flex items-center">
-                        <div className="justify-start text-blue-500 text-base font-semibold">
-                        {currentCouncilRole || '직책'}
-                        </div>
+                            <div className="justify-start text-blue-500 text-base font-semibold">
+                                {role || '직책'}
+                            </div>
                             <div className="w-[1px] h-5 bg-blue-300 mx-[16px]" />
-                            <div className="justify-start text-black text-xl font-semibold">                        
-                            {username || '이름'}</div>
+                            <div className="justify-start text-black text-xl font-semibold">
+                            {/* 이름 수정 필요 */}
+                            </div>
                         </div>
                     </div>
 
@@ -62,24 +62,24 @@ export default function SideBarPage(){
                             <div className="text-center justify-start text-blue-500 text-xl font-bold">관리자페이지 홈</div>
                         </div>
                         <div
-        data-hover="unhovered"
-        className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer hover:bg-gray-100"
-        onClick={() => router.push('/main')}
-      >
-        <div className="text-center justify-start text-zinc-600 text-xl font-semibold">
-          할 일 관리
-        </div>
-      </div>
+                            data-hover="unhovered"
+                            className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => router.push('/main')}
+                        >
+                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold">
+                                할 일 관리
+                            </div>
+                        </div>
 
-      <div
-        data-hover="unhovered"
-        className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer hover:bg-gray-100"
-        onClick={() => router.push('/councilaffiliation')}
-      >
-        <div className="text-center justify-start text-zinc-600 text-xl font-semibold">
-          소속 인증 관리
-        </div>
-      </div>
+                        <div
+                            data-hover="unhovered"
+                            className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => router.push('/councilaffiliation')}
+                        >
+                            <div className="text-center justify-start text-zinc-600 text-xl font-semibold">
+                                소속 인증 관리
+                            </div>
+                        </div>
                         <div data-hover="unhovered" className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
                             <div className="text-center justify-start text-zinc-600 text-xl font-semibold ">공지 관리</div>
                         </div>
