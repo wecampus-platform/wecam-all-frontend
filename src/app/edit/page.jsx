@@ -1,8 +1,8 @@
 'use client';
 
-import SideBarPage from '@/app/main/side-bar';
-import Header from '@/app/add/header'
-import Form from '@/app/add/form'
+import SideBarPage from '@/app/mypage/side-bar';
+import Header from '@/app/add/header';
+import Form from '@/app/add/form';
 import { useTaskModalStore } from '@/app/store/task-modal-store';
 
 

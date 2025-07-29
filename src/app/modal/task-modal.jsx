@@ -6,7 +6,7 @@ import { deleteTask} from '@/app/api-service/api';
 import { useTaskModalStore } from '@/app/store/task-modal-store';
 import { useRouter } from 'next/navigation';
 import useTaskStore from '@/app/store/task-store';
-
+import { useAuthStore } from '../store/authStore';
 
 export default function TaskModal() {
 
@@ -15,6 +15,7 @@ export default function TaskModal() {
   const { isOpen, detail, close } = useTaskModalStore();
   const councilName = '위캠퍼스';
   const councilId = 2;
+  const {accessToken} = useAuthStore();
 
   if (!isOpen || !detail) return null;
 
@@ -39,7 +40,7 @@ export default function TaskModal() {
   const handleDelete = async () => {
   
     try {
-      await deleteTask(councilName, detail.todoId, councilId);
+      await deleteTask(accessToken,councilName, detail.todoId, councilId);
       close();
       window.location.href = '/main';
     } catch (err) {
