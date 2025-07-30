@@ -37,25 +37,28 @@ export async function createTask(accessToken,councilId, councilName, taskData, f
 }
 
 
-export async function getAllTasks(accessToken,councilName, councilId) {
+export async function getAllTasks(accessToken, councilName, councilId, todoType = '', progressStatus = '') {
   if (!API_BASE) {
     throw new Error("API_BASE is not defined. Check your .env settings.");
   }
-  console.log("API_BASE:", API_BASE);
-  const url =`${API_BASE}/admin/council/${councilName}/todo/list`
-  
+
+  const params = new URLSearchParams();
+  if (todoType) params.append('todoType', todoType);
+  if (progressStatus) params.append('progressStatus', progressStatus);
+
+  const url = `${API_BASE}/admin/council/${councilName}/todo/list?${params.toString()}`;
+
   const res = await fetch(url, {
-    cache: 'no-store', // 항상 fresh data
+    cache: 'no-store',
     headers: {
       'X-Council-Id': councilId,
-      'Authorization': `Bearer ${accessToken}`
+      'Authorization': `Bearer ${accessToken}`,
     },
   });
-  
-  const data = await res.json(); // ✅ 여기서만 한 번만 호출
+
+  const data = await res.json();
   console.log("📦 받은 데이터:", data);
   return data;
-  
 }
 
 
@@ -73,6 +76,28 @@ export async function getTaskDetail(accessToken,councilName, todoId,councilId) {
   if (!res.ok) throw new Error('Task detail fetch failed');
   return res.json();
 }
+
+export async function updateTaskStatus(accessToken, councilName, councilId, todoId, newStatus) {
+  const url = `${API_BASE}/admin/council/${councilName}/todo/${todoId}/status`;
+
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'X-Council-Id': councilId,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ progressStatus: newStatus }),
+  });
+
+  if (!res.ok) {
+    const msg = await res.text().catch(() => '');
+    throw new Error(`상태 변경 실패 (${res.status}) ${msg}`);
+  }
+
+  return true;
+}
+
 
 export async function deleteTask(accessToken,councilName, todoId, councilId) {
   if (!API_BASE) throw new Error('API_BASE is not defined');
@@ -93,6 +118,30 @@ export async function deleteTask(accessToken,councilName, todoId, councilId) {
   }
 
   return true;          // 필요하면 res.json() 또는 res.text()
+}
+
+// 학생회 조직 멤버 조회
+export async function fetchCouncilMembers(accessToken, councilName, councilId) {
+  const url = `${API_BASE}/admin/council/${councilName}/member/list`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'X-Council-Id': councilId,
+    },
+  });
+
+  if (!res.ok) {
+    const msg = await res.text().catch(() => '');
+    throw new Error(`멤버 조회 실패 (${res.status}) ${msg}`);
+  }
+
+  const contentType = res.headers.get("content-type");
+  const isJson = contentType?.includes("application/json");
+  const data = isJson ? await res.json() : await res.text();
+
+  return data;
 }
 
 

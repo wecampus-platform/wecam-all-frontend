@@ -5,11 +5,13 @@ const useTaskStore = create((set) => ({
   /* ====== 새 할 일 / 수정 할 일 폼 ====== */
   newTask: {
     title: '',
-    assignee: '',
     description: '',
     deadline: null,
-    file: null,
+    file: '',
+    assigneeList: [],
   },
+
+  setNewTaskAll: (task) => set(() => ({ newTask: task })),
 
   /* ① 단일 필드 변경 */
   setNewTask: (key, value) =>

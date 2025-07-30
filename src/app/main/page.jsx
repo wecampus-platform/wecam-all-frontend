@@ -10,7 +10,8 @@ import TaskModal from '@/app/modal/task-modal';
 
 export default function MainPage() {
   const router = useRouter();
-
+  const [todoType, setTodoType] = useState('');
+  const [progressStatus, setProgressStatus] = useState('');
 
   const [tasks, setTasks] = useState([]);
 
@@ -20,22 +21,20 @@ export default function MainPage() {
   const {accessToken} = useAuthStore();
 
   useEffect(() => {
-    getAllTasks(accessToken,councilName, councilId)
+    getAllTasks(accessToken, councilName, councilId, todoType, progressStatus)
       .then(res => {
         const taskArray = Array.isArray(res)
           ? res
           : Array.isArray(res?.data)
           ? res.data
           : [];
-  
-
         setTasks(taskArray);
       })
       .catch(error => {
         console.error('할 일 목록 가져오기 실패:', error);
-        setTasks([]); // 에러 시에도 빈 배열로 초기화
+        setTasks([]);
       });
-  }, []);
+  }, [todoType, progressStatus]);
   
 
   const goToAddPage = () => router.push('/add');
@@ -76,20 +75,37 @@ export default function MainPage() {
               역할별 필터
             </div>
             <div className="flex gap-[12px]">
-              <div className="px-4 py-2 bg-blue-500 rounded-[32px] inline-flex items-center gap-2">
-                <span className="text-white text-xl font-semibold">
-                  전체 할 일
-                </span>
-              </div>
-              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
-                <span className="text-zinc-400 text-xl">내 할 일</span>
-              </div>
-              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
-                <span className="text-zinc-400 text-xl">받은 할 일</span>
-              </div>
-              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
-                <span className="text-zinc-400 text-xl">보낸 할 일</span>
-              </div>
+            <div
+  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+    ${todoType === '' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+  onClick={() => setTodoType('')}
+>
+  <span className="text-xl">전체 할 일</span>
+</div>
+
+<div
+  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+    ${todoType === 'MY_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+  onClick={() => setTodoType('MY_TODO')}
+>
+  <span className="text-xl">내 할 일</span>
+</div>
+
+<div
+  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+    ${todoType === 'RECEIVED_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+  onClick={() => setTodoType('RECEIVED_TODO')}
+>
+  <span className="text-xl">받은 할 일</span>
+</div>
+
+<div
+  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+    ${todoType === 'SENT_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+  onClick={() => setTodoType('SENT_TODO')}
+>
+  <span className="text-xl">보낸 할 일</span>
+</div>
             </div>
           </div>
 
@@ -100,31 +116,55 @@ export default function MainPage() {
               상태별 필터
             </div>
             <div className="flex gap-[12px]">
-              <div className="px-4 py-2 bg-blue-500 rounded-[32px] inline-flex items-center gap-2">
-                <span className="text-white text-xl font-semibold">
+              <div   className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+    ${progressStatus === 'DUE_TODAY' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+    onClick={() => setProgressStatus('DUE_TODAY')}>
+
+                <span className="text-xl">
                   오늘까지
                 </span>
               </div>
-              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
-                <span className="text-zinc-400 text-xl">전체</span>
-              </div>
-              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
-                <span className="text-zinc-400 text-xl">진행 전</span>
-              </div>
-              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
-                <span className="text-zinc-400 text-xl">진행 중</span>
-              </div>
-              <div className="px-4 py-2 bg-gray-200 rounded-[32px] inline-flex items-center gap-2">
-                <span className="text-zinc-400 text-xl">진행 완료</span>
-              </div>
+              <div
+  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+    ${progressStatus === '' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+  onClick={() => setProgressStatus('')}
+>
+  <span className="text-xl">전체</span>
+</div>
+
+<div
+  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+    ${progressStatus === 'NOT_STARTED' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+  onClick={() => setProgressStatus('NOT_STARTED')}
+>
+  <span className="text-xl">진행 전</span>
+</div>
+
+<div
+  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+    ${progressStatus === 'IN_PROGRESS' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+  onClick={() => setProgressStatus('IN_PROGRESS')}
+>
+  <span className="text-xl">진행 중</span>
+</div>
+
+<div
+  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+    ${progressStatus === 'COMPLETED' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+  onClick={() => setProgressStatus('COMPLETED')}
+>
+  <span className="text-xl">진행 완료</span>
+</div>
+
+
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-x-[28px] gap-y-[24px]">
-          {tasks.map(task => (
-            <Task key={task.todoId} task={task} />
-          ))}
+        {tasks.map(task => (
+  <Task key={task.todoId} task={task} />
+        ))}
         </div>
         <TaskModal />
       </div>
