@@ -13,11 +13,11 @@ import { StatusDropdown } from '@/app/components/modals/StatusDropdown'; // ✅ 
 export default function TaskModal() {
 
   const router = useRouter();
-  const { loadTaskToForm} = useTaskStore();
   const { isOpen, detail, close } = useTaskModalStore();
   const councilName = '위캠퍼스';
   const councilId = 2;
   const {accessToken} = useAuthStore();
+  const { loadTaskToForm, setCurrentEditTodoId } = useTaskStore();
 
   if (!isOpen || !detail) return null;
 
@@ -35,10 +35,22 @@ const statusMap = [
 
   const st = statusMap[detail.progressStatus] || statusMap.NOT_STARTED;
 
+  console.log("detail:",detail);
+  console.log(detail.todoId);
+
+
   const handleEdit = () => {
     loadTaskToForm(detail);   // ① 폼 스토어 채우기
+    setCurrentEditTodoId(detail.todoId); //todoId만 저장
     close();                  // ② 현 모달 닫기
-    router.push('/edit');     // ③ /edit 페이지 이동
+    router.push(`/edit`);    // ③ /edit 페이지 이동
+  };
+
+
+  const handleClose = () => {
+    close();
+    console.log("이동했엉");
+    window.location.href = '/main';
   };
 
   const handleDelete = async () => {
@@ -56,7 +68,7 @@ const statusMap = [
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-      onClick={close}                        /* 배경 클릭 → 닫기 */
+      onClick={handleClose}                        /* 배경 클릭 → 닫기 */
     >
       <div
         onClick={(e) => e.stopPropagation()} /* 내부 클릭은 유지 */
@@ -91,6 +103,7 @@ const statusMap = [
                   currentStatus={detail.progressStatus}
                   onUpdate={(newStatus) =>
                     updateTaskStatus(accessToken, councilName, councilId, detail.todoId, newStatus)
+                    
                   }
                 />
               }

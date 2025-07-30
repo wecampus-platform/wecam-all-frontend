@@ -36,6 +36,22 @@ export async function createTask(accessToken,councilId, councilName, taskData, f
   return { status: res.status, body };
 }
 
+export async function fetchTodoSummary(accessToken, councilName, councilId) {
+  const url = `${API_BASE}/admin/council/${councilName}/todo/dashboard/todo-summary`;
+
+  const res = await fetch(url, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'X-Council-Id': councilId,
+    },
+    cache: 'no-store',
+  });
+
+  if (!res.ok) throw new Error('요약 데이터 가져오기 실패');
+
+  return await res.json();
+}
+
 
 export async function getAllTasks(accessToken, councilName, councilId, todoType = '', progressStatus = '') {
   if (!API_BASE) {
@@ -92,7 +108,8 @@ export async function updateTaskStatus(accessToken, councilName, councilId, todo
 
   if (!res.ok) {
     const msg = await res.text().catch(() => '');
-    throw new Error(`상태 변경 실패 (${res.status}) ${msg}`);
+    console.log(res);
+    return false;
   }
 
   return true;
@@ -150,40 +167,49 @@ export async function updateTask(
   councilId,
   councilName,
   todoId,
-  taskData,           // { title, content, dueAt, managers }
-  deleteFileIds = [], // 옵션
-  newFiles      = []  // 옵션(새 첨부파일)
+  taskData,             
+  deletedFileNameList = [], // 삭제할 파일명들
+  newFiles = []             // 새로 추가할 파일들 (File[] 형태)
 ) {
   const url = `${API_BASE}/admin/council/${councilName}/todo/${todoId}/edit`;
 
-  // files 가 있으면 multipart, 없으면 JSON 으로 전송
-  if (newFiles.length) {
-    const form = new FormData();
-    form.append(
-      'request',
-      new Blob([JSON.stringify(taskData)], { type: 'application/json' })
-    );
-    deleteFileIds.forEach((id) => form.append('deleteFileIds', id));
-    newFiles.forEach((f) => form.append('newFiles', f));
+  const formData = new FormData();
 
-    await fetch(url, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${token}`, 'X-Council-Id': councilId },
-      body: form,
-    });
-  } else {
-    const payload = { request: taskData, deleteFileIds, newFiles };
-    await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'X-Council-Id' : councilId,
-        'Content-Type' : 'application/json',
-      },
-      body: JSON.stringify(payload),
+  const jsonBlob = new Blob([JSON.stringify(taskData)], {
+    type: "application/json",
+  });
+  formData.append("request", jsonBlob);
+
+
+  // 2. 새 파일 추가
+  if (newFiles && newFiles.length > 0) {
+    newFiles.forEach((file) => {
+      formData.append("files", file);
     });
   }
 
-  // 204 No‑Content일 수도 있으므로 별도 데이터는 안 돌려줌
+  // 3. 삭제할 파일명 추가
+  if (deletedFileNameList && deletedFileNameList.length > 0) {
+    deletedFileNameList.forEach((filename) => {
+      formData.append("deleteFiles", filename);
+    });
+  }
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "X-Council-Id": councilId,
+      // 'Content-Type' 지정 ❌ (multipart는 자동 설정됨)
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errorMessage = await res.text(); // 혹은 res.json() 시도
+    console.error('응답 에러 메시지:', errorMessage);
+    throw new Error("할 일 수정 실패: " + errorMessage);
+  }
+
   return true;
 }

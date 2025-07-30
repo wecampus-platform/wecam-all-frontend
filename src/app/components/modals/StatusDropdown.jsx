@@ -22,20 +22,23 @@ console.log('필터된 드롭다운 옵션:', filtered);
 console.log('chipstatus1:', styles['chipstatus1']);
 
 
-  const handleClick = async (newStatus) => {
-    console.log('현재 상태:', currentStatus);
-    console.log('드롭다운 옵션:', statusOptions.map((s) => s.value));
+const handleClick = async (newStatus) => {
+  if (newStatus === status) return;
 
-    if (newStatus === normalizedStatus) return;
-    try {
-      await onUpdate(newStatus);
-      setStatus(newStatus);
-      setOpen(false);
-      alert('상태가 저장되었습니다. ✅');
-    } catch {
+  try {
+    const result = await onUpdate(newStatus);
+    if (!result) {
       alert('상태 변경 실패 ❌');
+      return;
     }
-  };
+
+    setStatus(newStatus);
+    setOpen(false);
+    alert('상태가 저장되었습니다. ✅');
+  } catch {
+    alert('상태 변경 실패 ❌');
+  }
+};
 
   useEffect(() => {
     const handleClickOutside = (e) => {

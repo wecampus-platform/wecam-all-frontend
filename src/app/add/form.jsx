@@ -13,6 +13,8 @@ import { useAuthStore } from '@/app/store/authStore';
 
 export default function Form(){
     const { accessToken } = useAuthStore();
+    const taskStore = useTaskStore();
+    const { newTask: globalTask} = taskStore;
     const { setNewTask: setGlobalTask } = useTaskStore(); // ✅ 추가
     const { setNewTaskAll } = useTaskStore(); 
     const councilName = "위캠퍼스";
@@ -24,6 +26,15 @@ export default function Form(){
         description: '',
         assigneeList: [], // ← 이름과 ID 저장
       });
+
+
+      const handleRemoveAssignee = (userId) => {
+        setNewTask((prev) => ({
+          ...prev,
+          assigneeList: prev.assigneeList.filter((a) => a.userId !== userId),
+        }));
+      };
+
 
       const handleAddAssignee = (member) => {
         if (!member || !member.userId) return;
@@ -70,6 +81,11 @@ export default function Form(){
         setNewTaskAll(newTask);
         console.log("🧠 최종 newTask 상태:", newTask);
       }, [newTask, setGlobalTask]);
+      useEffect(() => {
+        if (globalTask && globalTask.title && !newTask.title) {
+          setNewTask(globalTask);
+        }
+      }, [globalTask]);
       
     
     
@@ -120,13 +136,23 @@ export default function Form(){
 
             <div className="relative w-[1000px]">
   <div className="p-4 bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-blue-500">
-    <div className="flex flex-wrap gap-2 mb-2">
-    {newTask.assigneeList?.map((a) => (
-  <span key={a.userId} className="px-2 py-1 bg-gray-200 rounded-full text-sm text-gray-700">
-    {a.userName} ({a.userCouncilRole})
-  </span>
-))}
-    </div>
+<div className="flex flex-wrap gap-2 mb-2">
+  {newTask.assigneeList?.map((a) => (
+    <span
+      key={a.userId}
+      className="flex items-center gap-1 px-2 py-1 bg-gray-200 rounded-full text-sm text-gray-700"
+    >
+      {a.userName} ({a.userCouncilRole})
+      <button
+        type="button"
+        className="ml-1 text-gray-500 hover:text-red-500 text-sm"
+        onClick={() => handleRemoveAssignee(a.userId)}
+      >
+        ✕
+      </button>
+    </span>
+  ))}
+</div>
     <input
       type="text"
       placeholder="@를 입력하고 담당자 이름을 입력하세요."

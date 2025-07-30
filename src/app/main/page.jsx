@@ -7,6 +7,7 @@ import SideBarPage from '@/app/components/side-bar';
 import Task from '@/app/main/task';
 import { useAuthStore } from '@/app/store/authStore';
 import TaskModal from '@/app/modal/task-modal';
+import DashboardSummary from './dashboardSummary';
 
 export default function MainPage() {
   const router = useRouter();
@@ -63,7 +64,7 @@ export default function MainPage() {
         </div>
 
         {/* (예시) 검색·필터 바 ------------------------------------ */}
-        <div className="w-[1300px] h-64 bg-white rounded-3xl" />
+     <DashboardSummary />
 
         {/* 역할별 + 상태별 필터 UI ------------------------------- */}
         {/* …필터 UI 그대로 유지 (생략 없음) … */}

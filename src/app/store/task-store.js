@@ -11,6 +11,12 @@ const useTaskStore = create((set) => ({
     assigneeList: [],
   },
 
+
+  currentEditTodoId: null, // 수정할 todoId 저장용
+
+  setCurrentEditTodoId: (id) => set({ currentEditTodoId: id }),
+
+
   setNewTaskAll: (task) => set(() => ({ newTask: task })),
 
   /* ① 단일 필드 변경 */
@@ -22,7 +28,7 @@ const useTaskStore = create((set) => ({
     set(() => ({
       newTask: {
         title: detail.title,
-        assignee: detail.managers?.[0]?.userName || '',
+        assigneeList: detail.managers || [],
         description: detail.content,
         // 문자 → Date 객체 변환 (DatePicker용)
         deadline: detail.dueAt ? new Date(detail.dueAt) : null,
