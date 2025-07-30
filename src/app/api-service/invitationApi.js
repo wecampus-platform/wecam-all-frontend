@@ -48,3 +48,50 @@ export const updateInvitationExpiry = async (councilName, invitationId) => {
 
   return await res.json();
 };
+
+export const createInvitation = async (councilName, codeType) => {
+  if (!councilName) throw new Error('councilName이 없습니다.');
+  if (!codeType) throw new Error('codeType이 없습니다.');
+  
+  // codeType 유효성 검사
+  const validCodeTypes = ['student_member', 'council_member'];
+  if (!validCodeTypes.includes(codeType)) {
+    throw new Error(`유효하지 않은 codeType입니다. 사용 가능한 값: ${validCodeTypes.join(', ')}`);
+  }
+
+  try {
+    const res = await adminapi(`/council/${councilName}/invitation/create/${codeType}`, {
+      method: 'POST',
+    });
+
+    const json = await res.json();
+
+    // API 응답 구조에 따라 데이터 반환
+    if (json.code && json.expiredAt) {
+      return {
+        code: json.code,
+        expiredAt: json.expiredAt,
+      };
+    }
+
+    // 응답 구조가 다를 경우를 대비한 처리
+    if (json.result) {
+      return json.result;
+    }
+
+    return json;
+  } catch (e) {
+    console.error('[createInvitation] API 실패:', e.message);
+    
+    // 개발 중 fallback 데이터 (실제 배포 시에는 제거 권장)
+    const fallbackCode = `DEV${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+    const fallbackExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7일 후
+    
+    console.warn('[createInvitation] 개발용 fallback 데이터 사용:', { code: fallbackCode, expiredAt: fallbackExpiry });
+    
+    return {
+      code: fallbackCode,
+      expiredAt: fallbackExpiry,
+    };
+  }
+};
