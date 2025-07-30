@@ -12,6 +12,7 @@ export default function InvitationPage() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [successData, setSuccessData] = useState({});
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     return (
         <div className="h-screen w-full flex">
@@ -34,7 +35,7 @@ export default function InvitationPage() {
                 </div>
                 {/* 주요 공간 */}
                 <div className="flex bg-white rounded h-screen">
-                    <DefaultSection />
+                    <DefaultSection onRefresh={refreshTrigger} />
                 </div>
             </div>
 
@@ -53,7 +54,11 @@ export default function InvitationPage() {
             {/* 성공 모달 */}
             {showSuccessModal && (
                 <SuccessModal 
-                    onClose={() => setShowSuccessModal(false)}
+                    onClose={() => {
+                        setShowSuccessModal(false);
+                        // 성공 모달 닫을 때 초대코드 목록 새로고침
+                        setRefreshTrigger(prev => prev + 1);
+                    }}
                     {...successData}
                 />
             )}

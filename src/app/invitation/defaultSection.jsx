@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 import { fetchInvitationList, updateInvitationExpiry } from '../api-service/invitationApi';
 
 
-export function DefaultSection() {
+export function DefaultSection({ onRefresh }) {
     const [activeTab, setActiveTab] = useState('student');
     const [modalOpen, setModalOpen] = useState(false);
     const [requests, setRequests] = useState([]);
@@ -24,28 +24,35 @@ export function DefaultSection() {
         }
     };
     
+    const fetchData = async () => {
+        if (!currentCouncil) return;
+
+        try {
+            const data = await fetchInvitationList(currentCouncil.id);
+            const mapped = data.map((item) => ({
+                id: item.invitationId,
+                code: item.code,
+                type: item.codeType === 'council_member' ? '학생회 용' : '일반 학생용',
+                makeUser: item.makeUser,
+                requestedAt: item.createdAt?.slice(0, 10) || '-',
+                expiredAt: item.expiredAt?.slice(0, 10) || '-',
+            }));
+            setRequests(mapped);
+        } catch (err) {
+            console.error('초대 코드 목록 로딩 실패:', err.message);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            if (!currentCouncil) return;
-
-            try {
-                const data = await fetchInvitationList(currentCouncil.id);
-                const mapped = data.map((item) => ({
-                    id: item.invitationId,
-                    code: item.code,
-                    type: item.codeType === 'council_member' ? '학생회 용' : '일반 학생용',
-                    makeUser: item.makeUser,
-                    requestedAt: item.createdAt?.slice(0, 10) || '-',
-                    expiredAt: item.expiredAt?.slice(0, 10) || '-',
-                }));
-                setRequests(mapped);
-            } catch (err) {
-                console.error('초대 코드 목록 로딩 실패:', err.message);
-            }
-        };
-
         fetchData();
     }, [currentCouncil]);
+
+    // onRefresh가 변경될 때마다 데이터 다시 가져오기
+    useEffect(() => {
+        if (onRefresh) {
+            fetchData();
+        }
+    }, [onRefresh]);
 
     const tabs = [
         { key: 'student', label: '일반 학생용' },

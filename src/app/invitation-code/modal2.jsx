@@ -1,9 +1,16 @@
 'use client';
 import { useState } from 'react';
+import { createInvitation } from '../api-service/invitationApi';
+import { useAuthStore } from '../store/authStore';
 
 const Modal2 = ({ onClose, onSuccess }) => {
   const [activeTab, setActiveTab] = useState('general');
   const [checked, setChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // AuthStore에서 councilList 가져오기
+  const councilList = useAuthStore((state) => state.councilList);
+  const currentCouncil = councilList?.[0];
 
   const TabBtn = (key, label) => (
     <button
@@ -95,23 +102,59 @@ const Modal2 = ({ onClose, onSuccess }) => {
         <div className="flex justify-center">
           <button
             className={`p-2 rounded-md w-[200px] text-white text-base font-semibold ${
-              checked
+              checked && !isLoading
                 ? 'bg-[rgba(59,130,246,1)] hover:bg-[rgba(59,130,246,0.8)]'
                 : 'bg-zinc-400 cursor-not-allowed'
             }`}
-            disabled={!checked}
-            onClick={() => {
-              if (checked && onSuccess) {
+            disabled={!checked || isLoading}
+            onClick={async () => {
+              if (!checked || !onSuccess || isLoading) return;
+              
+              if (!currentCouncil) {
+                alert('학생회 정보를 찾을 수 없습니다.');
+                return;
+              }
+
+              setIsLoading(true);
+
+              try {
+                // 탭 상태를 API 파라미터로 변환
+                const codeType = activeTab === 'general' ? 'student_member' : 'council_member';
+                
+                // API 호출
+                const result = await createInvitation(currentCouncil.name, codeType);
+                
+                // 날짜 포맷팅 (ISO -> 표시용)
+                const expiredAt = new Date(result.expiredAt);
+                const expiryDate = expiredAt.toLocaleDateString('ko-KR', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit'
+                }).replace(/\./g, '.').replace(/ /g, '');
+                const expiryTime = expiredAt.toLocaleTimeString('ko-KR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false
+                });
+
+                // 성공 데이터 전달
                 onSuccess({
                   codeType: activeTab === 'general' ? '일반 학생용' : '학생회 초대용',
-                  invitationCode: 'A3a1bb', // 실제로는 API에서 받은 코드
-                  expiryDate: '2025.07.15',
-                  expiryTime: '23:59:00'
+                  invitationCode: result.code,
+                  expiryDate: expiryDate,
+                  expiryTime: expiryTime
                 });
+
+              } catch (error) {
+                console.error('초대코드 생성 실패:', error);
+                alert('초대코드 생성에 실패했습니다. 다시 시도해주세요.');
+              } finally {
+                setIsLoading(false);
               }
             }}
           >
-            초대코드 생성하기
+            {isLoading ? '생성 중...' : '초대코드 생성하기'}
           </button>
         </div>
       </div>
