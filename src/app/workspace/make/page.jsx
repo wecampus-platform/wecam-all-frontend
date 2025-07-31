@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import CustomDropdown from '@/components/dropdown';
+import { WorkspaceInput } from '@/components/input';
 import { fetchUserInfo } from '@/app/api-service/mypageApi';
 
 export default function MakeWorkspacePage() {
   const [value, setValue] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState('');
   
   // 사용자 정보 관련 상태
@@ -36,18 +36,14 @@ export default function MakeWorkspacePage() {
   }, []);
 
   const renderExtraInputs = () => {
-    const inputStyle = 'mt-[8px] w-[656px] h-11 px-4 py-3 bg-white rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-500 text-zinc-600 text-base font-medium focus:outline-blue-500';
-
     if (selectedLevel === '단과대학 학생회') {
       return (
         <div className="flex flex-col mt-[12px]">
           <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">단과대학</div>
-          <input
-            type="text"
+          <WorkspaceInput
             value={college}
             onChange={(e) => setCollege(e.target.value)}
             placeholder="단과대학명을 입력해주세요"
-            className={inputStyle}
           />
         </div>
       );
@@ -58,22 +54,18 @@ export default function MakeWorkspacePage() {
         <div className="flex flex-col">
           <div className="flex flex-col mt-[12px]">
             <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">단과대학</div>
-            <input
-              type="text"
+            <WorkspaceInput
               value={college}
               onChange={(e) => setCollege(e.target.value)}
               placeholder="단과대학명을 입력해주세요"
-              className={inputStyle}
             />
           </div>
           <div className="flex flex-col mt-[12px]">
             <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">학부/학과</div>
-            <input
-              type="text"
+            <WorkspaceInput
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
               placeholder="학부/학과명을 입력해주세요"
-              className={inputStyle}
             />
           </div>
         </div>
@@ -85,32 +77,26 @@ export default function MakeWorkspacePage() {
         <div className="flex flex-col">
           <div className="flex flex-col mt-[12px]">
             <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">단과대학</div>
-            <input
-              type="text"
+            <WorkspaceInput
               value={college}
               onChange={(e) => setCollege(e.target.value)}
               placeholder="단과대학명을 입력해주세요"
-              className={inputStyle}
             />
           </div>
           <div className="flex flex-col mt-[12px]">
             <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">학부/학과</div>
-            <input
-              type="text"
+            <WorkspaceInput
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
               placeholder="학부/학과명을 입력해주세요"
-              className={inputStyle}
             />
           </div>
           <div className="flex flex-col mt-[12px]">
             <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">전공</div>
-            <input
-              type="text"
+            <WorkspaceInput
               value={major}
               onChange={(e) => setMajor(e.target.value)}
               placeholder="전공명을 입력해주세요"
-              className={inputStyle}
             />
           </div>
         </div>
@@ -142,21 +128,10 @@ export default function MakeWorkspacePage() {
         {renderExtraInputs()}
 
         <div className="mt-[32px] mb-[8px] text-neutral-500 text-xs font-bold">학생회 이름</div>
-        <input
-          type="text"
+        <WorkspaceInput
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
           placeholder="학생회 이름이 워크스페이스 이름으로 지정됩니다."
-          className={`
-            w-[656px] h-11 px-4 py-3 bg-white rounded-xl outline outline-1 outline-offset-[-1px]
-            transition-all duration-150 placeholder:text-left
-            ${isFocused || value
-              ? 'outline-blue-500 text-[#55575C] font-medium text-left placeholder:text-zinc-400'
-              : 'outline-zinc-300 text-zinc-400 font-normal text-left'}
-          `}
-          style={{ fontSize: '16px' }}
         />
 
         <div className="mt-[32px] mb-[8px] text-neutral-500 text-xs font-bold">증빙자료 업로드(대표자 재학증명서 첨부 필수)</div>
