@@ -17,9 +17,9 @@ export default function MainPage() {
   const [tasks, setTasks] = useState([]);
 
 
-  const councilName = '위캠퍼스';
-  const councilId = 2;
-  const {accessToken} = useAuthStore();
+  const {accessToken, councilList} = useAuthStore();
+  const councilName = councilList?.[0]?.name || '위캠퍼스';
+  const councilId = councilList?.[0]?.id || 2;
 
   useEffect(() => {
     getAllTasks(accessToken, councilName, councilId, todoType, progressStatus)
@@ -38,7 +38,7 @@ export default function MainPage() {
   }, [todoType, progressStatus]);
   
 
-  const goToAddPage = () => router.push('/add');
+  const goToAddPage = () => router.push('/admin/todo/add');
 
   return (
     <div className="h-screen w-full bg-[#F5F7FA] flex overflow-hidden">
