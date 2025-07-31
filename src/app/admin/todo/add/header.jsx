@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
-import useTaskStore from '@/app/store/task-store';
+import useTaskStore from '@/store/task-store';
 import { createTask, updateTask } from '@/app/api-service/adminTodoApi';
 
 
@@ -59,7 +59,7 @@ export default function Header({
         if (!todoId) throw new Error('todoId missing for edit');
         await updateTask(accessToken,councilId, councilName, todoId, apiData);
       }
-      router.push('/main');
+      router.push('/admin/todo/main');
       router.refresh();                // 메인 새로고침
     } catch (err) {
       console.error(err);

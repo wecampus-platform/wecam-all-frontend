@@ -40,7 +40,7 @@ export default function Nav() {
             <div className="flex gap-5 ml-auto">
                 {accessToken ? (
                     <>
-                        <NavLink href="/mypage">마이페이지</NavLink>
+                        <NavLink href="/client/mypage">마이페이지</NavLink>
                         <button
                             onClick={handleLogout}
                             className="px-4 py-2 rounded-[32px] hover:bg-point hover:text-white transition-colors duration-200"
@@ -51,7 +51,7 @@ export default function Nav() {
                 ) : (
                     <>
                         <NavLink href="/login">로그인</NavLink>
-                        <NavLink href="/register/step1">회원가입</NavLink>
+                        <NavLink href="/register/student/step1">회원가입</NavLink>
                     </>
                 )}
             </div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchInvitationHistory } from '@/app/api-service/invitationApi';
 import { useAuthStore } from '@/store/authStore';
 
-const codeUseHistoryModal = ({ onClose, invitation }) => {
+const CodeUseHistoryModal = ({ onClose, invitation }) => {
   const [historyData, setHistoryData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -101,4 +101,4 @@ const codeUseHistoryModal = ({ onClose, invitation }) => {
   );
 };
 
-export default Modal1;
+export default CodeUseHistoryModal;

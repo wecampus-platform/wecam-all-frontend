@@ -3,9 +3,9 @@
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { deleteTask} from '@/app/api-service/adminTodoApi';
-import { useTaskModalStore } from '@/app/store/task-modal-store';
+import { useTaskModalStore } from '@/store/task-modal-store';
 import { useRouter } from 'next/navigation';
-import useTaskStore from '@/app/store/task-store';
+import useTaskStore from '@/store/task-store';
 import { useAuthStore } from '@/store/authStore';
 import { updateTaskStatus } from "@/app/api-service/adminTodoApi";
 import { StatusDropdown } from '@/components/modals/StatusDropdown'; // ✅ 너가 만든 위치 기준

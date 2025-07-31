@@ -121,7 +121,7 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
-              onClick={() => router.push('/register/step1')}
+              onClick={() => router.push('/register/student/step1')}
               className="w-full rounded-lg bg-white border border-point py-4 font-semibold text-point cursor-pointer "
             >
               회원가입
