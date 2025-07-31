@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import ModalLayout from './modalLayout';
 import { PaperIcon } from "../../components/icons/affiliationIcons";
-import { requestCurrentStudentAffiliation } from '@/app/api-service/studentAffiliationApi';
+import { requestCurrentStudentAffiliation } from '@/app/councilaffiliation/studentAffiliationApi';
 import { Input } from '../../components/search';
 
 export function CertificateModal({ onClose, onBack }) {
