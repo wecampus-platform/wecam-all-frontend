@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ContentItem } from '../../../types/types';
+import { ContentItem } from '@/types/types';
 
 export default function MyPageBox({ title, contents, blurred = false, onVerifyClick }) {
   return (

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import RegisterForm2 from './registerform2';
 import { registerUser } from '@/app/api-service/registerapi2';
-import { useRegisterStore } from '@/app/store/registerStore';
+import { useRegisterStore } from '@/store/registerStore';
 
 export default function RegisterStep2Page() {
   const { registerInfo } = useRegisterStore();

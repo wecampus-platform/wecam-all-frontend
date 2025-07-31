@@ -6,9 +6,9 @@ import { deleteTask} from '@/app/api-service/adminTodoApi';
 import { useTaskModalStore } from '@/app/store/task-modal-store';
 import { useRouter } from 'next/navigation';
 import useTaskStore from '@/app/store/task-store';
-import { useAuthStore } from '../../../../store/authStore';
+import { useAuthStore } from '@/store/authStore';
 import { updateTaskStatus } from "@/app/api-service/adminTodoApi";
-import { StatusDropdown } from '@/app/components/modals/StatusDropdown'; // ✅ 너가 만든 위치 기준
+import { StatusDropdown } from '@/components/modals/StatusDropdown'; // ✅ 너가 만든 위치 기준
 
 export default function TaskModal() {
 

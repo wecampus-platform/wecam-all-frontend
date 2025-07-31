@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'; //라우팅
 
-import { ProfileIcon, NotificationIcon, CallIcon } from '@/app/components/icons/mainpage-icons';
-import Chatpage from '@/app/components/chat';
-import { useAuthStore } from '@/app/store/authStore'; // 실제 경로에 맞게 수정
+import { ProfileIcon, NotificationIcon, CallIcon } from '@/components/icons/mainpage-icons';
+import Chatpage from '@/components/chat';
+import { useAuthStore } from '@/store/authStore'; // 실제 경로에 맞게 수정
 
 
 export default function SideBarPage() {

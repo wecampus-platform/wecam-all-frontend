@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { getTaskDetail } from '@/app/api-service/adminTodoApi';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { useAuthStore } from '@/app/store/authStore';
+import { useAuthStore } from '@/store/authStore';
 
 export default function ModalPage() {
   const params = useSearchParams();

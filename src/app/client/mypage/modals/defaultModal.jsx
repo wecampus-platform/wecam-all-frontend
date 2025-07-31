@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { PaperIcon, MedalIcon, SharpIcon } from "../../../../components/icons/affiliationIcons";
-import { XIcon } from '@/app/components/icons/check-icons';
+import { PaperIcon, MedalIcon, SharpIcon } from "@/components/icons/affiliationIcons";
+import { XIcon } from '@/components/icons/check-icons';
 
 export function DefaultModal({ onClose, onSelectStep }) {
     return (

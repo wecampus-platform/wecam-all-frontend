@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
-import SideBarPage from '@/app/components/side-bar';
-import { Search } from '@/app/components/search';
+import SideBarPage from '@/components/side-bar';
+import { Search } from '@/components/search';
 import { DefaultSection } from './defaultSection';
 import codeMakeModal from './modals/codeMakeModal';
 import codeUseHistoryModal from './modals/codeUseHistoryModal';

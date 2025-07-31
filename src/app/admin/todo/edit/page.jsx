@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import SideBarPage from '@/app/mypage/side-bar';
-import Header from '@/app/add/header';
-import Form from '@/app/add/form';
+import Header from '../add/header';
+import Form from '../add/form';
 import { useTaskModalStore } from '@/app/store/task-modal-store';
 import  useTaskStore  from '@/app/store/task-store';
 

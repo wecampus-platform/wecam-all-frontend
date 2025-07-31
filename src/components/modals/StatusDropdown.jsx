@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import styles from '@/app/components/modals/StatusDropdown.module.css';
+import styles from '@/components/modals/StatusDropdown.module.css';
 
 const statusOptions = [
   { value: 'NOT_STARTED', label: '진행 전', className: 'chipstatus' },

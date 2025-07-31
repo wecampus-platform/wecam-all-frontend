@@ -1,7 +1,7 @@
 import './globals.css';
 import AuthInitializer from './AuthInitializer';
 import AuthGate from './AuthGate';
-import Header from '../components/header';
+import Header from '@/components/header';
 
 export const metadata = {
   title: '위캠',

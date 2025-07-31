@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import styles from '@/app/main/dashboardSummary.module.css';
+import styles from './dashboardSummary.module.css';
 import { fetchTodoSummary } from '@/app/api-service/adminTodoApi';
-import { useAuthStore } from '@/app/store/authStore';
+import { useAuthStore } from '@/store/authStore';
 
 const DashboardSummary = () => {
   const { accessToken } = useAuthStore();

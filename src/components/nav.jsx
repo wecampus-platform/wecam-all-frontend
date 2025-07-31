@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
 import { clientapi } from '@/lib/fetchClient';
 

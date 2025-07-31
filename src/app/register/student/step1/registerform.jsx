@@ -1,7 +1,7 @@
 // RegisterForm.jsx
 'use client';
 
-import { SearchIcon } from '../../../../components/icons/serach-icon';
+import { SearchIcon } from '@/components/icons/serach-icon';
 import { useRegisterForm } from '@/hooks/useRegisterForm';
 import Link from 'next/link';
 

@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchInvitationHistory } from '../api-service/invitationApi';
-import { useAuthStore } from '../store/authStore';
+import { fetchInvitationHistory } from '@/app/api-service/invitationApi';
+import { useAuthStore } from '@/store/authStore';
 
 const codeUseHistoryModal = ({ onClose, invitation }) => {
   const [historyData, setHistoryData] = useState([]);

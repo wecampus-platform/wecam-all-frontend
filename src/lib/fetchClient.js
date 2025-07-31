@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore } from '@/store/authStore';
 
 export const fetchClient = async (basePath, path, options = {}, token = null) => {
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;

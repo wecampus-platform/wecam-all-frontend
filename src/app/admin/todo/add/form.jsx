@@ -9,7 +9,7 @@ import useTaskStore from '@/app/store/task-store'
 import { fetchCouncilMembers } from '@/app/api-service/adminTodoApi'; // 네가 만든 함수 경로에 맞게 import
 
 
-import { useAuthStore } from '@/app/store/authStore';
+import { useAuthStore } from '@/store/authStore';
 
 export default function Form(){
     const { accessToken } = useAuthStore();

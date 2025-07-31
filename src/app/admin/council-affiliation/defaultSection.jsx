@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CheckIcon, XIcon } from "../../../components/icons/check-icons";
-import Checkbox from '../../../components/checkbox';
-import { useAuthStore } from '../../../store/authStore';
+import { CheckIcon, XIcon } from "@/components/icons/check-icons";
+import Checkbox from '@/components/checkbox';
+import { useAuthStore } from '@/store/authStore';
 import {
   fetchAffiliationRequests,
   approveAffiliationRequest,

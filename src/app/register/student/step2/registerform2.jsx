@@ -1,8 +1,8 @@
 'use client';
 
-import { BlueCheckIcon } from '../../../components/icons/check-icons';
+import { BlueCheckIcon } from '@/components/icons/check-icons';
 import { useRegisterForm2 } from '@/hooks/useRegisterForm2';
-import { useRegisterStore } from '@/app/store/registerStore';
+import { useRegisterStore } from '@/store/registerStore';
 
 export default function RegisterForm2({ onSubmit }) {
   const { registerInfo } = useRegisterStore();

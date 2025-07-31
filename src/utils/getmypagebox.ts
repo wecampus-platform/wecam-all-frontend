@@ -1,5 +1,5 @@
 // app/mypage/getMyPageBoxes.ts
-import { BoxData, UserProfile } from '../types/types';
+import { BoxData, UserProfile } from '@/types/types';
 import type { ReactNode } from 'react';
 
 export const getMyPageBoxes = (user: UserProfile, authLinks: { [key: string]: ReactNode }): BoxData[] => [

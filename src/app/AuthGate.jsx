@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuthStore } from '../store/authStore';
+import { useAuthStore } from '@/store/authStore';
 
 export default function AuthGate({ children }) {
     const ready = useAuthStore((state) => state.ready);
