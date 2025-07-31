@@ -254,7 +254,7 @@ function RegisterForm({ onSubmit }) {
 
                     <button
                         type="submit"
-                        disabled={!isFormCompleteForPresident()}
+                        disabled={!isFormCompleteForPresident}
                         className={`w-[656px] rounded-lg flex items-center justify-center py-3 px-4 text-white text-center font-semibold transition-colors ${!isFormCompleteForPresident() ? 'bg-gray3 cursor-not-allowed' : 'bg-point cursor-pointer'}`}
                     >
                         학과 정보 입력 완료하기
