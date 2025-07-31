@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import CustomDropdown from '@/components/dropdown';
 import { WorkspaceInput } from '@/components/input';
-import { fetchUserInfo } from '@/app/api-service/mypageApi';
+import { fetchUserInfo, createWorkspaceRequest } from '@/app/api-service/mypageApi';
 
 export default function MakeWorkspacePage() {
+  const router = useRouter();
   const [value, setValue] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   
@@ -21,6 +23,9 @@ export default function MakeWorkspacePage() {
   // 파일 업로드 관련 상태
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const fileInputRef = useRef(null);
+  
+  // API 요청 상태
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 사용자 정보 가져오기
   useEffect(() => {
@@ -39,8 +44,27 @@ export default function MakeWorkspacePage() {
     getUserInfo();
   }, []);
 
+  // 학생회 계층을 organizationType으로 매핑
+  const getOrganizationType = (level) => {
+    switch (level) {
+      case '총학생회':
+        return 'UNIVERSITY';
+      case '단과대학 학생회':
+        return 'COLLEGE';
+      case '학부/학과 학생회':
+        return 'DEPARTMENT';
+      case '전공 학생회':
+        return 'MAJOR';
+      default:
+        return 'UNIVERSITY';
+    }
+  };
+
   // 버튼 활성화 조건 체크
   const isFormValid = () => {
+    // API 요청 중이면 비활성화
+    if (isSubmitting) return false;
+    
     // 기본 필수 항목 체크
     if (!selectedLevel || !value.trim() || uploadedFiles.length === 0) {
       return false;
@@ -58,6 +82,46 @@ export default function MakeWorkspacePage() {
         return true; // 추가 필드 없음
       default:
         return false;
+    }
+  };
+
+  // 워크스페이스 생성 요청
+  const handleWorkspaceCreate = async () => {
+    if (!isFormValid()) return;
+
+    try {
+      setIsSubmitting(true);
+
+      // request 객체 구성
+      const requestData = {
+        inputSchoolName: userInfo?.organizationHierarchyList?.[0] || '',
+        inputCollegeName: college.trim(),
+        inputDepartmentName: major.trim() || department.trim(), // 전공이 있으면 전공, 없으면 학부/학과
+        councilName: value.trim(),
+        organizationType: getOrganizationType(selectedLevel)
+      };
+
+      console.log('워크스페이스 생성 요청 데이터:', requestData);
+      console.log('업로드 파일들:', uploadedFiles);
+
+      const result = await createWorkspaceRequest(requestData, uploadedFiles);
+      
+      console.log('워크스페이스 생성 요청 성공:', result);
+      
+      // 승인 요청 대상 설정하고 성공 페이지로 이동
+      const target = selectedLevel === '총학생회' ? '위캠퍼스 관리자' : '상위 조직';
+      router.push(`/workspace/make/success?target=${encodeURIComponent(target)}`);
+      
+    } catch (error) {
+      console.error('워크스페이스 생성 요청 실패:', error);
+      console.error('에러 상세:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+      alert(`워크스페이스 생성 요청에 실패했습니다: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -240,22 +304,11 @@ export default function MakeWorkspacePage() {
               : 'bg-zinc-400 cursor-not-allowed'
             }
           `}
-          onClick={() => {
-            if (isFormValid()) {
-              // TODO: 워크스페이스 생성 API 호출
-              console.log('워크스페이스 생성 요청!', {
-                selectedLevel,
-                university: userInfo?.organizationHierarchyList?.[0],
-                college,
-                department,
-                major,
-                councilName: value,
-                files: uploadedFiles
-              });
-            }
-          }}
+          onClick={handleWorkspaceCreate}
         >
-          <div className="text-white text-base font-semibold text-center">워크스페이스 생성 승인 요청하기</div>
+          <div className="text-white text-base font-semibold text-center">
+            {isSubmitting ? '요청 중...' : '워크스페이스 생성 승인 요청하기'}
+          </div>
         </button>
         
     </div>
