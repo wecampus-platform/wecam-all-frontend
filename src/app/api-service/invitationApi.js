@@ -1,4 +1,4 @@
-import { adminapi } from '@/lib/fetchClient';
+import { adminapi,clientapi } from '@/lib/fetchClient';
 
 const fallbackExample = [
   {
@@ -135,3 +135,21 @@ export const fetchInvitationHistory = async (councilName, invitationId) => {
     return fallbackHistoryExample;
   }
 };
+
+
+//초대코드 사용 _ 학생 , 학생회 둘 다 가능함.
+export async function useInvitationCode(codeType, code) {
+  const url = `/invitation-code/use/${codeType}?Code=${encodeURIComponent(code)}`;
+
+  const res = await clientapi(url, {
+    method: 'POST',
+
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || '초대 코드 사용 실패');
+  }
+
+  return await res.json(); // 성공 시 결과 데이터 반환
+}

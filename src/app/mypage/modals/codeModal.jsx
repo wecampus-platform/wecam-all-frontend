@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ModalLayout from './modalLayout';
 import { SharpIcon } from "../../components/icons/affiliationIcons";
 import { Input } from '../../components/search';
+import { useInvitationCode } from '@/app/api-service/invitationApi';
 
 export function CodeModal({ onClose, onBack }) {
     const [code, setCode] = useState('');
@@ -12,11 +13,14 @@ export function CodeModal({ onClose, onBack }) {
         if (!code.trim()) return;
 
         try {
-            //***api 수정 필요***
-        } catch (err) {
-            alert('오류 발생');
+            const result = await useInvitationCode('student_member', code);
+            console.log('초대 코드 사용 성공:', result);
+            close();
+            window.location.href = '/mypage';
+          } catch (err) {
+            alert('초대 코드 사용 중 오류 발생');
             console.error(err);
-        }
+          }
     };
 
     return (
