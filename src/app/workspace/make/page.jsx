@@ -1,24 +1,54 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CustomDropdown from '@/components/dropdown';
+import { fetchUserInfo } from '@/app/api-service/mypageApi';
 
 export default function MakeWorkspacePage() {
   const [value, setValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState('');
+  
+  // 사용자 정보 관련 상태
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  // 추가 필드들 상태
+  const [college, setCollege] = useState('');
+  const [department, setDepartment] = useState('');
+  const [major, setMajor] = useState('');
+
+  // 사용자 정보 가져오기
+  useEffect(() => {
+    const getUserInfo = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchUserInfo();
+        setUserInfo(data);
+      } catch (error) {
+        console.error('사용자 정보 불러오기 실패:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUserInfo();
+  }, []);
 
   const renderExtraInputs = () => {
-    const baseStyle =
-      'mt-[8px] w-[656px] h-11 px-4 py-3 bg-white rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-500 inline-flex justify-start items-center gap-1 text-zinc-600 text-base font-medium';
+    const inputStyle = 'mt-[8px] w-[656px] h-11 px-4 py-3 bg-white rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-500 text-zinc-600 text-base font-medium focus:outline-blue-500';
 
     if (selectedLevel === '단과대학 학생회') {
       return (
-        <div className= "flex flex-col mt-[12px]">
-            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold ">단과대학</div>
-            <div className={baseStyle}>
-            단과대학 이름 입력 필드
-            </div>
+        <div className="flex flex-col mt-[12px]">
+          <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">단과대학</div>
+          <input
+            type="text"
+            value={college}
+            onChange={(e) => setCollege(e.target.value)}
+            placeholder="단과대학명을 입력해주세요"
+            className={inputStyle}
+          />
         </div>
       );
     }
@@ -26,18 +56,26 @@ export default function MakeWorkspacePage() {
     if (selectedLevel === '학부/학과 학생회') {
       return (
         <div className="flex flex-col">
-            <div className= "flex flex-col mt-[12px]">
-                <div className="self-stretch justify-start text-neutral-500 text-xs font-bold ">단과대학</div>
-                <div className={baseStyle}>
-                단과대학 이름 입력 필드
-                </div>
-            </div>
-            <div className= "flex flex-col mt-[12px]">
-                <div className="self-stretch justify-start text-neutral-500 text-xs font-bold ">학부/학과</div>
-                <div className={baseStyle}>
-                학부/학과 입력 필드
-                </div>
-            </div>
+          <div className="flex flex-col mt-[12px]">
+            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">단과대학</div>
+            <input
+              type="text"
+              value={college}
+              onChange={(e) => setCollege(e.target.value)}
+              placeholder="단과대학명을 입력해주세요"
+              className={inputStyle}
+            />
+          </div>
+          <div className="flex flex-col mt-[12px]">
+            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">학부/학과</div>
+            <input
+              type="text"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              placeholder="학부/학과명을 입력해주세요"
+              className={inputStyle}
+            />
+          </div>
         </div>
       );
     }
@@ -45,24 +83,36 @@ export default function MakeWorkspacePage() {
     if (selectedLevel === '전공 학생회') {
       return (
         <div className="flex flex-col">
-            <div className= "flex flex-col mt-[12px]">
-                <div className="self-stretch justify-start text-neutral-500 text-xs font-bold ">단과대학</div>
-                <div className={baseStyle}>
-                단과대학 이름 입력 필드
-                </div>
-            </div>
-            <div className= "flex flex-col mt-[12px]">
-                <div className="self-stretch justify-start text-neutral-500 text-xs font-bold ">학부/학과</div>
-                <div className={baseStyle}>
-                학부/학과 이름 입력 필드
-                </div>
-            </div>
-            <div className= "flex flex-col mt-[12px]">
-                <div className="self-stretch justify-start text-neutral-500 text-xs font-bold ">전공</div>
-                <div className={baseStyle}>
-                전공 이름 입력 필드
-                </div>
-            </div>
+          <div className="flex flex-col mt-[12px]">
+            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">단과대학</div>
+            <input
+              type="text"
+              value={college}
+              onChange={(e) => setCollege(e.target.value)}
+              placeholder="단과대학명을 입력해주세요"
+              className={inputStyle}
+            />
+          </div>
+          <div className="flex flex-col mt-[12px]">
+            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">학부/학과</div>
+            <input
+              type="text"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              placeholder="학부/학과명을 입력해주세요"
+              className={inputStyle}
+            />
+          </div>
+          <div className="flex flex-col mt-[12px]">
+            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">전공</div>
+            <input
+              type="text"
+              value={major}
+              onChange={(e) => setMajor(e.target.value)}
+              placeholder="전공명을 입력해주세요"
+              className={inputStyle}
+            />
+          </div>
         </div>
       );
     }
@@ -80,7 +130,12 @@ export default function MakeWorkspacePage() {
 
         <div className="mt-[32px] text-neutral-500 text-xs font-bold">대학교</div>
         <div className="mt-[8px] w-[656px] h-11 px-4 py-3 bg-white rounded-xl outline outline-1 outline-blue-500 flex items-center text-zinc-600 text-base font-medium">
-          위캠대학교
+          {loading 
+            ? '로딩 중...' 
+            : userInfo?.role === 'UNAUTH' 
+              ? '대표자 회원가입 연결 후 보일 수 있음'
+              : userInfo?.organizationHierarchyList?.[0] || '학교 정보 없음'
+          }
         </div>
 
         {/* 조건부 추가 필드 */}
