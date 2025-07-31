@@ -33,20 +33,34 @@ export const fetchInvitationList = async (councilId) => {
 };
 
 
-export const updateInvitationExpiry = async (councilName, invitationId) => {
+export const updateInvitationExpiry = async (councilName, invitationId, currentExpiredAt) => {
+  console.log('[updateInvitationExpiry] 호출됨:', { councilName, invitationId, currentExpiredAt });
+  
   if (!councilName || !invitationId) throw new Error('councilName 또는 invitationId가 없습니다.');
+  if (!currentExpiredAt) throw new Error('currentExpiredAt이 없습니다.');
 
-  // 현재 시간 +1시간
-  const oneHourLater = new Date(Date.now() + 60 * 60 * 1000);
+  // 기존 만료시간에 +1시간
+  const currentExpiry = new Date(currentExpiredAt);
+  const oneHourLater = new Date(currentExpiry.getTime() + 60 * 60 * 1000);
   const expiredAt = oneHourLater.toISOString().slice(0, 19); // 'yyyy-MM-ddTHH:mm:ss'
 
+  console.log('[updateInvitationExpiry] 계산된 값들:', {
+    currentExpiry: currentExpiry.toISOString(),
+    oneHourLater: oneHourLater.toISOString(),
+    expiredAt
+  });
+
   const url = `/council/${councilName}/invitation/${invitationId}/edit/expiredAt?expiredAt=${expiredAt}`;
+  console.log('[updateInvitationExpiry] API URL:', url);
 
   const res = await adminapi(url, {
     method: 'PUT',
   });
 
-  return await res.json();
+  const result = await res.json();
+  console.log('[updateInvitationExpiry] API 응답:', result);
+  
+  return result;
 };
 
 export const createInvitation = async (councilName, codeType) => {

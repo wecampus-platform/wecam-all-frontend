@@ -14,12 +14,20 @@ export function DefaultSection({ onRefresh, onShowHistory }) {
     const councilList = useAuthStore((state) => state.councilList);
     const currentCouncil = councilList?.[0];
 
-    const handleExtendExpiry = async (invitationId) => {
-        if (!currentCouncil) return;
+    const handleExtendExpiry = async (invitationId, currentExpiredAt) => {
+        console.log('[handleExtendExpiry] 호출됨:', { invitationId, currentExpiredAt, councilName: currentCouncil?.name });
+        
+        if (!currentCouncil) {
+            console.error('[handleExtendExpiry] currentCouncil이 없습니다.');
+            return;
+        }
+        
         try {
-            await updateInvitationExpiry(currentCouncil.name, invitationId);
+            await updateInvitationExpiry(currentCouncil.name, invitationId, currentExpiredAt);
             alert('만료일이 1시간 연장되었습니다.');
+            fetchData(); // 연장 후 목록 새로고침
         } catch (e) {
+            console.error('[handleExtendExpiry] 오류:', e);
             alert(`만료일 연장 실패: ${e.message}`);
         }
     };
@@ -29,14 +37,18 @@ export function DefaultSection({ onRefresh, onShowHistory }) {
 
         try {
             const data = await fetchInvitationList(currentCouncil.id);
+            console.log('[fetchData] API에서 받은 데이터:', data);
+            
             const mapped = data.map((item) => ({
                 id: item.invitationId,
                 code: item.code,
-                type: item.codeType === 'council_member' ? '학생회 용' : '일반 학생용',
+                type: item.codeType === 'council_member' ? '학생회 초대용' : '일반 학생용',
                 makeUser: item.makeUser,
                 requestedAt: item.createdAt?.slice(0, 10) || '-',
                 expiredAt: item.expiredAt?.slice(0, 10) || '-',
+                originalExpiredAt: item.expiredAt, // 원본 만료시간 보존
             }));
+            console.log('[fetchData] 매핑된 데이터:', mapped);
             setRequests(mapped);
         } catch (err) {
             console.error('초대 코드 목록 로딩 실패:', err.message);
@@ -100,7 +112,7 @@ export function DefaultSection({ onRefresh, onShowHistory }) {
                         if (activeTab === 'student') {
                             return req.type === '일반 학생용';
                         } else if (activeTab === 'council') {
-                            return req.type === '학생회 용';
+                            return req.type === '학생회 초대용';
                         }
                         return true; // 기본적으로 모든 항목 표시
                     })
@@ -122,7 +134,7 @@ export function DefaultSection({ onRefresh, onShowHistory }) {
                             >
                                 사용 내역 보기
                             </button>
-                            <button onClick={() => handleExtendExpiry(req.id)}>
+                            <button onClick={() => handleExtendExpiry(req.id, req.originalExpiredAt)}>
                                 <TimerIcon />
                             </button>
                         </div>
