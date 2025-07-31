@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import CustomDropdown from '@/components/dropdown';
 import { WorkspaceInput } from '@/components/input';
 import { fetchUserInfo, createWorkspaceRequest } from '@/app/api-service/mypageApi';
+import { fetchSchoolName } from '@/app/api-service/mypageApi';
 
 export default function MakeWorkspacePage() {
   const router = useRouter();
@@ -14,7 +15,8 @@ export default function MakeWorkspacePage() {
   // 사용자 정보 관련 상태
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+  const [schoolName, setSchoolName] = useState('');
+
   // 추가 필드들 상태
   const [college, setCollege] = useState('');
   const [department, setDepartment] = useState('');
@@ -42,6 +44,19 @@ export default function MakeWorkspacePage() {
     };
 
     getUserInfo();
+  }, []);
+
+  useEffect(() => {
+    const getSchoolName = async () => {
+      try {
+        const name = await fetchSchoolName();
+        setSchoolName(name);
+      } catch (error) {
+        console.error('학교 이름 불러오기 실패:', error);
+      }
+    };
+  
+    getSchoolName();
   }, []);
 
   // 학생회 계층을 organizationType으로 매핑
@@ -231,9 +246,7 @@ export default function MakeWorkspacePage() {
         <div className="mt-[8px] w-[656px] h-11 px-4 py-3 bg-white rounded-xl outline outline-1 outline-blue-500 flex items-center text-zinc-600 text-base font-medium">
           {loading 
             ? '로딩 중...' 
-            : userInfo?.role === 'UNAUTH' 
-              ? '대표자 회원가입 연결 후 보일 수 있음'
-              : userInfo?.organizationHierarchyList?.[0] || '학교 정보 없음'
+              : schoolName || '학교 정보 없음'
           }
         </div>
 

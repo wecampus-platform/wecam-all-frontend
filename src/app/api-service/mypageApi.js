@@ -72,3 +72,14 @@ export async function createWorkspaceRequest(requestData, files) {
     message: message 
   };
 }
+
+export async function fetchSchoolName() {
+  const res = await clientapi('/organization-request/view', {
+    method: 'GET',
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error('학교 이름을 불러오지 못했습니다.');
+  const data = await res.json();
+  return data.result; // 👉 여기서 result만 반환
+  
+}
