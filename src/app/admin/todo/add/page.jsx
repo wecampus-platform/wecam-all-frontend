@@ -1,4 +1,4 @@
-import SideBarPage from '@/app/mypage/side-bar';
+import SideBarPage from '@/components/side-bar';
 import Header from './header'
 import Form from './form'
 

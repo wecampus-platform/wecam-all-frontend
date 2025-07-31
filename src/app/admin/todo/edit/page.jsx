@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import SideBarPage from '@/app/mypage/side-bar';
+import SideBarPage from '@/components/side-bar';
 import Header from '../add/header';
 import Form from '../add/form';
 import { useTaskModalStore } from '@/store/task-modal-store';

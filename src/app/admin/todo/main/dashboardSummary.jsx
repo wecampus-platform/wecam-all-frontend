@@ -6,9 +6,9 @@ import { fetchTodoSummary } from '@/app/api-service/adminTodoApi';
 import { useAuthStore } from '@/store/authStore';
 
 const DashboardSummary = () => {
-  const { accessToken } = useAuthStore();
-  const councilName = '위캠퍼스';
-  const councilId = 2;
+  const { accessToken, councilList } = useAuthStore();
+  const councilName = councilList?.[0]?.name || '위캠퍼스';
+  const councilId = councilList?.[0]?.id || 2;
 
   const [summary, setSummary] = useState(null);
 

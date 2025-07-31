@@ -24,8 +24,8 @@ export default function Header({
   const router = useRouter();
   const { accessToken, role, councilList } = useAuthStore();
 
-  const councilId   = 2;
-  const councilName = '위캠퍼스';
+  const councilId = councilList?.[0]?.id || 2;
+  const councilName = councilList?.[0]?.name || '위캠퍼스';
 
   /* ---------- 공통 payload ---------- */
   const apiData = {
@@ -47,8 +47,8 @@ export default function Header({
         managers: latestTask.assigneeList?.map((a) => a.userId), // ✅ 수정: userId 리스트만 추출
       };
 
-      const councilId = 2;
-      const councilName = "위캠퍼스";
+      const councilId = councilList?.[0]?.id || 2;
+      const councilName = councilList?.[0]?.name || '위캠퍼스';
       console.log("[create]apiData : " , apiData);
       console.log("[create]latestTask : " , latestTask.file);
 
