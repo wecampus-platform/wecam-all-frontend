@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import styles from '@/app/main/dashboardSummary.module.css';
-import { fetchTodoSummary } from '@/app/api-service/api';
+import { fetchTodoSummary } from '@/app/api-service/adminTodoApi';
 import { useAuthStore } from '@/app/store/authStore';
 
 const DashboardSummary = () => {

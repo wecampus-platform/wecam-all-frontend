@@ -3,8 +3,7 @@
 import { useAuthStore } from '@/app/store/authStore';
 import { ProfileIcon, NotificationIcon, CallIcon } from '@/app/components/icons/mainpage-icons';
 import { useRouter } from 'next/navigation';
-import { getCouncilHome } from '@/app/mypage/api';  
-import Chatpage from '@/app/components/chat';
+import { fetchCouncilHome } from '@/app/api-service/mypageApi';  
 
 export default function SideBarPage(){
     const { accessToken, role, councilList } = useAuthStore();
@@ -26,7 +25,7 @@ export default function SideBarPage(){
       try {
         const councilId = councilList[0].id;
         console.log(councilId);
-        const resText = await getCouncilHome(councilId, accessToken);
+        const resText = await fetchCouncilHome(councilId, accessToken);
         console.log('학생회 홈 호출 성공:', resText);
         //useAuthStore.getState().setCurrentCouncil(councilId);
         console.log('useAuthStore:', resText);

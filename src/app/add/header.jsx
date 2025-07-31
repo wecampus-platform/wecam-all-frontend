@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/app/store/authStore';
 import useTaskStore from '@/app/store/task-store';
-import { createTask, updateTask } from '@/app/api-service/api';
+import { createTask, updateTask } from '@/app/api-service/adminTodoApi';
 
 
 /**

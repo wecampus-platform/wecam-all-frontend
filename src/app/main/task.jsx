@@ -1,7 +1,7 @@
 'use client';
 
 import { useTaskModalStore } from '@/app/store/task-modal-store';
-import { getTaskDetail } from '@/app/api-service/api';
+import { getTaskDetail } from '@/app/api-service/adminTodoApi';
 import { useAuthStore } from '@/app/store/authStore';
 import styles from '@/app/components/modals/StatusDropdown.module.css';
 

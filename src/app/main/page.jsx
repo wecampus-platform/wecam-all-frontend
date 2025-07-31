@@ -1,6 +1,6 @@
 'use client';
 
-import { getAllTasks } from '../api-service/api';
+import { getAllTasks } from '../api-service/adminTodoApi';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import SideBarPage from '@/app/components/side-bar';

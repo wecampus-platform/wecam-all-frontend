@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getTaskDetail } from '@/app/api-service/api';
+import { getTaskDetail } from '@/app/api-service/adminTodoApi';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useAuthStore } from '@/app/store/authStore';
