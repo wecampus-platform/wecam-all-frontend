@@ -9,7 +9,7 @@ export default function Page() {
             <main className="flex flex-1 flex-col flex justify-center items-center gap-10 overflow-hidden">
                 <img src="/logo.svg" alt="Logo" />
                 <div>편리한 대학 생활, 위캠퍼스에서 시작하세요!</div>
-                <Link href="/makeworkspace">
+                <Link href="/workspace">
                     <button className="button-common w-[600px]">WeCampus 워크스페이스 생성하기</button>
                 </Link>
                 <div className="flex-col flex justify-center items-center gap-5 mt-8">

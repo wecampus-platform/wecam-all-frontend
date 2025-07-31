@@ -7,15 +7,17 @@ import { useTaskModalStore } from '@/app/store/task-modal-store';
 import { useRouter } from 'next/navigation';
 import useTaskStore from '@/app/store/task-store';
 import { useAuthStore } from '../store/authStore';
+import { updateTaskStatus } from "@/app/api-service/api";
+import { StatusDropdown } from '@/app/components/modals/StatusDropdown'; // ✅ 너가 만든 위치 기준
 
 export default function TaskModal() {
 
   const router = useRouter();
-  const { loadTaskToForm} = useTaskStore();
   const { isOpen, detail, close } = useTaskModalStore();
   const councilName = '위캠퍼스';
   const councilId = 2;
   const {accessToken} = useAuthStore();
+  const { loadTaskToForm, setCurrentEditTodoId } = useTaskStore();
 
   if (!isOpen || !detail) return null;
 
@@ -24,17 +26,31 @@ export default function TaskModal() {
     ? format(new Date(detail.dueAt), 'yyyy년 M월 d일 (EEE)', { locale: ko })
     : '미정';
 
-  const statusMap = {
-    DONE:        { label: '진행 완료', color: 'green' },
-    IN_PROGRESS: { label: '진행 중',   color: 'blue'  },
-    NOT_STARTED: { label: '진행 전',   color: 'zinc'  },
-  };
+
+const statusMap = [
+  { value: 'NOT_STARTED', label: '진행 전', className: 'chipstatus' },
+  { value: 'IN_PROGRESS', label: '진행 중', className: 'chipstatus1' },
+  { value: 'COMPLETED', label: '진행 완료', className: 'chipstatusGreen' }, // 커스텀 추가 가능
+];
+
   const st = statusMap[detail.progressStatus] || statusMap.NOT_STARTED;
+
+  console.log("detail:",detail);
+  console.log(detail.todoId);
+
 
   const handleEdit = () => {
     loadTaskToForm(detail);   // ① 폼 스토어 채우기
+    setCurrentEditTodoId(detail.todoId); //todoId만 저장
     close();                  // ② 현 모달 닫기
-    router.push('/edit');     // ③ /edit 페이지 이동
+    router.push(`/edit`);    // ③ /edit 페이지 이동
+  };
+
+
+  const handleClose = () => {
+    close();
+    console.log("이동했엉");
+    window.location.href = '/main';
   };
 
   const handleDelete = async () => {
@@ -52,7 +68,7 @@ export default function TaskModal() {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-      onClick={close}                        /* 배경 클릭 → 닫기 */
+      onClick={handleClose}                        /* 배경 클릭 → 닫기 */
     >
       <div
         onClick={(e) => e.stopPropagation()} /* 내부 클릭은 유지 */
@@ -76,26 +92,22 @@ export default function TaskModal() {
             </button>
           </div>
         </div>
-
-       
-     
-     
-
         {/* 메타 정보 ------------------------------------------ */}
         <div className="flex flex-col gap-6 ml-[80px] overflow-y-auto">
           <InfoRow label="마감일" value={dueStr} />
 
           <InfoRow
-            label="진행 여부"
-            valueComponent={
-              <span
-                className={`px-2 py-1 rounded-[32px] outline outline-1 outline-${st.color}-500 bg-${st.color}-100 text-${st.color}-500 text-xs font-semibold`}
-              >
-                {st.label}
-              </span>
-            }
-          />
-
+              label="진행 여부"
+              valueComponent={
+                <StatusDropdown
+                  currentStatus={detail.progressStatus}
+                  onUpdate={(newStatus) =>
+                    updateTaskStatus(accessToken, councilName, councilId, detail.todoId, newStatus)
+                    
+                  }
+                />
+              }
+            />
           <UserRow label="담당자" users={detail.managers} fallback="미지정" />
           <InfoRow label="작성자" value={detail.createUserName} />
         </div>

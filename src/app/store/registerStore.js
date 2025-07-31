@@ -9,3 +9,17 @@ export const useRegisterStore = create((set) => ({
   },
   setRegisterInfo: (info) => set({ registerInfo: info }),
 }));
+
+
+export const usePresidentRegisterStore = create((set) => ({
+  presidentRegisterInfo: {
+    school: '',
+    selschool:null,
+    college: '',
+    selcollege:null,
+    department: '',
+    seldepartment:null,
+    studentNumber: null,
+  },
+  setPresidentRegisterInfo: (info) => set({ presidentRegisterInfo: info }),
+}));

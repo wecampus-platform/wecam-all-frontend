@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 import { fetchInvitationList, updateInvitationExpiry } from '../api-service/invitationApi';
 
 
-export function DefaultSection() {
+export function DefaultSection({ onRefresh, onShowHistory }) {
     const [activeTab, setActiveTab] = useState('student');
     const [modalOpen, setModalOpen] = useState(false);
     const [requests, setRequests] = useState([]);
@@ -24,28 +24,35 @@ export function DefaultSection() {
         }
     };
     
+    const fetchData = async () => {
+        if (!currentCouncil) return;
+
+        try {
+            const data = await fetchInvitationList(currentCouncil.id);
+            const mapped = data.map((item) => ({
+                id: item.invitationId,
+                code: item.code,
+                type: item.codeType === 'council_member' ? '학생회 용' : '일반 학생용',
+                makeUser: item.makeUser,
+                requestedAt: item.createdAt?.slice(0, 10) || '-',
+                expiredAt: item.expiredAt?.slice(0, 10) || '-',
+            }));
+            setRequests(mapped);
+        } catch (err) {
+            console.error('초대 코드 목록 로딩 실패:', err.message);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            if (!currentCouncil) return;
-
-            try {
-                const data = await fetchInvitationList(currentCouncil.id);
-                const mapped = data.map((item) => ({
-                    id: item.invitationId,
-                    code: item.code,
-                    type: item.codeType === 'council_member' ? '학생회 용' : '일반 학생용',
-                    makeUser: item.makeUser,
-                    requestedAt: item.createdAt?.slice(0, 10) || '-',
-                    expiredAt: item.expiredAt?.slice(0, 10) || '-',
-                }));
-                setRequests(mapped);
-            } catch (err) {
-                console.error('초대 코드 목록 로딩 실패:', err.message);
-            }
-        };
-
         fetchData();
     }, [currentCouncil]);
+
+    // onRefresh가 변경될 때마다 데이터 다시 가져오기
+    useEffect(() => {
+        if (onRefresh) {
+            fetchData();
+        }
+    }, [onRefresh]);
 
     const tabs = [
         { key: 'student', label: '일반 학생용' },
@@ -88,15 +95,31 @@ export function DefaultSection() {
                 </div>
 
                 {/* 데이터 행 */}
-                {requests.map((req, idx) => (
+                {requests
+                    .filter((req) => {
+                        if (activeTab === 'student') {
+                            return req.type === '일반 학생용';
+                        } else if (activeTab === 'council') {
+                            return req.type === '학생회 용';
+                        }
+                        return true; // 기본적으로 모든 항목 표시
+                    })
+                    .map((req, idx) => (
                     <div key={req.code || idx} className="grid grid-cols-[120px_100px_1fr_100px_150px_150px_5px] items-center px-4 py-5 bg-cream my-2 rounded">
                         <div className="font-medium text-xl text-black">{req.code}</div>
                         <div className="text-sm text-gray8">{req.type}</div>
                         <div className="truncate">{req.makeUser}</div>
                         <div className="text-sm">{req.requestedAt}</div>
-                        <div className="text-sm">{req.expiredAt}</div>
+                        <div className={`text-sm ${
+                            req.expiredAt === new Date().toISOString().slice(0, 10) 
+                                ? 'text-[rgba(243,79,79,1)]' 
+                                : ''
+                        }`}>{req.expiredAt}</div>
                         <div className="flex gap-x-2 justify-end">
-                            <button className="border border-gray8 rounded px-2 py-1 text-sm text-gray8 bg-white">
+                            <button 
+                                className="border border-gray8 rounded px-2 py-1 text-sm text-gray8 bg-white"
+                                onClick={() => onShowHistory(req)}
+                            >
                                 사용 내역 보기
                             </button>
                             <button onClick={() => handleExtendExpiry(req.id)}>

@@ -5,11 +5,19 @@ const useTaskStore = create((set) => ({
   /* ====== 새 할 일 / 수정 할 일 폼 ====== */
   newTask: {
     title: '',
-    assignee: '',
     description: '',
     deadline: null,
-    file: null,
+    file: '',
+    assigneeList: [],
   },
+
+
+  currentEditTodoId: null, // 수정할 todoId 저장용
+
+  setCurrentEditTodoId: (id) => set({ currentEditTodoId: id }),
+
+
+  setNewTaskAll: (task) => set(() => ({ newTask: task })),
 
   /* ① 단일 필드 변경 */
   setNewTask: (key, value) =>
@@ -20,7 +28,7 @@ const useTaskStore = create((set) => ({
     set(() => ({
       newTask: {
         title: detail.title,
-        assignee: detail.managers?.[0]?.userName || '',
+        assigneeList: detail.managers || [],
         description: detail.content,
         // 문자 → Date 객체 변환 (DatePicker용)
         deadline: detail.dueAt ? new Date(detail.dueAt) : null,

@@ -32,25 +32,28 @@ export default function Header({
     title: newTask.title,
     content: newTask.description,
     dueAt: newTask.deadline,
-    managers: [newTask.assignee],
+    managers: newTask.assigneeList?.map((a) => a.userId), // ✅ 수정: userId 리스트만 추출
   };
 
   /* ---------- 제출 ---------- */
   const handleSubmit = async () => {
     try {
+      const latestTask = useTaskStore.getState().newTask; // ✅ 최신 상태 직접 조회
+
       const apiData = {
-        title: newTask.title,
-        content: newTask.description,
-        dueAt: newTask.deadline,
-        managers: [newTask.assignee], // 배열이면 여기 수정
+        title: latestTask.title,
+        content: latestTask.description,
+        dueAt: latestTask.deadline,
+        managers: latestTask.assigneeList?.map((a) => a.userId), // ✅ 수정: userId 리스트만 추출
       };
 
       const councilId = 2;
       const councilName = "위캠퍼스";
-      
+      console.log("[create]apiData : " , apiData);
+      console.log("[create]latestTask : " , latestTask.file);
 
       if (mode === 'create') {
-        const created = await createTask(accessToken,councilId, councilName, apiData);
+        const created = await createTask(accessToken,councilId, councilName, apiData,latestTask.file);
         addTask(created);              // 목록에 즉시 추가
       } else {
         if (!todoId) throw new Error('todoId missing for edit');
