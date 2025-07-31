@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/authStore';
 import { fetchInvitationList, updateInvitationExpiry } from '../api-service/invitationApi';
 
 
-export function DefaultSection({ onRefresh }) {
+export function DefaultSection({ onRefresh, onShowHistory }) {
     const [activeTab, setActiveTab] = useState('student');
     const [modalOpen, setModalOpen] = useState(false);
     const [requests, setRequests] = useState([]);
@@ -116,7 +116,10 @@ export function DefaultSection({ onRefresh }) {
                                 : ''
                         }`}>{req.expiredAt}</div>
                         <div className="flex gap-x-2 justify-end">
-                            <button className="border border-gray8 rounded px-2 py-1 text-sm text-gray8 bg-white">
+                            <button 
+                                className="border border-gray8 rounded px-2 py-1 text-sm text-gray8 bg-white"
+                                onClick={onShowHistory}
+                            >
                                 사용 내역 보기
                             </button>
                             <button onClick={() => handleExtendExpiry(req.id)}>

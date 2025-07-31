@@ -6,11 +6,13 @@ import SideBarPage from '@/app/components/side-bar';
 import { Search } from '@/app/components/search';
 import { DefaultSection } from './defaultSection';
 import Modal2 from '../invitation-code/modal2';
+import Modal1 from '../invitation-code/modal1';
 import SuccessModal from '../invitation-code/successModal';
 
 export default function InvitationPage() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [successData, setSuccessData] = useState({});
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -35,7 +37,7 @@ export default function InvitationPage() {
                 </div>
                 {/* 주요 공간 */}
                 <div className="flex bg-white rounded h-screen">
-                    <DefaultSection onRefresh={refreshTrigger} />
+                    <DefaultSection onRefresh={refreshTrigger} onShowHistory={() => setShowHistoryModal(true)} />
                 </div>
             </div>
 
@@ -61,6 +63,18 @@ export default function InvitationPage() {
                     }}
                     {...successData}
                 />
+            )}
+
+            {/* 사용 내역 모달 */}
+            {showHistoryModal && (
+                <div 
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black-90 bg-opacity-80 backdrop-blur-sm"
+                    onClick={() => setShowHistoryModal(false)}
+                >
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <Modal1 onClose={() => setShowHistoryModal(false)} />
+                    </div>
+                </div>
             )}
         </div>
     )
