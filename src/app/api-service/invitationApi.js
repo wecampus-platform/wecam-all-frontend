@@ -95,3 +95,43 @@ export const createInvitation = async (councilName, codeType) => {
     };
   }
 };
+
+// 초대코드 사용이력 조회 API
+const fallbackHistoryExample = [
+  {
+    invitationPkId: 123,
+    usedAtTime: '2025-07-31T07:45:54.420Z',
+    userPkId: 1,
+    userName: '김위캠',
+    userEmail: 'kim@wecam.com',
+  },
+  {
+    invitationPkId: 123,
+    usedAtTime: '2025-07-30T15:30:22.100Z',
+    userPkId: 2,
+    userName: '이학생',
+    userEmail: 'lee@wecam.com',
+  },
+];
+
+export const fetchInvitationHistory = async (councilName, invitationId) => {
+  if (!councilName) throw new Error('councilName이 없습니다.');
+  if (!invitationId) throw new Error('invitationId가 없습니다.');
+
+  try {
+    const res = await adminapi(`/council/${councilName}/invitation/${invitationId}/show/history`, {
+      method: 'GET',
+    });
+
+    const json = await res.json();
+
+    // API 응답 구조에 따라 데이터 반환
+    if (Array.isArray(json.result)) return json.result;
+    if (Array.isArray(json)) return json;
+
+    throw new Error('응답에 배열이 없습니다.');
+  } catch (e) {
+    console.warn('[fetchInvitationHistory] API 실패, 예시 데이터로 대체됨:', e.message);
+    return fallbackHistoryExample;
+  }
+};

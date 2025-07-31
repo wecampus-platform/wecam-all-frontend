@@ -13,6 +13,7 @@ export default function InvitationPage() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showHistoryModal, setShowHistoryModal] = useState(false);
+    const [selectedInvitation, setSelectedInvitation] = useState(null);
     const [successData, setSuccessData] = useState({});
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
@@ -37,7 +38,13 @@ export default function InvitationPage() {
                 </div>
                 {/* 주요 공간 */}
                 <div className="flex bg-white rounded h-screen">
-                    <DefaultSection onRefresh={refreshTrigger} onShowHistory={() => setShowHistoryModal(true)} />
+                    <DefaultSection 
+                        onRefresh={refreshTrigger} 
+                        onShowHistory={(invitation) => {
+                            setSelectedInvitation(invitation);
+                            setShowHistoryModal(true);
+                        }} 
+                    />
                 </div>
             </div>
 
@@ -72,7 +79,10 @@ export default function InvitationPage() {
                     onClick={() => setShowHistoryModal(false)}
                 >
                     <div onClick={(e) => e.stopPropagation()}>
-                        <Modal1 onClose={() => setShowHistoryModal(false)} />
+                        <Modal1 
+                            onClose={() => setShowHistoryModal(false)} 
+                            invitation={selectedInvitation}
+                        />
                     </div>
                 </div>
             )}
