@@ -22,7 +22,7 @@ export default function Form(){
     const [newTask, setNewTask] = useState({
         title: '',
         deadline: null,
-        file: '',
+        file: null,
         description: '',
         assigneeList: [], // ← 이름과 ID 저장
       });
@@ -60,11 +60,17 @@ export default function Form(){
       
             try {
               const members = await fetchCouncilMembers(accessToken, councilName, councilId);
-              const filtered = members.filter((member) => {
+              const filtered = members
+              .filter((member) => {
                 const name = (member.userName || '').toLowerCase();
-                const email = (member.userCouncilRole || '').toLowerCase();
-                return name.includes(keyword) || email.includes(keyword);
+                const role = (member.userCouncilRole || '').toLowerCase();
+                return name.includes(keyword) || role.includes(keyword);
+              })
+              .filter((member) => {
+                // 이미 선택된 사람은 제외
+                return !newTask.assigneeList.some((a) => a.userId === member.userId);
               });
+              
               setSuggestions(filtered);
             } catch (err) {
               console.error('담당자 목록 가져오기 실패', err);
@@ -142,7 +148,7 @@ export default function Form(){
       key={a.userId}
       className="flex items-center gap-1 px-2 py-1 bg-gray-200 rounded-full text-sm text-gray-700"
     >
-      {a.userName} ({a.userCouncilRole})
+      {a.userName}
       <button
         type="button"
         className="ml-1 text-gray-500 hover:text-red-500 text-sm"
@@ -186,20 +192,23 @@ export default function Form(){
 
 
 
-            <div className="self-stretch justify-start text-zinc-600 text-2xl font-semibold ">첨부파일 등록하기</div>
+            <div className="self-stretch justify-start text-zinc-600 text-2xl font-semibold">첨부파일 등록하기</div>
 
-            <div
-            data-click="unclicked"
-            data-input="O"
-            className="w-[1000px] p-4 bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-blue-500 inline-flex justify-start items-start gap-1"
-            >
-                <input
-                    type="text"
-                    placeholder="파일을 등록하세요."
-                    value={newTask.file}
-                    onChange={(e) => setNewTask(prev => ({ ...prev, file: e.target.value }))}
-                    className="w-full text-zinc-800 text-xl font-normal focus:outline-none"
-                />
+            <div className="w-[1000px] p-4 bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-blue-500 inline-flex justify-between items-center">
+              <label htmlFor="file-upload" className="text-zinc-800 text-xl font-normal cursor-pointer">
+                {newTask.file ? newTask.file.name : '파일을 선택하세요.'}
+              </label>
+              <input
+                id="file-upload"
+                type="file"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setNewTask((prev) => ({ ...prev, file }));
+                  }
+                }}
+              />
             </div>
 
             <div className="self-stretch justify-start text-zinc-600 text-2xl font-semibold ">설명 입력하기</div>

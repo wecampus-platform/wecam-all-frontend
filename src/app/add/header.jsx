@@ -49,11 +49,11 @@ export default function Header({
 
       const councilId = 2;
       const councilName = "위캠퍼스";
-      console.log("apiData : " , apiData);
-      console.log("latestTask : " , latestTask);
+      console.log("[create]apiData : " , apiData);
+      console.log("[create]latestTask : " , latestTask.file);
 
       if (mode === 'create') {
-        const created = await createTask(accessToken,councilId, councilName, apiData);
+        const created = await createTask(accessToken,councilId, councilName, apiData,latestTask.file);
         addTask(created);              // 목록에 즉시 추가
       } else {
         if (!todoId) throw new Error('todoId missing for edit');

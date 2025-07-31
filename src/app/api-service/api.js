@@ -6,14 +6,35 @@ export async function createTask(accessToken,councilId, councilName, taskData, f
   const formData = new FormData();
 
   // JSON → Blob
-  const jsonBlob = new Blob([JSON.stringify(taskData)], {
-    type: "application/json",
-  });
-  formData.append("request", jsonBlob);
+  const jsonFile = new File(
+    [JSON.stringify(taskData)],
+    "request.json", // ← 이름 필수!
+    { type: "application/json" }
+  );
+  formData.append("request", jsonFile);
 
-  // 파일 있으면 추가
+  // ✅ 파일이 존재하면 첨부
   if (file) {
-    formData.append("files", file); // name="files"는 백엔드가 요구한 그대로
+    formData.append("files", file); // ← 이거 꼭 필요함
+  }
+
+  const filesEntry = formData.get("files");
+  if (filesEntry instanceof File) {
+    console.log("✅ [files] 파일 이름:", filesEntry.name);
+    console.log("✅ [files] 파일 타입:", filesEntry.type);
+    console.log("✅ [files] 파일 크기:", filesEntry.size, 'bytes');
+  } else {
+    console.warn("⚠️ [files] 항목이 비어있거나 File이 아님:", filesEntry);
+  }
+
+  for (const [key, value] of formData.entries()) {
+    if (value instanceof File) {
+      console.log(`🗂️ [${key}] 파일 이름:`, value.name);
+      console.log(`🗂️ [${key}] 파일 타입:`, value.type);
+      console.log(`🗂️ [${key}] 파일 크기:`, value.size, 'bytes');
+    } else {
+      console.log(`📦 [${key}]`, value);
+    }
   }
 
   const res = await fetch(url, {
