@@ -118,7 +118,7 @@ export function DefaultSection({ onRefresh, onShowHistory }) {
                         <div className="flex gap-x-2 justify-end">
                             <button 
                                 className="border border-gray8 rounded px-2 py-1 text-sm text-gray8 bg-white"
-                                onClick={onShowHistory}
+                                onClick={() => onShowHistory(req)}
                             >
                                 사용 내역 보기
                             </button>
