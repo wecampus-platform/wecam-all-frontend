@@ -3,10 +3,10 @@
 import { useRouter } from 'next/navigation';
 import RegisterForm2 from './registerform2';
 import { registerUser } from '@/app/api-service/registerapi2';
-import { useRegisterStore } from '@/store/registerStore';
+import { usePresidentRegisterStore } from '@/store/registerStore';
 
 export default function RegisterStep2Page() {
-  const { registerInfo } = useRegisterStore();
+  const { registerInfo } = usePresidentRegisterStore();
   const { school, college, department, studentNumber } = registerInfo || {};
   const router = useRouter();
 
