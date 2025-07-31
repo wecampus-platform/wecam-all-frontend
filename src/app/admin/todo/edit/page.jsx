@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import SideBarPage from '@/app/mypage/side-bar';
+import SideBarPage from '@/components/side-bar';
 import Header from '../add/header';
 import Form from '../add/form';
-import { useTaskModalStore } from '@/app/store/task-modal-store';
-import  useTaskStore  from '@/app/store/task-store';
+import { useTaskModalStore } from '@/store/task-modal-store';
+import  useTaskStore  from '@/store/task-store';
 
 export default function EditPage() {
   const detail = useTaskModalStore();

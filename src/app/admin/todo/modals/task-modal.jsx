@@ -3,9 +3,9 @@
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { deleteTask} from '@/app/api-service/adminTodoApi';
-import { useTaskModalStore } from '@/app/store/task-modal-store';
+import { useTaskModalStore } from '@/store/task-modal-store';
 import { useRouter } from 'next/navigation';
-import useTaskStore from '@/app/store/task-store';
+import useTaskStore from '@/store/task-store';
 import { useAuthStore } from '@/store/authStore';
 import { updateTaskStatus } from "@/app/api-service/adminTodoApi";
 import { StatusDropdown } from '@/components/modals/StatusDropdown'; // ✅ 너가 만든 위치 기준
@@ -14,9 +14,9 @@ export default function TaskModal() {
 
   const router = useRouter();
   const { isOpen, detail, close } = useTaskModalStore();
-  const councilName = '위캠퍼스';
-  const councilId = 2;
-  const {accessToken} = useAuthStore();
+  const {accessToken, councilList} = useAuthStore();
+  const councilName = councilList?.[0]?.name || '위캠퍼스';
+  const councilId = councilList?.[0]?.id || 2;
   const { loadTaskToForm, setCurrentEditTodoId } = useTaskStore();
 
   if (!isOpen || !detail) return null;
@@ -43,14 +43,14 @@ const statusMap = [
     loadTaskToForm(detail);   // ① 폼 스토어 채우기
     setCurrentEditTodoId(detail.todoId); //todoId만 저장
     close();                  // ② 현 모달 닫기
-    router.push(`/edit`);    // ③ /edit 페이지 이동
+    router.push(`/admin/todo/edit`);    // ③ /edit 페이지 이동
   };
 
 
   const handleClose = () => {
     close();
     console.log("이동했엉");
-    window.location.href = '/main';
+    window.location.href = '/admin/todo/main';
   };
 
   const handleDelete = async () => {
@@ -58,7 +58,7 @@ const statusMap = [
     try {
       await deleteTask(accessToken,councilName, detail.todoId, councilId);
       close();
-      window.location.href = '/main';
+      window.location.href = '/admin/todo/main';
     } catch (err) {
       alert(err.message);
     }

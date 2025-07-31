@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
-import useTaskStore from '@/app/store/task-store';
+import useTaskStore from '@/store/task-store';
 import { createTask, updateTask } from '@/app/api-service/adminTodoApi';
 
 
@@ -24,8 +24,8 @@ export default function Header({
   const router = useRouter();
   const { accessToken, role, councilList } = useAuthStore();
 
-  const councilId   = 2;
-  const councilName = '위캠퍼스';
+  const councilId = councilList?.[0]?.id || 2;
+  const councilName = councilList?.[0]?.name || '위캠퍼스';
 
   /* ---------- 공통 payload ---------- */
   const apiData = {
@@ -47,8 +47,8 @@ export default function Header({
         managers: latestTask.assigneeList?.map((a) => a.userId), // ✅ 수정: userId 리스트만 추출
       };
 
-      const councilId = 2;
-      const councilName = "위캠퍼스";
+      const councilId = councilList?.[0]?.id || 2;
+      const councilName = councilList?.[0]?.name || '위캠퍼스';
       console.log("[create]apiData : " , apiData);
       console.log("[create]latestTask : " , latestTask.file);
 
@@ -59,7 +59,7 @@ export default function Header({
         if (!todoId) throw new Error('todoId missing for edit');
         await updateTask(accessToken,councilId, councilName, todoId, apiData);
       }
-      router.push('/main');
+      router.push('/admin/todo/main');
       router.refresh();                // 메인 새로고침
     } catch (err) {
       console.error(err);

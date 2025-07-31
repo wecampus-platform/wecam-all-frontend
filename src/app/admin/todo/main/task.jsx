@@ -1,14 +1,14 @@
 'use client';
 
-import { useTaskModalStore } from '@/app/store/task-modal-store';
+import { useTaskModalStore } from '@/store/task-modal-store';
 import { getTaskDetail } from '@/app/api-service/adminTodoApi';
 import { useAuthStore } from '@/store/authStore';
 import styles from '@/components/modals/StatusDropdown.module.css';
 
 export default function Task({ task }) {
   const openModal = useTaskModalStore((s) => s.open);
-  const councilId = 2;
-  const {accessToken} = useAuthStore();
+  const {accessToken, councilList} = useAuthStore();
+  const councilId = councilList?.[0]?.id || 2;
 
   const statusClassMap = {
     NOT_STARTED: 'chipstatus',
@@ -18,7 +18,7 @@ export default function Task({ task }) {
   
   /** 카드 클릭 → 상세 페이지 이동 ------------------------------ */
   const handleClick = async () => {
-    const detail = await getTaskDetail(accessToken,'위캠퍼스', task.todoId, councilId);
+    const detail = await getTaskDetail(accessToken, councilList?.[0]?.name || '위캠퍼스', task.todoId, councilId);
 
     // ② 스토어에 저장 + 모달 열기
     openModal(detail);

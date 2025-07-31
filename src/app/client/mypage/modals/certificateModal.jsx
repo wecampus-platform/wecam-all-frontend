@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import ModalLayout from './modalLayout';
 import { PaperIcon } from "@/components/icons/affiliationIcons";
 import { requestCurrentStudentAffiliation } from '@/app/api-service/studentAffiliationApi';
-import { Input } from '@/components/search';
+import { Input } from '@/components/input';
 
 export function CertificateModal({ onClose, onBack }) {
     const [file, setFile] = useState(null);

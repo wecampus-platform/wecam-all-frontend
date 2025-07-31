@@ -1,12 +1,7 @@
-'use client';
-
-import { SearchIcon } from './icons/serach-icon';
-
-//search input (icon)
-export function Search({
+//search input (no icon)
+export function Input({
   value = '',
   onChange = () => {},
-  onSearchClick = () => {},
   placeholder = '',
   disabled = false,
 }) {
@@ -21,9 +16,6 @@ export function Search({
           disabled={disabled}
           className="flex-1 bg-transparent outline-none"
         />
-        <button type="button" onClick={onSearchClick} disabled={disabled} className="cursor-pointer">
-          <SearchIcon className="w-6 h-6 shrink-0 text-gray3" />
-        </button>
       </div>
     </div>
   );

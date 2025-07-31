@@ -64,7 +64,7 @@ export default function SideBarPage() {
                         <div
                             data-hover="unhovered"
                             className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer hover:bg-gray-100"
-                            onClick={() => router.push('/main')}
+                            onClick={() => router.push('/admin/todo/main')}
                         >
                             <div className="text-center justify-start text-zinc-600 text-xl font-semibold">
                                 할 일 관리
@@ -74,7 +74,7 @@ export default function SideBarPage() {
                         <div
                             data-hover="unhovered"
                             className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer hover:bg-gray-100"
-                            onClick={() => router.push('/councilaffiliation')}
+                            onClick={() => router.push('/admin/council-affiliation')}
                         >
                             <div className="text-center justify-start text-zinc-600 text-xl font-semibold">
                                 소속 인증 관리
@@ -88,7 +88,7 @@ export default function SideBarPage() {
                             <div className="text-center justify-start text-zinc-600 text-xl font-semibold">구성원 관리</div>
                         </div>
 
-                        <Link href="/invitation">
+                        <Link href="/admin/invitation">
                             <div className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 transition-colors duration-300 ease-in-out hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
                                 <div className="text-center justify-start text-zinc-600 text-xl font-semibold">초대코드 생성</div>
                             </div>

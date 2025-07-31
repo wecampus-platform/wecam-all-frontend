@@ -3,7 +3,7 @@
 import { useState, forwardRef,useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import useTaskStore from '@/app/store/task-store'
+import useTaskStore from '@/store/task-store'
 
 
 import { fetchCouncilMembers } from '@/app/api-service/adminTodoApi'; // 네가 만든 함수 경로에 맞게 import

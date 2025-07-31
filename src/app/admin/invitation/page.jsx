@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 import SideBarPage from '@/components/side-bar';
 import { Search } from '@/components/search';
 import { DefaultSection } from './defaultSection';
-import codeMakeModal from './modals/codeMakeModal';
-import codeUseHistoryModal from './modals/codeUseHistoryModal';
-import SuccessModal from './modals/codeSuccessModal';
+import CodeMakeModal from './modals/codeMakeModal';
+import CodeUseHistoryModal from './modals/codeUseHistoryModal';
+import CodeSuccessModal from './modals/codeSuccessModal';
 
 export default function InvitationPage() {
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -50,7 +50,7 @@ export default function InvitationPage() {
 
             {/* 초대코드 생성 모달 */}
             {showCreateModal && (
-                <codeMakeModal
+                <CodeMakeModal
                     onClose={() => setShowCreateModal(false)} 
                     onSuccess={(data) => {
                         setShowCreateModal(false);
@@ -62,7 +62,7 @@ export default function InvitationPage() {
 
             {/* 성공 모달 */}
             {showSuccessModal && (
-                <SuccessModal 
+                <CodeSuccessModal 
                     onClose={() => {
                         setShowSuccessModal(false);
                         // 성공 모달 닫을 때 초대코드 목록 새로고침
@@ -79,7 +79,7 @@ export default function InvitationPage() {
                     onClick={() => setShowHistoryModal(false)}
                 >
                     <div onClick={(e) => e.stopPropagation()}>
-                        <codeUseHistoryModal
+                        <CodeUseHistoryModal
                             onClose={() => setShowHistoryModal(false)} 
                             invitation={selectedInvitation}
                         />
