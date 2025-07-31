@@ -1,9 +1,12 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter,useSearchParams } from 'next/navigation';
 
 export default function RegisterSuccess() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect') || '/';
+  console.log("rediirect",redirect);
 
   return (
     <div className="w-full relative bg-whitesmoke h-[1080px] overflow-hidden text-center text-[28px] text-darkslategray font-pretendard">
@@ -14,8 +17,8 @@ export default function RegisterSuccess() {
         </div>
         <button
           className="w-[376px] button-common"
-          onClick={() => router.push('/login')}
-        >
+          onClick={() => router.push(`/login?redirect=${encodeURIComponent(redirect)}`)}
+          >
           <div className="relative font-semibold">로그인 페이지로 이동하기</div>
         </button>
       </div>

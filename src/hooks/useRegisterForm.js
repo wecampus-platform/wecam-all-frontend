@@ -69,21 +69,16 @@ export function useRegisterForm() {
   }, [selectedSchool, schoolInput, selectedCollege, collegeInput, selectedDepartment, departmentInput]);
 
   const isFormCompleteForPresident = useCallback(() => {
-    const isSchoolFilled = showManualSchoolInput ? schoolInput.trim() : !!selectedSchool;
-    const isCollegeFilled = showManualCollegeInput ? collegeInput.trim() : !!selectedCollege;
-    const isDepartmentFilled = showManualDepartmentInput ? departmentInput.trim() : !!selectedDepartment;
-    console.log("a"+showManualSchoolInput)
-  
     return (
-      (!!isSchoolFilled) &&
-      (!!isCollegeFilled) &&
-      (!!isDepartmentFilled) &&
-      (!!studentNumberInput.trim()) // ← 이 부분 수정
+      (selectedSchool || schoolInput.trim()) &&
+      (selectedCollege || collegeInput.trim()) &&
+      (selectedDepartment || departmentInput.trim()) &&
+      studentNumberInput.trim()
     );
   }, [
-    showManualSchoolInput, selectedSchool, schoolInput,
-    showManualCollegeInput, selectedCollege, collegeInput,
-    showManualDepartmentInput, selectedDepartment, departmentInput,
+    selectedSchool, schoolInput,
+    selectedCollege, collegeInput,
+    selectedDepartment, departmentInput,
     studentNumberInput
   ]);
 
