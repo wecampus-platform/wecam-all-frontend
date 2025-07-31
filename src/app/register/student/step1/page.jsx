@@ -2,7 +2,7 @@
 
 import RegisterForm from './registerform';
 import { useRouter } from 'next/navigation';
-import { useRegisterStore } from '@/app/store/registerStore'
+import { useRegisterStore } from '@/store/registerStore'
 
 function RegisterPage1() {
   //회원가입 정보 zustand에 저장 -> 다음 페이지 전달

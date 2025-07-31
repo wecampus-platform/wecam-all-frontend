@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { TimerIcon } from "../../../components/icons/timerIcon";
-import { useAuthStore } from '../../../store/authStore';
-import { fetchInvitationList, updateInvitationExpiry } from '../../api-service/invitationApi';
+import { TimerIcon } from "@/components/icons/timerIcon";
+import { useAuthStore } from '@/store/authStore';
+import { fetchInvitationList, updateInvitationExpiry } from '@/app/api-service/invitationApi';
 
 
 export function DefaultSection({ onRefresh, onShowHistory }) {

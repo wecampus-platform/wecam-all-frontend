@@ -6,6 +6,7 @@ import { SharpIcon } from "../../components/icons/affiliationIcons";
 import { Input } from '../../components/search';
 import { useInvitationCode } from '@/app/api-service/invitationApi';
 
+
 export function CodeModal({ onClose, onBack }) {
     const [code, setCode] = useState('');
 

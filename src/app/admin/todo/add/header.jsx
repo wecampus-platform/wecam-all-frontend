@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/app/store/authStore';
+import { useAuthStore } from '@/store/authStore';
 import useTaskStore from '@/app/store/task-store';
 import { createTask, updateTask } from '@/app/api-service/adminTodoApi';
 

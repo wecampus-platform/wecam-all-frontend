@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { createInvitation } from '../api-service/invitationApi';
-import { useAuthStore } from '../store/authStore';
+import { createInvitation } from '@/app/api-service/invitationApi';
+import { useAuthStore } from '@/store/authStore';
 
 const codeMakeModal = ({ onClose, onSuccess }) => {
   const [activeTab, setActiveTab] = useState('general');

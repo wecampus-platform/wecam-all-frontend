@@ -4,7 +4,7 @@ import { CertificateModal } from './certificateModal';
 import { AdmissionModal } from './admissionModal';
 import { CodeModal } from './codeModal';
 import { useState } from 'react';
-import { XIcon } from '@/app/components/icons/check-icons';
+import { XIcon } from '@/components/icons/check-icons';
 
 export function OrganizationModal({ onClose }) {
   const [step, setStep] = useState("default");

@@ -2,8 +2,8 @@
 
 import { useTaskModalStore } from '@/app/store/task-modal-store';
 import { getTaskDetail } from '@/app/api-service/adminTodoApi';
-import { useAuthStore } from '@/app/store/authStore';
-import styles from '@/app/components/modals/StatusDropdown.module.css';
+import { useAuthStore } from '@/store/authStore';
+import styles from '@/components/modals/StatusDropdown.module.css';
 
 export default function Task({ task }) {
   const openModal = useTaskModalStore((s) => s.open);

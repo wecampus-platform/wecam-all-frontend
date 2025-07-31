@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import MyPageCard from './mypagecard';
 import MyPageBox from './mypagebox';
-import { getMyPageBoxes } from '../../../utils/getmypagebox';
-import { clientapi } from '../../../lib/fetchClient';
-import { useAuthStore } from '../../../store/authStore';
+import { getMyPageBoxes } from '@/utils/getmypagebox';
+import { clientapi } from '@/lib/fetchClient';
+import { useAuthStore } from '@/store/authStore';
 import SideBarPage from './side-bar';
-import InputModal from '../../../components/modals/Inputmodal';
+import InputModal from '@/components/modals/Inputmodal';
 import { OrganizationModal } from './modals/organizationModal';
 
 export default function MyPage() {

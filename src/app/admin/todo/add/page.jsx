@@ -1,6 +1,6 @@
 import SideBarPage from '@/app/mypage/side-bar';
-import Header from '@/app/add/header'
-import Form from '@/app/add/form'
+import Header from './header'
+import Form from './form'
 
 
 

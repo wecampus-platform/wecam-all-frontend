@@ -1,12 +1,12 @@
 'use client';
 
-import { getAllTasks } from '../../../api-service/adminTodoApi';
+import { getAllTasks } from '@/app/api-service/adminTodoApi';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import SideBarPage from '@/app/components/side-bar';
-import Task from '@/app/main/task';
-import { useAuthStore } from '@/app/store/authStore';
-import TaskModal from '@/app/modal/task-modal';
+import SideBarPage from '@/components/side-bar';
+import Task from './task';
+import { useAuthStore } from '@/store/authStore';
+import TaskModal from '../modals/task-modal';
 import DashboardSummary from './dashboardSummary';
 
 export default function MainPage() {
