@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import ModalLayout from './modalLayout';
 import { MedalIcon } from "@/components/icons/affiliationIcons";
 import { requestFreshmanAffiliation } from '@/app/api-service/studentAffiliationApi';
-import { Input } from '@/components/search';
+import { Input } from '@/components/input';
 
 export function AdmissionModal({ onClose, onBack }) {
     const [file, setFile] = useState(null);
