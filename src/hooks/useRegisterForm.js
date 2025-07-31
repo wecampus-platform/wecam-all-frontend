@@ -19,6 +19,14 @@ export function useRegisterForm() {
   const [showSchoolList, setShowSchoolList] = useState(false);
   const [showCollegeList, setShowCollegeList] = useState(false);
   const [showDepartmentList, setShowDepartmentList] = useState(false);
+  const [showManualSchoolInput] = useState(false);
+  const [showManualCollegeInput] = useState(false);
+  const [showManualDepartmentInput] = useState(false);
+  const [manualSchool, setManualSchool] = useState('');
+  const [manualCollege, setManualCollege] = useState('');
+  const [manualDepartment, setManualDepartment] = useState('');
+
+  
 
   const fetchSchools = useCallback(async () => {
     if (schoolList.length === 0) {
@@ -30,6 +38,9 @@ export function useRegisterForm() {
   }, [schoolList]);
 
   const fetchColleges = useCallback(async () => {
+    const schoolId = showManualSchoolInput ? null : selectedSchool?.id;
+    if (!schoolId) return; // register _ 학생회장 가입 때문--schoolId가 null이면 API 안 보냄
+
     if (selectedSchool) {
       const res = await publicapi(`/schools/${selectedSchool.id}/organizations?level=1`, '', { method: 'GET' });
       const data = await res.json();
@@ -39,6 +50,8 @@ export function useRegisterForm() {
   }, [selectedSchool]);
 
   const fetchDepartments = useCallback(async () => {
+    const collegeId = showManualCollegeInput ? null : selectedCollege?.id;
+    if (!collegeId) return;
     if (selectedCollege) {
       const res = await publicapi(`/organizations/${selectedCollege.id}/children?level=2`, '', { method: 'GET' });
       const data = await res.json();
@@ -55,6 +68,26 @@ export function useRegisterForm() {
     );
   }, [selectedSchool, schoolInput, selectedCollege, collegeInput, selectedDepartment, departmentInput]);
 
+  const isFormCompleteForPresident = useCallback(() => {
+    const isSchoolFilled = showManualSchoolInput ? schoolInput.trim() : !!selectedSchool;
+    const isCollegeFilled = showManualCollegeInput ? collegeInput.trim() : !!selectedCollege;
+    const isDepartmentFilled = showManualDepartmentInput ? departmentInput.trim() : !!selectedDepartment;
+    console.log("a"+showManualSchoolInput)
+  
+    return (
+      (!!isSchoolFilled) &&
+      (!!isCollegeFilled) &&
+      (!!isDepartmentFilled) &&
+      (!!studentNumberInput.trim()) // ← 이 부분 수정
+    );
+  }, [
+    showManualSchoolInput, selectedSchool, schoolInput,
+    showManualCollegeInput, selectedCollege, collegeInput,
+    showManualDepartmentInput, selectedDepartment, departmentInput,
+    studentNumberInput
+  ]);
+
+  
   return {
     schoolInput, setSchoolInput, schoolList, selectedSchool, setSelectedSchool,
     collegeInput, setCollegeInput, collegeList, selectedCollege, setSelectedCollege,
@@ -62,6 +95,6 @@ export function useRegisterForm() {
     showSchoolList, setShowSchoolList, showCollegeList, setShowCollegeList, showDepartmentList, setShowDepartmentList,
     fetchSchools, fetchColleges, fetchDepartments,
     studentNumberInput, setStudentNumberInput,
-    isFormComplete
+    isFormComplete,isFormCompleteForPresident,
   };
 }
