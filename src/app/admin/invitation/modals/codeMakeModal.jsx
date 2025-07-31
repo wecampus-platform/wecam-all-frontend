@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { createInvitation } from '@/app/api-service/invitationApi';
 import { useAuthStore } from '@/store/authStore';
 
-const codeMakeModal = ({ onClose, onSuccess }) => {
+const CodeMakeModal = ({ onClose, onSuccess }) => {
   const [activeTab, setActiveTab] = useState('general');
   const [checked, setChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -164,4 +164,4 @@ const codeMakeModal = ({ onClose, onSuccess }) => {
   );
 };
 
-export default Modal2;
+export default CodeMakeModal;

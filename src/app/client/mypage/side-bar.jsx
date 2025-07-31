@@ -30,7 +30,7 @@ export default function SideBarPage(){
         //useAuthStore.getState().setCurrentCouncil(councilId);
         console.log('useAuthStore:', resText);
         // 성공 시 관리자 페이지로 이동
-        router.push('/adminmain');
+        router.push('/admin/main');
       } catch (err) {
         console.error('학생회 홈 정보 불러오기 실패:', err);
         alert('학생회 홈 정보를 불러오지 못했습니다.');

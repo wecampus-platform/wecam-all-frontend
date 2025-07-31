@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 
-const codeSuccessModal = ({ onClose, invitationCode = "A3a1bb", codeType = "일반 학생용", expiryDate = "2025.07.15", expiryTime = "23:59:00" }) => {
+const CodeSuccessModal = ({ onClose, invitationCode = "A3a1bb", codeType = "일반 학생용", expiryDate = "2025.07.15", expiryTime = "23:59:00" }) => {
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center bg-black-90 bg-opacity-80 backdrop-blur-sm"
@@ -49,4 +49,4 @@ const codeSuccessModal = ({ onClose, invitationCode = "A3a1bb", codeType = "일�
   );
 };
 
-export default SuccessModal;
+export default CodeSuccessModal;

@@ -25,7 +25,7 @@ const LandingPage = () => {
       {/* 로그인 / 회원가입 버튼 */}
       <div className="absolute top-12 right-[180px] flex gap-6 text-[20px] font-bold">
         <Link href="/login">로그인</Link>
-        <Link href="/register/step1">회원가입</Link>
+        <Link href="/register/student/step1">회원가입</Link>
       </div>
 
       {/* 메인 비주얼 */}
