@@ -17,3 +17,16 @@ export const registerUser = async (data) => {
   });
   return res;
 };
+
+
+
+export const presidentRegisterUser = async (data) => {
+  const res = await publicapi('/auth/sign/leader', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return res;
+};

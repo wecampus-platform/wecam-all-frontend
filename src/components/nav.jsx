@@ -24,7 +24,7 @@ export default function Nav() {
             console.error('[LogOut] 에러 발생:', err);
         } finally {
             clearAuth();
-            router.push('/login');
+            router.push('/');
         }
     };
 

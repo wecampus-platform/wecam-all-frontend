@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { publicapi } from '@/lib/fetchClient';
 import { useAuthStore } from '@/store/authStore';
+import { useSearchParams } from 'next/navigation';
+
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,12 +16,15 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [remember, setRemember] = useState(false);
   const accessToken = useAuthStore((state) => state.accessToken);
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect') || '/';
+
 
   useEffect(() => {
     if (accessToken) {
-      router.replace('/');
+      router.replace(redirect);  // 이미 위에서 const redirect = searchParams.get('redirect') || '/'로 정의했잖아
     }
-  }, [accessToken]);
+  }, [accessToken, redirect]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +50,8 @@ export default function LoginPage() {
         refreshToken: data.refreshToken,
       });
 
-      router.push('/');
+console.log("이거임,",redirect)
+router.push(redirect); // ✅ 로그인 후 목적지로 이동
     } catch (err) {
       console.error(err);
       setError('아이디 또는 비밀번호가 일치하지 않습니다.');

@@ -2,11 +2,11 @@
 
 import { BlueCheckIcon } from '@/components/icons/check-icons';
 import { useRegisterForm2 } from '@/hooks/useRegisterForm2';
-import { useRegisterStore } from '@/store/registerStore';
+import { usePresidentRegisterStore } from '@/store/registerStore';
 
 export default function RegisterForm2({ onSubmit }) {
-  const { registerInfo } = useRegisterStore();
-  const { school, college, department } = registerInfo || {};
+  const { presidentRegisterInfo } = usePresidentRegisterStore();
+  const { school, college, department } = presidentRegisterInfo || {};
   const {
     email, setEmail,
     password, setPassword,
@@ -18,11 +18,12 @@ export default function RegisterForm2({ onSubmit }) {
     phoneMessage, handleCheckPhoneNumber, checkingPhoneNumber,
     emailCodeInputEnabled, phoneCodeInputEnabled,
   } = useRegisterForm2();
+  console.log(presidentRegisterInfo)
 
   return (
     <div className="w-full relative bg-whitesmoke h-[1330px] overflow-hidden text-left text-xs text-dimgray-100 font-pretendard">
       <div className="absolute top-[160px] left-[calc(50%-129px)] text-4xl font-semibold text-darkslategray text-center">
-        회원정보 입력하기
+        대표자 회원정보 입력하기
       </div>
 
       <form
@@ -38,9 +39,9 @@ export default function RegisterForm2({ onSubmit }) {
           <div className="flex flex-col gap-2">
             <b>소속</b>
             <div className="rounded-xl bg-white border border-point flex gap-1 px-4 py-3 text-base text-dimgray-200">
-              <b>{school?.name ?? '학교명'}</b>
-              <b>{college?.name ?? '단과대학'}</b>
-              <b>{department?.name ?? '학과'}</b>
+              <b>{school ?? '학교명'}</b>
+              <b>{college ?? '단과대학'}</b>
+              <b>{department ?? '학과'}</b>
             </div>
           </div>
 
