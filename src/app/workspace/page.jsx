@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react';
-import { GrayCheckIcon, BlueCheckIcon } from '@/app/components/icons/check-icons';
+import { GrayCheckIcon, BlueCheckIcon } from '@/components/icons/check-icons';
 
 
 

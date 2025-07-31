@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import Nav from '@/app/components/nav';
+import Nav from '../components/nav';
 
 export default function Page() {
 
