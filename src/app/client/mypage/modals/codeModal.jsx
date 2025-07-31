@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import ModalLayout from './modalLayout';
-import { SharpIcon } from "../../components/icons/affiliationIcons";
-import { Input } from '../../components/search';
+import { SharpIcon } from "../../../../components/icons/affiliationIcons";
+import { Input } from '../../../../components/search';
 import { useInvitationCode } from '@/app/api-service/invitationApi';
 
 
