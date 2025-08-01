@@ -95,6 +95,12 @@ export async function getAllTasks(accessToken, councilName, councilId, todoType 
 
   const data = await res.json();
   console.log("📦 받은 데이터:", data);
+  
+  // 새로운 API 응답 형식에 맞게 result 배열 반환
+  if (data.isSuccess && data.result) {
+    return data.result;
+  }
+  
   return data;
 }
 
