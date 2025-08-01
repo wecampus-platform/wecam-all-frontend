@@ -9,6 +9,7 @@ import { useAuthStore } from '@/store/authStore';
 import SideBarPage from './side-bar';
 import InputModal from '@/components/modals/Inputmodal';
 import { OrganizationModal } from './modals/organizationModal';
+import {fetchEditUserOrganizationInfo,fetchEditUserInfo} from '@/app/api-service/mypageApi'
 
 export default function MyPage() {
   const [user, setUser] = useState(null);
@@ -19,7 +20,47 @@ export default function MyPage() {
 
   const [modalType, setModalType] = useState(null);
   const [inputValue, setInputValue] = useState('');
+
+
+  const handleSaveOrganizationInfo = async (updatedContents) => {
+    const findValue = (label) =>
+      updatedContents.find((item) => item.subtitle === label)?.body || '';
   
+      const rawStatus = findValue('학적 상태');
+      const academicStatus = rawStatus === '' ? null : rawStatus;
+      
+      const payload = {
+        request: {
+          studentNumber: findValue('학번'),
+          schoolGrade: parseInt(findValue('학년'), 10),
+          academicStatus, // ← 빈 문자열 대신 null
+        },
+      };
+  
+    try {
+      await fetchEditUserOrganizationInfo(payload);
+      alert('저장 완료!');
+    } catch (e) {
+      alert('저장 실패');
+      console.error(e);
+    }
+  };
+
+  const handleSaveNameInfo = async (updatedContents) => {
+    const findValue = (label) =>
+      updatedContents.find((item) => item.subtitle === label)?.body || '';
+  
+    const userName = findValue('이름');
+  
+    try {
+      await fetchEditUserInfo(userName); // ← 이미 만든 API 사용
+      alert('이름 저장 완료!');
+    } catch (e) {
+      alert('이름 저장 실패');
+      console.error(e);
+    }
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -71,7 +112,15 @@ export default function MyPage() {
             contents={box.contents}
             blurred={box.title === '소속 정보' && !user.isAuthentication}
             onVerifyClick={() => setModalType('organization')}
+            onSave={
+              box.title === '소속 정보'
+                ? handleSaveOrganizationInfo
+                : box.title === '기본 정보'
+                ? handleSaveNameInfo
+                : undefined
+            }
           />
+
         ))}
       </div>
 

@@ -80,6 +80,39 @@ export async function fetchSchoolName() {
   });
   if (!res.ok) throw new Error('학교 이름을 불러오지 못했습니다.');
   const data = await res.json();
-  return data.result; // 👉 여기서 result만 반환
+  return data.result; 
   
 }
+
+
+
+// 마이페이지 이름 수정 (이름만 수정하게 둠.)
+export async function fetchEditUserInfo(userName) {
+  const res = await clientapi(`/user/mypage/userInfo/edit?userName=${encodeURIComponent(userName)}`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+  
+  if (!res.ok) throw new Error('이름 변경을 다시 시도해주세요.');
+  const data = await res.json();
+  return data.result;
+}
+
+
+//마이페이지 소속 정보 수정 (학년 , 재학 여부 , studentNumbe)
+export async function fetchEditUserOrganizationInfo({ request }) {
+  const formData = new FormData();
+  formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
+
+  const res = await clientapi('/user/mypage/userOrganization/edit', {
+    method: 'POST',
+    credentials: 'include',
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error('수정 실패');
+  return await res.json();
+}
+
+
+

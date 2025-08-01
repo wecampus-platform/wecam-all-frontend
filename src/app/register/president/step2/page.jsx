@@ -33,7 +33,6 @@ export default function RegisterStep2Page() {
     };
 
     try {
-      console.log(data);
       await presidentRegisterUser(data);
       router.push(`/register/president/success?redirect=${encodeURIComponent(redirect)}`);
     } catch (err) {
