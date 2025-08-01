@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import RegisterForm2 from './registerform2';
 import { registerUser } from '@/app/api-service/register2Api';
-import { useRegisterStore } from '@/app/store/registerStore';
+import { useRegisterStore } from '@/store/registerStore';
 
 export default function RegisterStep2Page() {
   const { registerInfo } = useRegisterStore();
@@ -26,7 +26,7 @@ export default function RegisterStep2Page() {
     try {
       console.log(data);
       await registerUser(data);
-      router.push('/register/success');
+      router.push('/register/student/success');
     } catch (err) {
       alert('회원가입 중 문제가 발생했습니다.');
       console.error(err);
