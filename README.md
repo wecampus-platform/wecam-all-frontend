@@ -25,6 +25,7 @@ NEXT_PUBLIC_API_BASE_URL = ~~~
 ```bash
 git clone https://github.com/wecampus-platform/wecam-all-frontend.git
 cd wecam-frontend
+chmod +x run-frontend.sh
 ./run-frontend.sh
 
 
