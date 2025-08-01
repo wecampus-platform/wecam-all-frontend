@@ -53,7 +53,7 @@ export default function CouncilAffiliationPage() {
                 {/* 주요 공간 */}
                 <div className="flex bg-white rounded h-screen">
                     {/* 그룹 필터 */}
-                    <DefaultSection/>
+                    <DefaultSection authFilterIndex={activeIndex} />
                 </div>
             </div>
         </div>

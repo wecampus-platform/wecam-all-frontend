@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState,useMemo } from 'react';
 import { CheckIcon, XIcon } from "@/components/icons/check-icons";
 import Checkbox from '@/components/checkbox';
 import { useAuthStore } from '@/store/authStore';
@@ -10,23 +10,53 @@ import {
   rejectAffiliationRequest
 } from '@/app/api-service/councilAffiliationApi';
 import AffiliationDetailModal from './modals/affiliationDetailModal';
+import RejectReasonModal from '@/app/admin/council-affiliation/modals/rejectReasonModal';
 
-export function DefaultSection() {
+export function DefaultSection({ authFilterIndex }) {
   const [activeTab, setActiveTab] = useState('match');
   const [checkedList, setCheckedList] = useState([]);
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+
 
   const councilList = useAuthStore((state) => state.councilList);
   const currentCouncil = councilList?.[0];
+
+  const authTypeMap = {
+    0: null, // 전체
+    1: 'CURRENT_STUDENT', //재학
+    2: 'NEW_STUDENT', //신입
+  };
+
+
+  const filteredRequests = useMemo(() => {
+    const ocrFiltered = requests.filter((req) =>
+      activeTab === 'match' ? req.ocrResult === 'SUCCESS' : req.ocrResult === 'UNCLEAR'
+    );
+
+  
+    const targetAuth = authTypeMap[authFilterIndex];
+    return targetAuth
+      ? ocrFiltered.filter((req) => req.authenticationType === targetAuth)
+      : ocrFiltered;
+  }, [requests, activeTab, authFilterIndex]);
+  
+  
+  useEffect(() => {
+    setCheckedList(Array(filteredRequests.length).fill(false));
+  }, [filteredRequests]);
+  
 
   const refreshRequests = async () => {
     if (!currentCouncil) return;
     const data = await fetchAffiliationRequests(currentCouncil.name);
     setRequests(data);
-    setCheckedList(Array(data.length).fill(false));
+    // setCheckedList(Array(data.length).fill(false));
   };
+
+
 
   useEffect(() => {
     refreshRequests();
@@ -39,10 +69,10 @@ export function DefaultSection() {
       await approveAffiliationRequest({
         councilName: currentCouncil.name,
         userId: req.userId ?? req.id,
-        authType: req.authType ?? 'NEW_STUDENT',
+        authType: req.authType ?? 'CURRENT_STUDENT',
       });
 
-      alert(`${req.name}님의 요청이 승인되었습니다.`);
+      alert(`${req.inputUserName}님의 요청이 승인되었습니다.`);
       refreshRequests();
     } catch (e) {
       console.error('승인 실패:', e);
@@ -50,23 +80,27 @@ export function DefaultSection() {
     }
   };
 
-  const handleReject = async (req) => {
+  const handleReject = async (req, reason) => {
     if (!currentCouncil) return;
-
+  
     try {
       await rejectAffiliationRequest({
         councilName: currentCouncil.name,
         userId: req.userId ?? req.id,
-        authType: req.authType ?? 'NEW_STUDENT',
+        authType: req.authType ?? 'CURRENT_STUDENT',
+        reason, // ✅ 여기 반영
       });
 
-      alert(`${req.name}님의 요청이 거절되었습니다.`);
+      console.log("reason:",reason);
+  
+      alert(`${req.inputUserName}님의 요청이 거절되었습니다.`);
       refreshRequests();
     } catch (e) {
       console.error('거절 실패:', e);
       alert('거절 중 오류가 발생했습니다.');
     }
   };
+  
 
   const openModal = (req) => {
     setSelectedRequest(req);
@@ -91,8 +125,10 @@ export function DefaultSection() {
 
   const toggleAll = () => {
     const allChecked = checkedList.every(Boolean);
-    setCheckedList(checkedList.map(() => !allChecked));
+    setCheckedList(Array(checkedList.length).fill(!allChecked));
   };
+
+  
 
   return (
     <div className="w-full flex flex-col items-start justify-start text-left text-base text-gray4 font-pretendard rounded">
@@ -132,13 +168,13 @@ export function DefaultSection() {
         </div>
 
         {/* 실제 목록 */}
-        {requests.map((req, idx) => (
+        {filteredRequests.map((req, idx) => (
           <div key={req.id || idx} className="grid grid-cols-[40px_120px_80px_150px_1fr_240px] items-center px-4 py-3">
             <Checkbox checked={checkedList[idx]} onChange={() => toggleCheck(idx)} variant="filled" />
-            <div className="font-medium">{req.name}</div>
-            <div className="text-sm text-gray-600">{req.studentNumber}</div>
-            <div className="truncate">{req.department}</div>
-            <div className="text-sm text-gray-400">{req.requestedAt}</div>
+            <div className="font-medium">{req.inputUserName}</div>
+            <div className="text-sm text-gray-600">{req.inputEnrollYear}</div>
+            <div className="truncate">{req.inputOrganizationName}</div>
+            <div className="text-sm text-gray-400">{req.requestedAt?.replace('T', ' ') ?? '-'}</div>
             <div className="flex gap-x-2 justify-end">
               <button
                 className="border border-gray-300 rounded px-2 py-1 text-sm cursor-pointer"
@@ -153,11 +189,14 @@ export function DefaultSection() {
                 승인하기
               </button>
               <button
-                onClick={() => handleReject(req)}
-                className="bg-red-500 text-white rounded px-3 py-1 text-sm"
-              >
-                거절하기
-              </button>
+  onClick={() => {
+    setSelectedRequest(req);            // ✅ 어떤 요청인지 지정
+    setRejectModalOpen(true);           // ✅ 모달 열기
+  }}
+  className="bg-red-500 text-white rounded px-3 py-1 text-sm"
+>
+  거절하기
+</button>
             </div>
           </div>
         ))}
@@ -168,6 +207,16 @@ export function DefaultSection() {
         onClose={closeModal}
         request={selectedRequest}
       />
+    <RejectReasonModal
+      isOpen={rejectModalOpen}
+      onClose={() => setRejectModalOpen(false)}
+      onConfirm={(reason) => {
+        if (selectedRequest) {
+          handleReject(selectedRequest, reason); // ✅ req + reason 전달
+        }
+        setRejectModalOpen(false);
+      }}
+    />
     </div>
   );
 }

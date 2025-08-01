@@ -28,10 +28,19 @@ export const requestCurrentStudentAffiliation = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
 
-    return await clientapi('/user/affiliation/currentStudent', {
+    const data = await clientapi('/user/affiliation/currentStudent', {
         method: 'POST',
         body: formData,
     });
+
+    const result = data.json();
+    console.log(result);
+    if (!result.ok) {
+      return false;
+    }
+    else {
+        return true;
+    }
 };
 
 

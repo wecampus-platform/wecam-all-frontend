@@ -11,7 +11,7 @@ function RegisterPage1() {
 
   const handleFormSubmit = (data) => {
     setRegisterInfo(data);
-    router.push('/register/step2');
+    router.push('/register/student/step2');
   };
 
   return (

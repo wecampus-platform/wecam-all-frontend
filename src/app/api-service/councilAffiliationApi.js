@@ -1,12 +1,15 @@
 import { adminapi } from '@/lib/fetchClient';
 
 // 전체 리스트 조회
-export const fetchAffiliationRequests = async (councilId, councilName) => {
+export const fetchAffiliationRequests = async (councilName) => {
   try {
     const res = await adminapi(`/council/${councilName}/affiliation/requests/all`, {
       method: 'GET',
     });
-    return await res.json();
+
+    const result = res.json();
+    console.log("📋 응답 내용:", result);
+    return await result;
   } catch (err) {
     console.error('[fetchAffiliationRequests] 실패:', err);
     return [
@@ -26,19 +29,34 @@ export const approveAffiliationRequest = async ({ councilName, userId, authType 
   try {
     const url = `/council/${councilName}/affiliation/approve?userId=${userId}&authType=${authType}`;
     const res = await adminapi(url, { method: 'POST' });
-    return await res.json();
-  } catch (err) {
+    const result = res.json();
+    console.log("📋 응답 내용:", result);
+    return await result;  } catch (err) {
     console.error('[approveAffiliationRequest] 실패:', err);
     throw err;
   }
 };
 
 // 거절(삭제) 요청
-export const rejectAffiliationRequest = async ({ councilName, userId, authType }) => {
+export const rejectAffiliationRequest = async ({ councilName, userId, authType,reason }) => {
   try {
-    const url = `/council/${councilName}/affiliation/delete?userId=${userId}&authType=${authType}`;
-    const res = await adminapi(url, { method: 'DELETE' });
+    const url = `/council/${councilName}/affiliation/reject?userId=${userId}&authType=${authType}&reason=${reason}`;
+    const res = await adminapi(url, { method: 'PUT' });
     return await res.json();
+  } catch (err) {
+    console.error('[rejectAffiliationRequest] 실패:', err);
+    throw err;
+  }
+};
+
+
+export const detailAffiliationRequest  = async({ councilName, userId, authType }) => {
+  try {
+    const url = `/council/${councilName}/affiliation/requests/show?userId=${userId}&authType=${authType}`;
+    const res = await adminapi(url, { method: 'GET' });
+    const result = res.json();
+    console.log("📋 응답 내용:", result);
+    return await result;
   } catch (err) {
     console.error('[rejectAffiliationRequest] 실패:', err);
     throw err;
