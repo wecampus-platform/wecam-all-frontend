@@ -24,11 +24,8 @@ export default function MainPage() {
   useEffect(() => {
     getAllTasks(accessToken, councilName, councilId, todoType, progressStatus)
       .then(res => {
-        const taskArray = Array.isArray(res)
-          ? res
-          : Array.isArray(res?.data)
-          ? res.data
-          : [];
+        // API가 이미 result 배열을 반환하므로 직접 사용
+        const taskArray = Array.isArray(res) ? res : [];
         setTasks(taskArray);
       })
       .catch(error => {
@@ -41,10 +38,10 @@ export default function MainPage() {
   const goToAddPage = () => router.push('/admin/todo/add');
 
   return (
-    <div className="h-screen w-full bg-[#F5F7FA] flex overflow-hidden">
+    <div className="min-h-screen w-full bg-[#F5F7FA] flex">
       <SideBarPage />
 
-      <div className="mt-[60px] px-[60px] w-full flex flex-col">
+      <div className="mt-[60px] px-[60px] w-full flex flex-col pb-[60px]">
         <div className="flex justify-between items-center w-full mb-[24px]">
           <h1 className="w-40 h-14 text-zinc-800 text-4xl font-bold">
             할 일 관리

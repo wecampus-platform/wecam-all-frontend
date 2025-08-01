@@ -39,14 +39,16 @@ export default function Task({ task }) {
         <h2 className="text-black text-2xl font-bold">{task.title}</h2>
 
         <div className="flex gap-[4px]">
-          {/* 오늘까지 예시 뱃지 */}
-          <div className="px-2 py-1 bg-rose-100 rounded-[32px] outline outline-1 outline-red-500 inline-flex items-center gap-2">
-            <span className="text-red-500 text-xs font-semibold">
-              오늘까지
-            </span>
-          </div>
+          {/* dueToday가 true일 때만 오늘까지 뱃지 표시 */}
+          {task.dueToday && (
+            <div className="px-2 py-1 bg-rose-100 rounded-[32px] outline outline-1 outline-red-500 inline-flex items-center gap-2">
+              <span className="text-red-500 text-xs font-semibold">
+                오늘까지
+              </span>
+            </div>
+          )}
 
-          {/* 진행 전 예시 뱃지 */}
+          {/* 진행 상태 뱃지 */}
           {task.progressStatus && (
           <div className={styles[statusClassMap[task.progressStatus]]}>
             {statusClassMap[task.progressStatus] === 'chipstatus' && '진행 전'}
