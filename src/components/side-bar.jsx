@@ -8,7 +8,7 @@ import { useAuthStore } from '@/store/authStore';
 
 export default function SideBarPage() {
     const router = useRouter();
-    const pathname = usePathname(); // ✅ 현재 경로 확인
+    const pathname = usePathname(); 
 
     const role = useAuthStore((state) => state.role);
     const councilList = useAuthStore((state) => state.councilList);
