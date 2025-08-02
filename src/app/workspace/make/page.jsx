@@ -4,10 +4,18 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomDropdown from '@/components/dropdown';
 import { WorkspaceInput } from '@/components/input';
-import { fetchUserInfo, createWorkspaceRequest } from '@/app/api-service/mypageApi';
-import { fetchSchoolName } from '@/app/api-service/mypageApi';
+import { fetchUserInfo, createWorkspaceRequest,fetchSchoolName } from '@/app/api-service/mypageApi';
+import InputWithStyledList from '@/components/common/selectOrgAndInput/InputWithStyledList';
+import { useRegisterForm } from '@/hooks/useRegisterForm';
 
 export default function MakeWorkspacePage() {
+
+  const {
+    selectedDepartment,selectedCollege,setSelectedDepartment,showDepartmentList,departmentList,setShowDepartmentList,
+    setSelectedCollege,showCollegeList,collegeList,setShowCollegeList,setSelectedSchool,fetchColleges, fetchDepartments
+} = useRegisterForm();
+
+
   const router = useRouter();
   const [value, setValue] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
@@ -16,7 +24,8 @@ export default function MakeWorkspacePage() {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [schoolName, setSchoolName] = useState('');
-
+  const [schoolId, setSchoolId] = useState('');
+  
   // 추가 필드들 상태
   const [college, setCollege] = useState('');
   const [department, setDepartment] = useState('');
@@ -25,9 +34,16 @@ export default function MakeWorkspacePage() {
   // 파일 업로드 관련 상태
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const fileInputRef = useRef(null);
+
   
   // API 요청 상태
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+
+  // "입력용 상태"
+  const [collegeInput, setCollegeInput] = useState('');
+  const [departmentInput, setDepartmentInput] = useState('');
+  const [majorInput, setMajorInput] = useState('');
 
   // 사용자 정보 가져오기
   useEffect(() => {
@@ -49,15 +65,21 @@ export default function MakeWorkspacePage() {
   useEffect(() => {
     const getSchoolName = async () => {
       try {
-        const name = await fetchSchoolName();
-        setSchoolName(name);
+        const res = await fetchSchoolName(); // { school_name, select_school_id }
+        setSchoolName(res.school_name);
+        setSchoolId(res.select_school_id);
+        console.log("선택학교Id:",res.select_school_id);
+        if (res.select_school_id) {
+          setSelectedSchool({ id: res.select_school_id, name: res.school_name });
+        }
       } catch (error) {
-        console.error('학교 이름 불러오기 실패:', error);
+        console.error('학교 정보 불러오기 실패:', error);
       }
     };
   
     getSchoolName();
   }, []);
+  
 
   // 학생회 계층을 organizationType으로 매핑
   const getOrganizationType = (level) => {
@@ -77,28 +99,26 @@ export default function MakeWorkspacePage() {
 
   // 버튼 활성화 조건 체크
   const isFormValid = () => {
-    // API 요청 중이면 비활성화
     if (isSubmitting) return false;
-    
-    // 기본 필수 항목 체크
-    if (!selectedLevel || !value.trim() || uploadedFiles.length === 0) {
-      return false;
-    }
-
-    // 학생회 계층별 추가 필드 체크
+    if (!selectedLevel || uploadedFiles.length === 0) return false;
+  
+    const isCollegeFilled = college.trim() !== '' || selectedCollege !== null;
+    const isDepartmentFilled = department.trim() !== '' || selectedDepartment !== null;
+  
     switch (selectedLevel) {
       case '단과대학 학생회':
-        return college.trim() !== '';
+        return isCollegeFilled;
       case '학부/학과 학생회':
-        return college.trim() !== '' && department.trim() !== '';
+        return isCollegeFilled && isDepartmentFilled;
       case '전공 학생회':
-        return college.trim() !== '' && department.trim() !== '' && major.trim() !== '';
+        return isCollegeFilled && isDepartmentFilled && major.trim() !== '';
       case '총학생회':
-        return true; // 추가 필드 없음
+        return true;
       default:
         return false;
     }
   };
+  
 
   // 워크스페이스 생성 요청
   const handleWorkspaceCreate = async () => {
@@ -109,12 +129,16 @@ export default function MakeWorkspacePage() {
 
       // request 객체 구성
       const requestData = {
-        inputSchoolName: userInfo?.organizationHierarchyList?.[0] || '',
-        inputCollegeName: college.trim(),
-        inputDepartmentName: major.trim() || department.trim(), // 전공이 있으면 전공, 없으면 학부/학과
-        councilName: value.trim(),
-        organizationType: getOrganizationType(selectedLevel)
+        selectSchoolId: schoolId ?? null,
+        selectCollegeOrganizationId: selectedCollege?.id ?? null,
+        selectDepartmentOrganizationId: selectedDepartment?.id ?? null,
+        inputSchoolName: schoolName?.trim() || null,
+        inputCollegeName: college.trim() || null,
+        inputDepartmentName: (major.trim() || department.trim()) || null,
+        councilName: value.trim() || null,
+        organizationType: getOrganizationType(selectedLevel) || null
       };
+      
 
       console.log('워크스페이스 생성 요청 데이터:', requestData);
       console.log('업로드 파일들:', uploadedFiles);
@@ -163,64 +187,93 @@ export default function MakeWorkspacePage() {
     setUploadedFiles(prev => prev.filter(file => file.id !== fileId));
   };
 
+  const renderInputWithLabel = (
+    label,
+    inputValue,
+    setInputValue,
+    selectedValue,
+    setSelectedValue,
+    list,
+    onFocus,
+    showList,
+    setShowList,
+    disabled = false
+  ) => (
+    <div className="flex flex-col mt-[12px]">
+      <div className="self-stretch text-neutral-500 text-xs font-bold">{label}</div>
+      <InputWithStyledList
+        label={`${label}를 입력하세요.`}
+        input={inputValue ? inputValue : selectedValue?.name }
+        setInput={(val) => {
+          setInputValue(val);
+          setSelectedValue(null); // 입력 시 select 초기화
+        }}
+        list={list}
+        onSelect={(item) => {
+          setSelectedValue(item);
+          setInputValue(''); // 선택 시 input 초기화
+        }}
+        onFocus={onFocus}
+        showList={showList}
+        setShowList={setShowList}
+        disabled={disabled}
+      />
+    </div>
+  );
+  
   const renderExtraInputs = () => {
     if (selectedLevel === '단과대학 학생회') {
-      return (
-        <div className="flex flex-col mt-[12px]">
-          <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">단과대학</div>
-          <WorkspaceInput
-            value={college}
-            onChange={(e) => setCollege(e.target.value)}
-            placeholder="단과대학명을 입력해주세요"
-          />
-        </div>
+      return renderInputWithLabel(
+        '단과대학',
+        college, setCollege,
+        selectedCollege, setSelectedCollege,
+        collegeList, fetchColleges,
+        showCollegeList, setShowCollegeList
       );
     }
-
+  
     if (selectedLevel === '학부/학과 학생회') {
       return (
         <div className="flex flex-col">
-          <div className="flex flex-col mt-[12px]">
-            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">단과대학</div>
-            <WorkspaceInput
-              value={college}
-              onChange={(e) => setCollege(e.target.value)}
-              placeholder="단과대학명을 입력해주세요"
-            />
-          </div>
-          <div className="flex flex-col mt-[12px]">
-            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">학부/학과</div>
-            <WorkspaceInput
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-              placeholder="학부/학과명을 입력해주세요"
-            />
-          </div>
+          {renderInputWithLabel(
+            '단과대학',
+            college, setCollege,
+            selectedCollege, setSelectedCollege,
+            collegeList, fetchColleges,
+            showCollegeList, setShowCollegeList
+          )}
+          {renderInputWithLabel(
+            '학부/학과',
+            department, setDepartment,
+            selectedDepartment, setSelectedDepartment,
+            departmentList, fetchDepartments,
+            showDepartmentList, setShowDepartmentList,
+            !college.trim() // disabled
+          )}
         </div>
       );
     }
-
+  
     if (selectedLevel === '전공 학생회') {
       return (
         <div className="flex flex-col">
+          {renderInputWithLabel(
+            '단과대학',
+            college, setCollege,
+            selectedCollege, setSelectedCollege,
+            collegeList, fetchColleges,
+            showCollegeList, setShowCollegeList
+          )}
+          {renderInputWithLabel(
+            '학부/학과',
+            department, setDepartment,
+            selectedDepartment, setSelectedDepartment,
+            departmentList, fetchDepartments,
+            showDepartmentList, setShowDepartmentList,
+            !college.trim()
+          )}
           <div className="flex flex-col mt-[12px]">
-            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">단과대학</div>
-            <WorkspaceInput
-              value={college}
-              onChange={(e) => setCollege(e.target.value)}
-              placeholder="단과대학명을 입력해주세요"
-            />
-          </div>
-          <div className="flex flex-col mt-[12px]">
-            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">학부/학과</div>
-            <WorkspaceInput
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-              placeholder="학부/학과명을 입력해주세요"
-            />
-          </div>
-          <div className="flex flex-col mt-[12px]">
-            <div className="self-stretch justify-start text-neutral-500 text-xs font-bold">전공</div>
+            <div className="self-stretch text-neutral-500 text-xs font-bold">전공</div>
             <WorkspaceInput
               value={major}
               onChange={(e) => setMajor(e.target.value)}
@@ -230,10 +283,11 @@ export default function MakeWorkspacePage() {
         </div>
       );
     }
-
+  
     return null;
   };
 
+  
   return (
     <div className="bg-[#F5F7FA] flex flex-col items-center w-full h-screen">
       <div className="mt-[160px]">
