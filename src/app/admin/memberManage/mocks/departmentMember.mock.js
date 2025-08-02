@@ -1,0 +1,95 @@
+export const leaderMockAffiliation = [
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/1.jpg",
+    name: "김위캠",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "기획부",
+    joinDate: "2025.07.01",
+  },
+];
+
+export const membersMockAffiliation = [
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/2.jpg",
+    name: "김위캠1",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "기획부",
+    joinDate: "2025.07.01",
+  },
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/3.jpg",
+    name: "김위캠2",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "기획부",
+    joinDate: "2025.07.01",
+  },
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/4.jpg",
+    name: "김위캠3",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "기획부",
+    joinDate: "2025.07.01",
+  },
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/5.jpg",
+    name: "김위캠4",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "기획부",
+    joinDate: "2025.07.01",
+  },
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/6.jpg",
+    name: "김위캠5",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "기획부",
+    joinDate: "2025.07.01",
+  },
+];
+export const UnassignedMockAffiliation = [
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/7.jpg",
+    name: "김위캠6",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "",
+    joinDate: "2025.07.01",
+  },
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/8.jpg",
+    name: "김위캠7",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "",
+    joinDate: "2025.07.01",
+  },
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/9.jpg",
+    name: "김위캠8",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "",
+    joinDate: "2025.07.01",
+  },
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/10.jpg",
+    name: "김위캠9",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "",
+    joinDate: "2025.07.01",
+  },
+  {
+    imgSrc: "https://randomuser.me/api/portraits/men/11.jpg",
+    name: "김위캠10",
+    studentId: "2021",
+    major: "정보컴퓨터공학부",
+    department: "",
+    joinDate: "2025.07.01",
+  },
+];
