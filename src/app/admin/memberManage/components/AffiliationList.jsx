@@ -66,7 +66,7 @@ export default function AffiliationList({
           {toggleMemberActionMenu && (
             <MemberActionMenu
               onClose={closeMemberActionMenu}
-              onAssignDepartment={() => console.log("Assign Department")} // 이후 기능 구현 필요
+              onAssignDepartment={openMoveDepartment}
               onMoveDepartment={openMoveDepartment}
               onExpel={() => console.log("Expel Member")} // 이후 기능 구현 필요
             />

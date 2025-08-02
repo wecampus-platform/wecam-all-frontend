@@ -7,7 +7,7 @@ export default function MemberActionMenu({
   onMoveDepartment,
   onExpel,
 }) {
-  const menuRef = (useRef < HTMLDivElement) | (null > null);
+  const menuRef = useRef(null);
   useClickOutside(menuRef, onClose);
 
   return (
@@ -15,9 +15,12 @@ export default function MemberActionMenu({
       ref={menuRef}
       className="w-[100px] bg-white rounded-md  overflow-hidden text-center text-sm border border-gray-200 absolute right-0 top-10 z-10"
     >
-      <div className="text-gray-300 py-3 border-b border-gray-200 cursor-not-allowed select-none">
+      <button
+        onClick={onMoveDepartment}
+        className="w-full py-3 hover:bg-gray-100 border-b border-gray-200 text-gray-800"
+      >
         부서 배치
-      </div>
+      </button>
 
       <button
         onClick={onMoveDepartment}

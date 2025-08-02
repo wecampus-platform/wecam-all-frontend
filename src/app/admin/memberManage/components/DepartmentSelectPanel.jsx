@@ -4,7 +4,7 @@ import { useClickOutside } from "@/app/admin/memberManage/hooks/useOutsideClick"
 import { departmentMock } from "@/app/admin/memberManage/mocks/department.mock";
 
 export default function DepartmentSelectPanel({ onClose, selected, onSelect }) {
-  const menuRef = (useRef < HTMLDivElement) | (null > null);
+  const menuRef = useRef(null);
   useClickOutside(menuRef, onClose);
 
   return (
