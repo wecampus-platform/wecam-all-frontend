@@ -18,10 +18,10 @@ export default function InvitationPage() {
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     return (
-        <div className="h-screen w-full flex">
+        <div className="min-h-screen w-full flex bg-gray1">
             <SideBarPage />
             {/* 가장 오른쪽 공간 */}
-            <div className="px-[76px] w-full flex flex-col gap-8">
+            <div className="px-[76px] pt-[60px] w-full flex flex-col gap-8">
                 <div className="w-full flex flex-col gap-2">
                     <div className="flex flex-row justify-center items-center">
                         <b className="relative text-[40px] font-pretendard text-darkslategray text-left">초대코드 생성 및 관리</b>
@@ -37,7 +37,7 @@ export default function InvitationPage() {
 
                 </div>
                 {/* 주요 공간 */}
-                <div className="flex bg-white rounded h-screen">
+                <div className="flex bg-white rounded min-h-[500px]">
                     <DefaultSection 
                         onRefresh={refreshTrigger} 
                         onShowHistory={(invitation) => {
