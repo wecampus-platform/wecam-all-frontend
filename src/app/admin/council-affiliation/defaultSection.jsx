@@ -133,8 +133,14 @@ export function DefaultSection({ authFilterIndex }) {
   return (
     <div className="w-full flex flex-col items-start justify-start text-left text-base text-gray4 font-pretendard rounded">
       {/* 탭 + 전체 체크 */}
-      <div className="flex flex-row items-center w-full mx-10 my-6">
-        <Checkbox className="mr-10" checked={checkedList.every(Boolean)} onChange={toggleAll} variant="filled" />
+      <div className="flex flex-row items-center w-full mx-10 my-6 justify-between">
+      <div className="flex flex-row items-center">
+      <Checkbox
+        className="mr-10"
+        checked={checkedList.length > 0 && checkedList.every(Boolean)}
+        onChange={toggleAll}
+        variant="filled"
+      />
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
           const IconComponent = tab.icon;
@@ -155,6 +161,20 @@ export function DefaultSection({ authFilterIndex }) {
           );
         })}
       </div>
+
+      {/* ✅ 우측 상단 선택 승인 버튼 */}
+      <button
+        onClick={() => {
+          const selected = filteredRequests.filter((_, i) => checkedList[i]);
+          if (selected.length === 0) return alert('선택된 요청이 없습니다.');
+          selected.forEach(async (req) => await handleApprove(req));
+        }}
+        className="bg-green-500 text-white rounded-lg px-4 py-2 text-base font-semibold"
+      >
+        ✔ 선택한 목록 승인하기
+      </button>
+    </div>
+
 
       {/* 테이블 헤더 */}
       <div className="w-full p-10">

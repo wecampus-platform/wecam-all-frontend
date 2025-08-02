@@ -38,6 +38,7 @@ export function useRegisterForm() {
   }, [schoolList]);
 
   const fetchColleges = useCallback(async () => {
+    console.log("select schoolId:",selectedSchool?.id);
     const schoolId = showManualSchoolInput ? null : selectedSchool?.id;
     if (!schoolId) return; // register _ 학생회장 가입 때문--schoolId가 null이면 API 안 보냄
 
