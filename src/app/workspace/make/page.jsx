@@ -119,7 +119,6 @@ export default function MakeWorkspacePage() {
     }
   };
   
-
   // 워크스페이스 생성 요청
   const handleWorkspaceCreate = async () => {
     if (!isFormValid()) return;
