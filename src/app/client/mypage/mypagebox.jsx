@@ -7,7 +7,15 @@ const academicStatusOptions = [
   { label: '휴학', value: 'ON_LEAVE' },
 ];
 
-const gradeOptions = ['1학년', '2학년', '3학년', '4학년', '5학년'];
+const gradeOptions = [
+  { label: '#학년', value: '0' },
+  { label: '1학년', value: 1 },
+  { label: '2학년', value: 2 },
+  { label: '3학년', value: 3 },
+  { label: '4학년', value: 4 },
+  { label: '5학년', value: 5 },
+];
+
 
 
 export default function MyPageBox({ title, contents, blurred = false, onVerifyClick , onSave }) {
@@ -19,10 +27,12 @@ export default function MyPageBox({ title, contents, blurred = false, onVerifyCl
       newData[index] = { ...newData[index], body: value };
       setLocalData(newData);
     };
-  
+    
     const handleSave = () => {
-      setIsEditing(false);
-      if (onSave) onSave(localData); // 부모로 저장 요청
+      if (onSave) onSave(localData); // 부모로 먼저 저장 요청
+      setTimeout(() => {
+        setIsEditing(false);
+      }, 0); // 상태 업데이트 완료 직후에 렌더링 반영
     };
 
     return (
@@ -84,9 +94,9 @@ export default function MyPageBox({ title, contents, blurred = false, onVerifyCl
                           onChange={(e) => handleChange(idx, e.target.value)}
                           className={commonStyle}
                         >
-                          {gradeOptions.map((g) => (
-                            <option key={g} value={g}>
-                              {g}
+                          {gradeOptions.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
                             </option>
                           ))}
                         </select>
@@ -111,8 +121,12 @@ export default function MyPageBox({ title, contents, blurred = false, onVerifyCl
                         />
                       )
                     ) : (
-                      item.body
-                    )}
+                      item.subtitle === '학적 상태'
+                      ? academicStatusOptions.find((opt) => opt.value === item.body)?.label || item.body
+                      : item.subtitle === '학년'
+                        ? gradeOptions.find((opt) => opt.value === item.body)?.label || item.body
+                        : item.body
+                      )}
                   </div>
                 </div>
               );
