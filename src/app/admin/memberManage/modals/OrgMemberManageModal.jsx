@@ -1,4 +1,4 @@
-import CloseIcon from "@/app/admin/memberManage/icon/CloseIcon";
+import CloseIcon from "@/components/icons/CloseIcon";
 
 export default function OrgMemberManageModal({
   onClose,

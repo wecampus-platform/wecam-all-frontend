@@ -1,7 +1,7 @@
-import DepartmentSelectPanel from "@/app/admin/memberManage/components/DepartmentSelectPanel";
-import MemberActionMenu from "@/app/admin/memberManage/components/MemberActionMenu";
-import OptionsIcon from "@/app/admin/memberManage/icon/OptionsIcon";
-import useToggleMenu from "@/app/admin/memberManage/hooks/useToggleMenu";
+import DepartmentSelectPanel from "@/components/orgMemberManageModal/DepartmentSelectPanel";
+import MemberActionMenu from "@/components/orgMemberManageModal/MemberActionMenu";
+import OptionsIcon from "@/components/icons/OptionsIcon";
+import useToggleMenu from "@/hooks/useToggleMenu";
 import { useState } from "react";
 
 export default function AffiliationList({

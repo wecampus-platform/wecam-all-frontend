@@ -1,4 +1,4 @@
-import { useClickOutside } from "@/app/admin/memberManage/hooks/useOutsideClick";
+import { useClickOutside } from "@/hooks/useOutsideClick";
 import { useEffect, useRef } from "react";
 
 export default function MemberActionMenu({

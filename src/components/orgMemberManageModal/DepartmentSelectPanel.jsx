@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import SelectablePillButton from "./SelectablePillButton";
-import { useClickOutside } from "@/app/admin/memberManage/hooks/useOutsideClick";
-import { departmentMock } from "@/app/admin/memberManage/mocks/department.mock";
+import { useClickOutside } from "@/hooks/useOutsideClick";
+import { departmentMock } from "@/mocks/department.mock";
 
 export default function DepartmentSelectPanel({ onClose, selected, onSelect }) {
   const menuRef = useRef(null);
