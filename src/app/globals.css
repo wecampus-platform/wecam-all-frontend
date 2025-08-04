@@ -8,12 +8,18 @@
 
 @layer base {
   button {
-    @apply cursor-pointer;
+    @apply cursor-pointer transition-transform duration-150;
   }
+
+  button:hover {
+    @apply scale-[1.01] shadow-sm;
+  }
+
   button:disabled {
-    @apply cursor-default
+    @apply cursor-default;
   }
 }
+
 
 @theme inline {
   --color-background: var(--background);
@@ -101,5 +107,3 @@ body {
 .button-very-round.active {
   @apply bg-point text-white;
 }
-
-
