@@ -15,7 +15,6 @@ export default function InputWithStyledList({
   setShowList,
   disabled
 }) {
-    console.log('InputWithStyledList props:', { onFocus, onSelect });
 
     const filteredList = list.filter((item) =>
     item.name.toLowerCase().includes((input || '').toLowerCase())
