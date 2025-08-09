@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchWorkSpaceRequestList } from '@/app/api-service/adminMemberManageApi'; // 네가 만든 API
 
 //기본 레이아웃
 function LowerCouncilRow({ req, showActions = false, onApprove, onReject, onDetail }) {
@@ -46,7 +47,7 @@ function LowerCouncilRow({ req, showActions = false, onApprove, onReject, onDeta
     );
 }
 
-export default function LowerCouncilManagementSection() {
+export default function LowerCouncilManagementSection({ councilId }) {
     const [upperRequests, setUpperRequests] = useState([
         {
             id: 1,
@@ -67,24 +68,39 @@ export default function LowerCouncilManagementSection() {
             requestedAt: '2025.08.01',
         },
     ]);
+    useEffect(() => {
+        if (!councilId) return;
+      
+        (async () => {
+          try {
+            const list = await fetchWorkSpaceRequestList(councilId); // 배열
+            console.log("hi:",list);
 
+            // API 응답 -> Row에서 쓰는 필드로 매핑
+            const mapped = list.map((r) => ({
+              id: r.requestId ?? r.id, // key용
+              councilStatus:
+                r.organizationType === 'COLLEGE'
+                  ? '단과대 학생회'
+                  : r.organizationType === 'DEPARTMENT'
+                  ? '학과 학생회'
+                  : '총학생회',
+              organization: r.collegeName,
+              department: r.departmentName,
+              councilName: r.councilName,
+              leader: r.representativeName,
+              requestedAt: r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '',
+            }));
+      
+            setLowerRequests(mapped);
+          } catch (e) {
+            console.error('lowerRequests 불러오기 실패:', e);
+            setLowerRequests([]); // 실패 시 빈 리스트
+          }
+        })();
+      }, [councilId]);
+      
     const [lowerRequests, setLowerRequests] = useState([
-        {
-            id: 3,
-            councilStatus: '학과 학생회',
-            organization: '정보의생명공학대학',
-            department: '정보컴퓨터공학부',
-            councilName: '세론',
-            leader: '김위캠',
-        },
-        {
-            id: 4,
-            councilStatus: '학과 학생회',
-            organization: '정보의생명공학대학',
-            department: '정보컴퓨터공학부',
-            councilName: '세론',
-            leader: '김위캠',
-        },
     ]);
 
     const handleApprove = (req) => {

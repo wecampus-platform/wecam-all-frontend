@@ -3,7 +3,7 @@
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import NameTag from './nameTag';
 
-export default function CouncilMemberSection({ sections = [], setSections }) {
+export default function CouncilMemberSection({ sections, setSections, onAddSection }) {
     const handleAddSection = () => {
         const newSection = {
             id: `section-${Date.now()}`,
@@ -97,8 +97,8 @@ export default function CouncilMemberSection({ sections = [], setSections }) {
 
             {/* + 버튼 */}
             <button
-                onClick={handleAddSection}
-                className="min-h-[200px] py-8 rounded-[12px] border border-gray9 bg-white text-point text-3xl font-semibold flex items-center justify-center"
+        onClick={onAddSection ? onAddSection : handleAddSectionLocal}
+        className="min-h-[200px] py-8 rounded-[12px] border border-gray9 bg-white text-point text-3xl font-semibold flex items-center justify-center"
             >
                 +
             </button>
