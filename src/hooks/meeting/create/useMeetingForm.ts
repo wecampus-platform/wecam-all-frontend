@@ -42,14 +42,14 @@ export function useMeetingForm() {
   const addParticipant = (name: string[]) => {
     setForm((prev) => ({
       ...prev,
-      participants: [...prev.participants, ...name],
+      participants: [...name],
     }));
   };
 
   const addCategory = (category: string[]) => {
     setForm((prev) => ({
       ...prev,
-      category: [...prev.category, ...category],
+      category: [...category],
     }));
   };
 

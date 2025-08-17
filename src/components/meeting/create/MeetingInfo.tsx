@@ -5,7 +5,6 @@ import MeetingInput from "@/components/meeting/create/entities/MeetingInput";
 import MeetingInputField from "@/components/meeting/create/entities/MeetingInputField";
 import ParticipationChips from "@/components/meeting/create/entities/ParticipationChips";
 import EntityPicker from "@/components/meeting/create/modals/EntityPicker";
-import { Entity } from "@/hooks/meeting/create/useSelectedEntityPicker";
 import {
   CATEGORY_SUGGESTIONS,
   PARTICIPANT_SUGGESTIONS,
@@ -22,7 +21,6 @@ export default function MeetingInfo({
   removeParticipant,
 }) {
   const [openEntityPicker, setOpenEntityPicker] = useState(false);
-
   const [openParticipantPicker, setOpenParticipantPicker] = useState(false);
 
   return (
@@ -45,7 +43,20 @@ export default function MeetingInfo({
         </MeetingInputField>
 
         <MeetingInputField label="참석자">
-          <AddButton onclick={() => setOpenParticipantPicker(true)} />
+          <div className="flex items-center gap-2 ">
+            {form.participants.length !== 0 &&
+              form.participants.map((participant) => (
+                <ParticipationChips
+                  key={participant.id || participant.name || participant}
+                  onClick={() => removeParticipant(participant)}
+                  selected={false}
+                  avatar={participant.avatar || ""}
+                >
+                  {participant.name || participant}
+                </ParticipationChips>
+              ))}
+            <AddButton onclick={() => setOpenParticipantPicker(true)} />
+          </div>
           {openParticipantPicker && (
             <EntityPicker
               suggestions={PARTICIPANT_SUGGESTIONS}
@@ -70,7 +81,19 @@ export default function MeetingInfo({
         </MeetingInputField>
 
         <MeetingInputField label="카테고리">
-          <AddButton onclick={() => setOpenEntityPicker(true)} />
+          <div className="flex items-center gap-2">
+            {form.category.length !== 0 &&
+              form.category.map((category) => (
+                <CategoryChips
+                  key={category.id || category.name || category}
+                  onClick={() => removeCategory(category)}
+                  selected={false}
+                >
+                  {category.name || category}
+                </CategoryChips>
+              ))}
+            <AddButton onclick={() => setOpenEntityPicker(true)} />
+          </div>
           {openEntityPicker && (
             <EntityPicker
               suggestions={CATEGORY_SUGGESTIONS}
