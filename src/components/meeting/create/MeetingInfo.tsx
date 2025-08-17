@@ -2,6 +2,7 @@ import AddButton from "@/components/meeting/create/entities/AddButton";
 import FileUpload from "@/components/meeting/create/entities/FileUpload";
 import MeetingInput from "@/components/meeting/create/entities/MeetingInput";
 import MeetingInputField from "@/components/meeting/create/entities/MeetingInputField";
+import { ChangeEvent } from "react";
 
 export default function MeetingInfo({
   form,
@@ -30,7 +31,7 @@ export default function MeetingInfo({
         </MeetingInputField>
 
         <MeetingInputField label="참석자">
-          <AddButton onclick={addParticipant("홍길동")} />
+          <AddButton onclick={() => addParticipant("홍길동")} />
         </MeetingInputField>
 
         <MeetingInputField label="카테고리">

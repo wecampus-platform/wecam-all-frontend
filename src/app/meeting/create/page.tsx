@@ -1,4 +1,3 @@
-// app/meeting-minutes/new/page.tsx
 "use client";
 
 import MeetingInput from "@/components/meeting/create/entities/MeetingInput";

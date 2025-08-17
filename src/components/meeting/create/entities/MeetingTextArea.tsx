@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export default function MeetingTextArea({ value, onChange }) {
   const template = ({ text, onClick }) => {
     return <button onClick={onClick}>{text}</button>;
