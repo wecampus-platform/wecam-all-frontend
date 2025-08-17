@@ -1,15 +1,13 @@
-import AddButton from "@/components/meeting/create/entities/AddButton";
 import CategoryChips from "@/components/meeting/create/entities/CategoryChips";
 import FileUpload from "@/components/meeting/create/entities/FileUpload";
+import MeetingEntityPickerField from "@/components/meeting/create/entities/MeetingEntityPickerField";
 import MeetingInput from "@/components/meeting/create/entities/MeetingInput";
 import MeetingInputField from "@/components/meeting/create/entities/MeetingInputField";
 import ParticipationChips from "@/components/meeting/create/entities/ParticipationChips";
-import EntityPicker from "@/components/meeting/create/modals/EntityPicker";
 import {
   CATEGORY_SUGGESTIONS,
   PARTICIPANT_SUGGESTIONS,
 } from "@/mocks/meeting/create/meetingInfo";
-import { useState } from "react";
 
 export default function MeetingInfo({
   form,
@@ -20,9 +18,6 @@ export default function MeetingInfo({
   removeCategory,
   removeParticipant,
 }) {
-  const [openEntityPicker, setOpenEntityPicker] = useState(false);
-  const [openParticipantPicker, setOpenParticipantPicker] = useState(false);
-
   return (
     <>
       <div className="space-y-4 mb-6">
@@ -42,78 +37,39 @@ export default function MeetingInfo({
           />
         </MeetingInputField>
 
-        <MeetingInputField label="참석자">
-          <div className="flex items-center gap-2 ">
-            {form.participants.length !== 0 &&
-              form.participants.map((participant) => (
-                <ParticipationChips
-                  key={participant.id || participant.name || participant}
-                  onClick={() => removeParticipant(participant)}
-                  selected={false}
-                  avatar={participant.avatar || ""}
-                >
-                  {participant.name || participant}
-                </ParticipationChips>
-              ))}
-            <AddButton onclick={() => setOpenParticipantPicker(true)} />
-          </div>
-          {openParticipantPicker && (
-            <EntityPicker
-              suggestions={PARTICIPANT_SUGGESTIONS}
-              value={form.participants}
-              onChange={addParticipant}
-              placeholder="아래에서 참석자를 선택하세요"
-              onRemove={removeParticipant}
-              onCloseModal={() => setOpenParticipantPicker(false)}
-              allowCreate={false}
-              renderEntity={(item, selected, onClick) => (
-                <ParticipationChips
-                  key={item.id}
-                  onClick={onClick}
-                  selected={selected}
-                  avatar={item.avatar || ""}
-                >
-                  {item.name}
-                </ParticipationChips>
-              )}
-            />
+        <MeetingEntityPickerField
+          label="참석자"
+          value={form.participants}
+          suggestions={PARTICIPANT_SUGGESTIONS}
+          onAdd={addParticipant}
+          onRemove={removeParticipant}
+          placeholder="아래에서 참석자를 선택하세요"
+          allowCreate={false}
+          renderEntity={(item, selected, onClick) => (
+            <ParticipationChips
+              key={item.id}
+              onClick={onClick}
+              selected={selected}
+              avatar={item.avatar || ""}
+            >
+              {item.name}
+            </ParticipationChips>
           )}
-        </MeetingInputField>
+        />
 
-        <MeetingInputField label="카테고리">
-          <div className="flex items-center gap-2">
-            {form.category.length !== 0 &&
-              form.category.map((category) => (
-                <CategoryChips
-                  key={category.id || category.name || category}
-                  onClick={() => removeCategory(category)}
-                  selected={false}
-                >
-                  {category.name || category}
-                </CategoryChips>
-              ))}
-            <AddButton onclick={() => setOpenEntityPicker(true)} />
-          </div>
-          {openEntityPicker && (
-            <EntityPicker
-              suggestions={CATEGORY_SUGGESTIONS}
-              value={form.category}
-              onChange={addCategory}
-              placeholder="카테고리를 선택하거나, 새 카테고리 이름을 입력하세요."
-              onRemove={removeCategory}
-              onCloseModal={() => setOpenEntityPicker(false)}
-              renderEntity={(item, selected, onClick) => (
-                <CategoryChips
-                  key={item.id}
-                  onClick={onClick}
-                  selected={selected}
-                >
-                  {item.name}
-                </CategoryChips>
-              )}
-            />
+        <MeetingEntityPickerField
+          label="카테고리"
+          value={form.category}
+          suggestions={CATEGORY_SUGGESTIONS}
+          onAdd={addCategory}
+          onRemove={removeCategory}
+          placeholder="카테고리를 선택하거나, 새 카테고리 이름을 입력하세요."
+          renderEntity={(item, selected, onClick) => (
+            <CategoryChips key={item.id} onClick={onClick} selected={selected}>
+              {item.name}
+            </CategoryChips>
           )}
-        </MeetingInputField>
+        />
 
         <MeetingInputField label="첨부파일">
           <FileUpload onFilesSelected={handleAttachmentsChange} />

@@ -17,7 +17,7 @@ export type EntityPickerProps = {
   renderEntity: (
     entity: Entity,
     value: boolean,
-    onRemove?: () => void
+    onClick?: () => void
   ) => React.ReactNode;
 };
 
