@@ -4,7 +4,7 @@ import MeetingInput from "@/components/meeting/create/entities/MeetingInput";
 import MeetingTextArea from "@/components/meeting/create/entities/MeetingTextArea";
 import MeetingHeader from "@/components/meeting/create/MeetingHeader";
 import MeetingInfo from "@/components/meeting/create/MeetingInfo";
-import { useMeetingForm } from "@/hooks/meeting/useMeetingForm";
+import { useMeetingForm } from "@/hooks/meeting/create/useMeetingForm";
 
 export default function MeetingCreatePage() {
   const {

@@ -1,8 +1,8 @@
-import useEntityPicker from "@/hooks/meeting/useEntityPicker";
+import useEntityPicker from "@/hooks/meeting/create/useEntityPicker";
 import useSelectedEntityPicker, {
   Entity,
   uniqNormalizeEntities,
-} from "@/hooks/meeting/useSelectedEntityPicker";
+} from "@/hooks/meeting/create/useSelectedEntityPicker";
 import { useClickOutside } from "@/hooks/useOutsideClick";
 import { useMemo, useRef, useState } from "react";
 
@@ -14,9 +14,9 @@ export type EntityPickerProps = {
   allowCreate?: boolean;
   onRemove: (removed: Entity) => void;
   onCloseModal: () => void;
-  renderEntity?: (
+  renderEntity: (
     entity: Entity,
-    selected: boolean,
+    value: boolean,
     onRemove?: () => void
   ) => React.ReactNode;
 };
@@ -31,8 +31,6 @@ export default function EntityPicker({
   onCloseModal,
   renderEntity,
 }: EntityPickerProps) {
-  const selected = value;
-
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -40,8 +38,8 @@ export default function EntityPicker({
   useClickOutside(wrapperRef, onCloseModal);
 
   const normalizedSelected = useMemo(
-    () => uniqNormalizeEntities(selected),
-    [selected]
+    () => uniqNormalizeEntities(value),
+    [value]
   );
 
   const { filtered } = useSelectedEntityPicker({
@@ -80,7 +78,7 @@ export default function EntityPicker({
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === ",") {
                 e.preventDefault();
-                tryAdd(query);
+                tryAdd({ id: query, name: query });
               }
             }}
             className="w-full rounded-xl px-2 py-2 text-sm text-gray-700 border border-gray-200 

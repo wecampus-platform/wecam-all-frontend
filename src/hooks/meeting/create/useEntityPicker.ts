@@ -1,4 +1,4 @@
-import { Entity } from "@/hooks/meeting/useSelectedEntityPicker";
+import { Entity } from "@/hooks/meeting/create/useSelectedEntityPicker";
 
 export default function useEntityPicker({
   onChange,
