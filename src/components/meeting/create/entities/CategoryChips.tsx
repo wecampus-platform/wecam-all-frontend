@@ -25,10 +25,10 @@ export default function CategoryChips({
         }
       }}
       className={
-        `inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm shadow-sm cursor-pointer select-none ` +
+        `inline-flex items-center gap-2 rounded-full  px-3 py-1 text-sm cursor-pointer select-none ` +
         (selected
-          ? "bg-blue-50 border-blue-200 text-blue-700"
-          : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100") +
+          ? "bg-blue-50  text-blue-700"
+          : "bg-gray-50  text-gray-700 hover:bg-gray-100") +
         (className ? ` ${className}` : "")
       }
     >

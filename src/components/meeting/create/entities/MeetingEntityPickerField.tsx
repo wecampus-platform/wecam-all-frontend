@@ -35,7 +35,7 @@ export default function MeetingEntityPickerField({
     <MeetingInputField label={label}>
       <div className="flex items-center gap-2">
         {value.length > 0 &&
-          value.map((item) => renderEntity(item, false, () => onRemove(item)))}
+          value.map((item) => renderEntity(item, true, () => onRemove(item)))}
         <AddButton onclick={() => setOpen(true)} />
       </div>
 

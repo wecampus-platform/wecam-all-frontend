@@ -14,13 +14,7 @@ export default function ParticipationChips({
   return (
     <div
       className={`
-        inline-flex items-center gap-2 px-3 py-1.5 rounded-full  text-sm
-        ${
-          selected
-            ? "bg-blue-50 border-blue-300"
-            : "bg-gray-50 border-gray-200 cursor-pointer"
-        }
-      `}
+        inline-flex items-center gap-2 px-3 py-1.5 rounded-full  text-sm bg-gray-50 border-gray-200 cursor-pointer `}
       onClick={onClick}
     >
       <img
