@@ -4,16 +4,18 @@ import MeetingInput from "@/components/meeting/create/entities/MeetingInput";
 import MeetingTextArea from "@/components/meeting/create/entities/MeetingTextArea";
 import MeetingHeader from "@/components/meeting/create/MeetingHeader";
 import MeetingInfo from "@/components/meeting/create/MeetingInfo";
-import { useMeetingForm } from "@/hooks/useMeetingForm";
+import { useMeetingForm } from "@/hooks/meeting/useMeetingForm";
 
 export default function MeetingCreatePage() {
   const {
     form,
     handleInputChange,
     addParticipant,
-    removeParticipant,
+    addCategory,
     handleAttachmentsChange,
     resetForm,
+    removeCategory,
+    removeParticipant,
   } = useMeetingForm();
 
   return (
@@ -32,6 +34,8 @@ export default function MeetingCreatePage() {
           handleInputChange={handleInputChange}
           handleAttachmentsChange={handleAttachmentsChange}
           addParticipant={addParticipant}
+          addCategory={addCategory}
+          removeCategory={removeCategory}
           removeParticipant={removeParticipant}
         />
         <MeetingTextArea

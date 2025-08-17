@@ -7,7 +7,7 @@ export interface MeetingFormState {
   date: string;
   location: string;
   participants: string[];
-  category: string;
+  category: string[];
   attachments: File[];
   content: string;
 }
@@ -18,7 +18,7 @@ export function useMeetingForm() {
     date: "",
     location: "",
     participants: [],
-    category: "",
+    category: [],
     attachments: [],
     content: "",
   });
@@ -39,10 +39,24 @@ export function useMeetingForm() {
       updateField(key, e.target.value as any);
     };
 
-  const addParticipant = (name: string) => {
+  const addParticipant = (name: string[]) => {
     setForm((prev) => ({
       ...prev,
-      participants: [...prev.participants, name],
+      participants: [...prev.participants, ...name],
+    }));
+  };
+
+  const addCategory = (category: string[]) => {
+    setForm((prev) => ({
+      ...prev,
+      category: [...prev.category, ...category],
+    }));
+  };
+
+  const removeCategory = (category: string) => {
+    setForm((prev) => ({
+      ...prev,
+      category: prev.category.filter((c) => c !== category),
     }));
   };
 
@@ -65,7 +79,7 @@ export function useMeetingForm() {
       date: "",
       location: "",
       participants: [],
-      category: "",
+      category: [],
       attachments: [],
       content: "",
     });
@@ -75,8 +89,10 @@ export function useMeetingForm() {
     updateField,
     handleInputChange,
     addParticipant,
-    removeParticipant,
+    addCategory,
+    removeCategory,
     handleAttachmentsChange,
     resetForm,
+    removeParticipant,
   };
 }
