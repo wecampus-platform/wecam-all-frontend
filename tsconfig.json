@@ -22,6 +22,20 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/layout.jsx", "src/app/register/student-register/step1/page.jsxge.jsx", "src/app/client/mypage/page.jsx", "src/app/client/mypage/mypagebox.jsx", "src/lib/fetchClient.js", "src/hooks/useRegisterForm2.js", "src/hooks/useRegisterForm.js", "src/app/page.jsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/layout.jsx",
+    "src/app/register/student-register/step1/page.jsxge.jsx",
+    "src/app/client/mypage/page.jsx",
+    "src/app/client/mypage/mypagebox.jsx",
+    "src/lib/fetchClient.js",
+    "src/hooks/useRegisterForm2.js",
+    "src/hooks/useRegisterForm.js",
+    "src/app/page.jsx",
+    "src/components/icons/CloseIcon.jsx"
+  ],
   "exclude": ["node_modules"]
 }
