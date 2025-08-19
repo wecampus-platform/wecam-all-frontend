@@ -75,7 +75,7 @@ export default function MemberManagePage() {
     return (
         <div className="h-screen w-full flex">
             <SideBarPage />
-            <div className="px-[76px] w-full flex flex-col gap-8">
+            <div className="px-[76px] w-full flex flex-col gap-8 bg-cream">
                 <b className="text-[40px] font-pretendard text-darkslategray text-left">
                     구성원 및 조직 관리
                 </b>
