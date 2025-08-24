@@ -16,7 +16,11 @@ export default function OrgMemberManageModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex  justify-start items-center gap-2">
-          <p className="text-black text-3xl font-bold">{title}</p>
+          {typeof title === 'string' ? (
+            <p className="text-black text-3xl font-bold">{title}</p>
+          ) : (
+            title
+          )}
           {icon}
         </div>
         {children}

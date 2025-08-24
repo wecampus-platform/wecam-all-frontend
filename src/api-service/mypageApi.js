@@ -113,6 +113,3 @@ export async function fetchEditUserOrganizationInfo({ request }) {
   if (!res.ok) throw new Error('수정 실패');
   return await res.json();
 }
-
-
-

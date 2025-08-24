@@ -1,6 +1,6 @@
 import AffiliationList, {
   AffiliationListProps,
-} from "@/components/orgMemberManageModal/AffiliationList";
+} from "@/app/admin/member-manage/components/AffiliationList";
 
 export default function OrgMemberSection({ label, membersList }) {
   return (

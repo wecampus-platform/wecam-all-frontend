@@ -1,5 +1,5 @@
-import DepartmentSelectPanel from "@/components/orgMemberManageModal/DepartmentSelectPanel";
-import MemberActionMenu from "@/components/orgMemberManageModal/MemberActionMenu";
+import DepartmentSelectPanel from "./DepartmentSelectPanel";
+import MemberActionMenu from "./MemberActionMenu";
 import OptionsIcon from "@/components/icons/OptionsIcon";
 import useToggleMenu from "@/hooks/useToggleMenu";
 import { useState } from "react";
