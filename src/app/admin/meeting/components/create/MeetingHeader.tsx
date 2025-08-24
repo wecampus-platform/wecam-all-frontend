@@ -1,8 +1,18 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+
 export default function MeetingHeader({ form, resetForm }) {
+  const router = useRouter();
+
   const handleSave = () => {
     console.log(form);
     alert("저장되었습니다!");
     resetForm();
+  };
+
+  const handleExit = () => {
+    router.push('/admin/meeting/main');
   };
 
   return (
@@ -21,7 +31,10 @@ export default function MeetingHeader({ form, resetForm }) {
         >
           저장하기
         </button>
-        <button className="px-4 py-2 bg-white text-gray-400 border border-gray-300 rounded-md">
+        <button 
+          onClick={handleExit}
+          className="px-4 py-2 bg-white text-gray-400 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+        >
           나가기
         </button>
       </div>

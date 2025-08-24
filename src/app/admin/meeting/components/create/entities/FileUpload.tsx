@@ -1,6 +1,6 @@
 "use client";
 
-import AddButton from "@/components/meeting/create/entities/AddButton";
+import AddButton from "@/app/admin/meeting/components/create/entities/AddButton";
 import { useRef, useState } from "react";
 
 interface FileUploadProps {

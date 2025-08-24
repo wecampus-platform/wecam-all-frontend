@@ -1,0 +1,64 @@
+'use client';
+
+import React, { useState } from 'react';
+import SideBarPage from '@/components/side-bar';
+import { Search } from '@/components/search';
+import Link from 'next/link';
+import MeetingFilters from '../components/main/MeetingFilters';
+import MeetingSort from '../components/main/MeetingSort';
+import MeetingList from '../components/main/MeetingList';
+
+export default function MeetingMainPage() {
+    const [inputValue, setInputValue] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedParticipant, setSelectedParticipant] = useState('');
+    const [selectedSort, setSelectedSort] = useState('latest');
+
+    return (
+        <div className="h-screen w-full flex">
+            <SideBarPage />
+            <div className="px-[76px] w-full flex flex-col gap-8 bg-cream">
+                <div className="w-full flex flex-col gap-2">
+                    <div className="flex flex-row justify-center items-center">
+                        <b className="relative text-[40px] font-pretendard text-darkslategray text-left">
+                            회의록 작성 및 관리
+                        </b>
+                        <Link 
+                            href="/admin/meeting/create"
+                            className="button-common ml-auto w-[200px] h-[50px] flex items-center justify-center"
+                        >
+                            + 새 회의록 작성하기
+                        </Link>
+                    </div>
+                </div>
+
+                <div className="flex gap-2">
+                    <Search
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onSearchClick={() => console.log('검색 버튼 눌림:', inputValue)}
+                        placeholder="회의록 제목 또는 회의 일시를 입력하세요."
+                    />
+                </div>
+
+                {/* 필터 및 정렬 */}
+                <div className="flex items-center justify-between">
+                    <MeetingFilters
+                        selectedCategory={selectedCategory}
+                        selectedParticipant={selectedParticipant}
+                        onCategoryChange={setSelectedCategory}
+                        onParticipantChange={setSelectedParticipant}
+                    />
+                    
+                    <MeetingSort
+                        selectedSort={selectedSort}
+                        onSortChange={setSelectedSort}
+                    />
+                </div>
+
+                {/* 회의록 목록 */}
+                <MeetingList meetings={[]} />
+            </div>
+        </div>
+    );
+}

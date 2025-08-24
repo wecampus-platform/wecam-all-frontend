@@ -1,6 +1,6 @@
-import AddButton from "@/components/meeting/create/entities/AddButton";
-import MeetingInputField from "@/components/meeting/create/entities/MeetingInputField";
-import EntityPicker from "@/components/meeting/create/modals/EntityPicker";
+import AddButton from "@/app/admin/meeting/components/create/entities/AddButton";
+import MeetingInputField from "@/app/admin/meeting/components/create/entities/MeetingInputField";
+import EntityPicker from "@/app/admin/meeting/components/create/modals/EntityPicker";
 import { Entity } from "@/hooks/meeting/create/useSelectedEntityPicker";
 import { useState } from "react";
 

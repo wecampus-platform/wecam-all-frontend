@@ -1,9 +1,9 @@
-import CategoryChips from "@/components/meeting/create/entities/CategoryChips";
-import FileUpload from "@/components/meeting/create/entities/FileUpload";
-import MeetingEntityPickerField from "@/components/meeting/create/entities/MeetingEntityPickerField";
-import MeetingInput from "@/components/meeting/create/entities/MeetingInput";
-import MeetingInputField from "@/components/meeting/create/entities/MeetingInputField";
-import ParticipationChips from "@/components/meeting/create/entities/ParticipationChips";
+import CategoryChips from "@/app/admin/meeting/components/create/entities/CategoryChips";
+import FileUpload from "@/app/admin/meeting/components/create/entities/FileUpload";
+import MeetingEntityPickerField from "@/app/admin/meeting/components/create/entities/MeetingEntityPickerField";
+import MeetingInput from "@/app/admin/meeting/components/create/entities/MeetingInput";
+import MeetingInputField from "@/app/admin/meeting/components/create/entities/MeetingInputField";
+import ParticipationChips from "@/app/admin/meeting/components/create/entities/ParticipationChips";
 import {
   CATEGORY_SUGGESTIONS,
   PARTICIPANT_SUGGESTIONS,

@@ -1,9 +1,9 @@
 "use client";
 
-import MeetingInput from "@/components/meeting/create/entities/MeetingInput";
-import MeetingTextArea from "@/components/meeting/create/entities/MeetingTextArea";
-import MeetingHeader from "@/components/meeting/create/MeetingHeader";
-import MeetingInfo from "@/components/meeting/create/MeetingInfo";
+import MeetingInput from "@/app/admin/meeting/components/create/entities/MeetingInput";
+import MeetingTextArea from "@/app/admin/meeting/components/create/entities/MeetingTextArea";
+import MeetingHeader from "@/app/admin/meeting/components/create/MeetingHeader";
+import MeetingInfo from "@/app/admin/meeting/components/create/MeetingInfo";
 import { useMeetingForm } from "@/hooks/meeting/create/useMeetingForm";
 
 export default function MeetingCreatePage() {

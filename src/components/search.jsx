@@ -5,7 +5,7 @@ import { SearchIcon } from './icons/serach-icon';
 //search input (icon)
 export function Search({
   value = '',
-  onChange = () => {},
+  onChange = (e) => {},
   onSearchClick = () => {},
   placeholder = '',
   disabled = false,
