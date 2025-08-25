@@ -4,14 +4,15 @@ import { Droppable, Draggable } from '@hello-pangea/dnd';
 import NameTag from './nameTag';
 import { ArrowRightIcon } from '@/components/icons/arrowRightIcon';
 
-export default function NotPlacedMember({ members }) {
+export default function NotPlacedMember({ members, onSectionClick }) {
     return (
         <Droppable droppableId="notPlaced" direction="horizontal">
             {(provided) => (
                 <div
-                    className="h-[100px] bg-white border border-gray9 rounded-[12px] px-8 flex items-center"
+                    className="h-[100px] bg-white border border-gray9 rounded-[12px] px-8 flex items-center cursor-pointer hover:bg-gray-50 transition-colors"
                     ref={provided.innerRef}
                     {...provided.droppableProps}
+                    onClick={onSectionClick}
                 >
                     <div className="flex items-center w-full justify-between">
                         <div className="flex items-center gap-2">
@@ -19,15 +20,15 @@ export default function NotPlacedMember({ members }) {
                             <div className="text-gray3 text-[16px]">{members.length}명</div>
                         </div>
                         <div className="flex items-center gap-2">
-                            {members.map((m, index) => (
-                                <Draggable key={m.id} draggableId={String(m.id)} index={index}>
+                            {members?.filter(m => m && m.id).map((m, index) => (
+                                <Draggable key={m.id} draggableId={m.id.toString()} index={index}>
                                     {(provided) => (
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
                                         >
-                                            <NameTag name={m.name} />
+                                            <NameTag name={m.name || 'Unknown'} />
                                         </div>
                                     )}
                                 </Draggable>

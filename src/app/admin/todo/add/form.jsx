@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import useTaskStore from '@/store/task-store'
 
 
-import { fetchCouncilMembers } from '@/app/api-service/adminTodoApi'; // 네가 만든 함수 경로에 맞게 import
+import { fetchCouncilMembers } from '@/api-service/adminTodoApi'; // 네가 만든 함수 경로에 맞게 import
 
 
 import { useAuthStore } from '@/store/authStore';

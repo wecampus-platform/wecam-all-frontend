@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import RegisterForm2 from './registerform2';
-import { registerUser } from '@/app/api-service/register2Api';
+import { registerUser } from '@/api-service/register2Api';
 import { useRegisterStore } from '@/store/registerStore';
 
 export default function RegisterStep2Page() {

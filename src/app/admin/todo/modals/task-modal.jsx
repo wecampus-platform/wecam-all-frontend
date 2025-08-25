@@ -2,12 +2,12 @@
 
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { deleteTask} from '@/app/api-service/adminTodoApi';
+import { deleteTask} from '@/api-service/adminTodoApi';
 import { useTaskModalStore } from '@/store/task-modal-store';
 import { useRouter } from 'next/navigation';
 import useTaskStore from '@/store/task-store';
 import { useAuthStore } from '@/store/authStore';
-import { updateTaskStatus } from "@/app/api-service/adminTodoApi";
+import { updateTaskStatus } from "@/api-service/adminTodoApi";
 import { StatusDropdown } from '@/components/modals/StatusDropdown'; // ✅ 너가 만든 위치 기준
 
 export default function TaskModal() {

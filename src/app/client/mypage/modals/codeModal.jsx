@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ModalLayout from './modalLayout';
 import { SharpIcon } from "../../../../components/icons/affiliationIcons";
 import { Input } from '../../../../components/input';
-import { useInvitationCode } from '@/app/api-service/invitationApi';
+import { useInvitationCode } from '@/api-service/invitationApi';
 
 
 export function CodeModal({ onClose, onBack }) {

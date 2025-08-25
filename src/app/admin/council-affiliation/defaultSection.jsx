@@ -8,7 +8,7 @@ import {
   fetchAffiliationRequests,
   approveAffiliationRequest,
   rejectAffiliationRequest
-} from '@/app/api-service/councilAffiliationApi';
+} from '@/api-service/councilAffiliationApi';
 import AffiliationDetailModal from './modals/affiliationDetailModal';
 
 export function DefaultSection() {

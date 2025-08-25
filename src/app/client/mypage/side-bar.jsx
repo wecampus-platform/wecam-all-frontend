@@ -3,7 +3,7 @@
 import { useAuthStore } from '@/store/authStore';
 import { ProfileIcon, NotificationIcon, CallIcon } from '@/components/icons/mainpage-icons';
 import { useRouter } from 'next/navigation';
-import { fetchCouncilHome } from '@/app/api-service/mypageApi';  
+import { fetchCouncilHome } from '@/api-service/mypageApi';  
 
 export default function SideBarPage(){
     const { accessToken, role, councilList } = useAuthStore();

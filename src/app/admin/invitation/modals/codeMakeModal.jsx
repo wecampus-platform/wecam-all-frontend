@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { createInvitation } from '@/app/api-service/invitationApi';
+import { createInvitation } from '@/api-service/invitationApi';
 import { useAuthStore } from '@/store/authStore';
 
 const CodeMakeModal = ({ onClose, onSuccess }) => {

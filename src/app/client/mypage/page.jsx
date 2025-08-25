@@ -9,7 +9,7 @@ import { useAuthStore } from '@/store/authStore';
 import SideBarPage from './side-bar';
 import InputModal from '@/components/modals/Inputmodal';
 import { OrganizationModal } from './modals/organizationModal';
-import {fetchEditUserOrganizationInfo,fetchEditUserInfo} from '@/app/api-service/mypageApi'
+import {fetchEditUserOrganizationInfo,fetchEditUserInfo} from '@/api-service/mypageApi'
 
 export default function MyPage() {
   const [user, setUser] = useState(null);

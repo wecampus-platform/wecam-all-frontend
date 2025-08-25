@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomDropdown from '@/components/dropdown';
 import { WorkspaceInput } from '@/components/input';
-import { fetchUserInfo, createWorkspaceRequest } from '@/app/api-service/mypageApi';
-import { fetchSchoolName } from '@/app/api-service/mypageApi';
+import { fetchUserInfo, createWorkspaceRequest } from '@/api-service/mypageApi';
+import { fetchSchoolName } from '@/api-service/mypageApi';
 
 export default function MakeWorkspacePage() {
   const router = useRouter();
