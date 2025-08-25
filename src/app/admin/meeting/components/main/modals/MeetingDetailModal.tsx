@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-import MeetingInput from '@/app/admin/meeting/components/create/entities/MeetingInput';
-import MeetingTextArea from '@/app/admin/meeting/components/create/entities/MeetingTextArea';
 import ParticipationChips from '@/app/admin/meeting/components/create/entities/ParticipationChips';
 import CategoryChips from '@/app/admin/meeting/components/create/entities/CategoryChips';
 import MeetingInputField from '@/app/admin/meeting/components/create/entities/MeetingInputField';
@@ -70,34 +68,22 @@ export default function MeetingDetailModal({
                 ) : (
                     <div className="flex flex-col gap-[36px]">
                         {/* 제목 */}
-                        <MeetingInput
-                            placeholder="제목을 입력하세요."
-                            value={meeting.title}
-                            onChange={() => {}}
-                            customCSS="w-full text-4xl font-semibold outline-none placeholder-gray-200 bg-gray-50"
-                            disabled={true}
-                        />
+                        <div className="w-full text-4xl font-semibold text-gray-900 cursor-default">
+                            {meeting.title}
+                        </div>
 
                         {/* 회의 정보 */}
                         <div className="space-y-4">
                             <MeetingInputField label="일시">
-                                <MeetingInput
-                                    value={meeting.meetingDateTime.split('T')[0]}
-                                    onChange={() => {}}
-                                    type="date"
-                                    customCSS="w-full text-lg outline-none bg-gray-50 cursor-not-allowed"
-                                    disabled={true}
-                                />
+                                <div className="w-full text-lg text-gray-900 bg-gray-50 px-3 py-2 rounded cursor-default">
+                                    {meeting.meetingDateTime.split('T')[0]}
+                                </div>
                             </MeetingInputField>
 
                             <MeetingInputField label="장소">
-                                <MeetingInput
-                                    placeholder="회의 장소를 입력하세요."
-                                    value={meeting.location}
-                                    onChange={() => {}}
-                                    customCSS="w-full text-lg outline-none bg-gray-50 cursor-not-allowed"
-                                    disabled={true}
-                                />
+                                <div className="w-full text-lg text-gray-900 bg-gray-50 px-3 py-2 rounded cursor-default">
+                                    {meeting.location}
+                                </div>
                             </MeetingInputField>
 
                             <MeetingInputField label="참석자">
@@ -129,11 +115,9 @@ export default function MeetingDetailModal({
                         </div>
 
                         {/* 회의 내용 */}
-                        <MeetingTextArea
-                            value={meeting.content}
-                            onChange={() => {}}
-                            readOnly={true}
-                        />
+                        <div className="w-full text-lg text-gray-900 bg-gray-50 px-3 py-2 rounded min-h-[200px] whitespace-pre-wrap cursor-default">
+                            {meeting.content}
+                        </div>
 
                         {/* 첨부파일 목록 */}
                         {meeting.files && meeting.files.length > 0 && (
