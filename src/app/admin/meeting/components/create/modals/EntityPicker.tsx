@@ -92,7 +92,7 @@ export default function EntityPicker({
             <span className="text-sm text-gray-500">추천 항목이 없습니다.</span>
           ) : (
             filtered.map((item) =>
-              renderEntity(item, false, () => tryAdd(item as any))
+              renderEntity(item, false, () => tryAdd(item))
             )
           )}
         </div>

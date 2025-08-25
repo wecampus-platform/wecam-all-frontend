@@ -21,10 +21,6 @@ export function useRegisterForm() {
   const [showDepartmentList, setShowDepartmentList] = useState(false);
   const [showManualSchoolInput] = useState(false);
   const [showManualCollegeInput] = useState(false);
-  const [showManualDepartmentInput] = useState(false);
-  const [manualSchool, setManualSchool] = useState('');
-  const [manualCollege, setManualCollege] = useState('');
-  const [manualDepartment, setManualDepartment] = useState('');
 
   
 

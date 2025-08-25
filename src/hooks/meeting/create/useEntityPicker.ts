@@ -1,5 +1,15 @@
 import { Entity } from "@/hooks/meeting/create/useSelectedEntityPicker";
 
+interface UseEntityPickerProps {
+  onChange: (next: Entity[]) => void;
+  normalizedSelected: Entity[];
+  suggestions: Entity[];
+  allowCreate?: boolean;
+  setQuery: (query: string) => void;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  onRemove?: (entity: Entity) => void;
+}
+
 export default function useEntityPicker({
   onChange,
   normalizedSelected,
@@ -8,11 +18,7 @@ export default function useEntityPicker({
   setQuery,
   inputRef,
   onRemove,
-}) {
-  const setSelected = (next: string[]) => {
-    onChange(next);
-  };
-
+}: UseEntityPickerProps) {
   const tryAdd = (entity: Entity) => {
     if (normalizedSelected.some((v) => v.id === entity.id)) return;
 
@@ -21,19 +27,18 @@ export default function useEntityPicker({
       if (!existsInSuggestions) return;
     }
 
-    setSelected([...normalizedSelected, entity]);
+    onChange([...normalizedSelected, entity]);
     setQuery("");
     inputRef.current?.focus();
   };
 
   const remove = (entity: Entity) => {
-    setSelected(normalizedSelected.filter((v) => v.id !== entity.id));
+    onChange(normalizedSelected.filter((v) => v.id !== entity.id));
     onRemove?.(entity);
   };
 
   return {
     tryAdd,
     remove,
-    setSelected,
   };
 }

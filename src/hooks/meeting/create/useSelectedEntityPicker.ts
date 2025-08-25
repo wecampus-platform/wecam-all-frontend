@@ -1,10 +1,16 @@
 import { useMemo } from "react";
 
+interface UseSelectedEntityPickerProps {
+  query: string;
+  suggestions: Entity[];
+  normalizedSelected: Entity[];
+}
+
 export default function useSelectedEntityPicker({
   query,
   suggestions,
   normalizedSelected,
-}) {
+}: UseSelectedEntityPickerProps) {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const base = uniqNormalizeEntities(suggestions);

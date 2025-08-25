@@ -4,7 +4,7 @@ import MeetingInput from "@/app/admin/meeting/components/create/entities/Meeting
 import MeetingInputField from "@/app/admin/meeting/components/create/entities/MeetingInputField";
 import ParticipationChips from "@/app/admin/meeting/components/create/entities/ParticipationChips";
 import MeetingEntityPickerField from "@/app/admin/meeting/components/create/entities/MeetingEntityPickerField";
-import { Member, Category } from "@/hooks/meeting/create/useMeetingForm";
+import { Member, Category, MeetingFormState } from "@/hooks/meeting/create/useMeetingForm";
 
 export default function MeetingInfo({
   form,
@@ -18,9 +18,9 @@ export default function MeetingInfo({
   categories,
   readOnly = false,
 }: {
-  form: any;
-  handleInputChange: (key: any) => (e: any) => void;
-  handleAttachmentsChange: (files: File[]) => void;
+  form: MeetingFormState;
+  handleInputChange: (key: keyof MeetingFormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  handleAttachmentsChange: (files: FileList | null) => void;
   addParticipant: (participantIds: number[]) => void;
   addCategory: (categoryIds: number[]) => void;
   removeCategory: (categoryId: number) => void;

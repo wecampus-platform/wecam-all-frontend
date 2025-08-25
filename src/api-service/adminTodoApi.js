@@ -134,7 +134,6 @@ export async function updateTaskStatus(accessToken, councilName, councilId, todo
   });
 
   if (!res.ok) {
-    const msg = await res.text().catch(() => '');
     console.log(res);
     return false;
   }

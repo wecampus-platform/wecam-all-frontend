@@ -110,3 +110,68 @@ export const moveMemberToDepartment = async (councilName, memberId, departmentId
     throw error;
   }
 };
+
+// 소속 요청 목록 조회 API
+export const fetchAffiliationRequests = async (councilName) => {
+  try {
+    const response = await adminapi(
+      `/council/${councilName}/affiliation/requests`,
+      {
+        method: 'GET',
+      }
+    );
+    
+    return await response.json();
+  } catch (error) {
+    console.error('소속 요청 목록 조회 API 오류:', error);
+    throw error;
+  }
+};
+
+// 소속 요청 승인 API
+export const approveAffiliationRequest = async ({ councilName, userId, authType }) => {
+  try {
+    const response = await adminapi(
+      `/council/${councilName}/affiliation/approve`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          authType,
+        }),
+      }
+    );
+    
+    return await response.json();
+  } catch (error) {
+    console.error('소속 요청 승인 API 오류:', error);
+    throw error;
+  }
+};
+
+// 소속 요청 거절 API
+export const rejectAffiliationRequest = async ({ councilName, userId, authType }) => {
+  try {
+    const response = await adminapi(
+      `/council/${councilName}/affiliation/reject`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          authType,
+        }),
+      }
+    );
+    
+    return await response.json();
+  } catch (error) {
+    console.error('소속 요청 거절 API 오류:', error);
+    throw error;
+  }
+};

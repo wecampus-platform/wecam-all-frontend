@@ -1,7 +1,11 @@
 import { TEMPLATES } from "@/mocks/meeting/create/templates";
 
-export default function MeetingTextArea({ value, onChange, readOnly = false }) {
-  const template = ({ text, onClick }) => {
+export default function MeetingTextArea({ value, onChange, readOnly = false }: {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  readOnly?: boolean;
+}) {
+  const template = ({ text, onClick }: { text: string; onClick: () => void }) => {
     return <button onClick={onClick}>{text}</button>;
   };
 

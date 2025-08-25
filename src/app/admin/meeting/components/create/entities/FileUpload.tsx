@@ -4,7 +4,7 @@ import AddButton from "@/app/admin/meeting/components/create/entities/AddButton"
 import { useRef, useState } from "react";
 
 interface FileUploadProps {
-  onFilesSelected: (files: File[]) => void;
+  onFilesSelected: (files: FileList | null) => void;
 }
 
 export default function FileUpload({ onFilesSelected }: FileUploadProps) {
@@ -20,13 +20,19 @@ export default function FileUpload({ onFilesSelected }: FileUploadProps) {
     const newFiles = Array.from(fileList);
     const updated = [...files, ...newFiles];
     setFiles(updated);
-    onFilesSelected(updated);
+    // FileList로 변환해서 전달
+    const dataTransfer = new DataTransfer();
+    updated.forEach(file => dataTransfer.items.add(file));
+    onFilesSelected(dataTransfer.files);
   };
 
   const handleRemove = (index: number) => {
     const updated = files.filter((_, i) => i !== index);
     setFiles(updated);
-    onFilesSelected(updated);
+    // FileList로 변환해서 전달
+    const dataTransfer = new DataTransfer();
+    updated.forEach(file => dataTransfer.items.add(file));
+    onFilesSelected(dataTransfer.files);
   };
 
   return (

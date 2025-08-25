@@ -41,7 +41,7 @@ export async function createWorkspaceRequest(requestData, files) {
   }));
   
   // 파일들 추가
-  files.forEach((fileObj, index) => {
+  files.forEach((fileObj) => {
     formData.append('files', fileObj.file);
   });
 

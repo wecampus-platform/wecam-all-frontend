@@ -1,4 +1,4 @@
-export default function MeetingInputField({ label, children }) {
+export default function MeetingInputField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="relative flex items-center w-fulll">
       <label className="block w-24 text-sm text-gray-400">{label}</label>

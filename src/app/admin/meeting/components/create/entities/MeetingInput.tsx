@@ -5,6 +5,13 @@ export default function MeetingInput({
   type = "text",
   customCSS = "",
   disabled = false,
+}: {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  type?: string;
+  customCSS?: string;
+  disabled?: boolean;
 }) {
   return (
     <input

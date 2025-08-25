@@ -142,10 +142,12 @@ export default function MeetingEditPage() {
         }));
     };
 
-    const handleAttachmentsChange = (files: File[]) => {
+    const handleAttachmentsChange = (files: FileList | null) => {
+        if (!files) return;
+        const fileArray = Array.from(files);
         setForm(prev => ({
             ...prev,
-            attachments: [...prev.attachments, ...files]
+            attachments: [...prev.attachments, ...fileArray]
         }));
     };
 
