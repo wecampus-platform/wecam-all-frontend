@@ -63,7 +63,7 @@ export default function EntityPicker({
       ref={wrapperRef}
       className={"w-full max-w-xl absolute top-0 left-16 bg-white z-10 "}
     >
-      <div className="w-full rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+      <div className="w-full rounded-2xl border border-gray-200 bg-white p-3 shadow-lg">
         <div className="flex flex-wrap gap-2 mb-2 min-h-[2rem]">
           {normalizedSelected.map((item) =>
             renderEntity(item, true, () => remove(item))

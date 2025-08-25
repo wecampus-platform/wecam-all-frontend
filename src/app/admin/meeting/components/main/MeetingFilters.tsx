@@ -3,36 +3,50 @@
 import React from 'react';
 import CustomDropdown from '@/components/drop-down';
 
+interface Category {
+    categoryId: number;
+    categoryName: string;
+}
+
+interface Member {
+    userId: number;
+    userName: string;
+    userCouncilRole: string;
+}
+
 interface MeetingFiltersProps {
     selectedCategory: string;
     selectedParticipant: string;
     onCategoryChange: (value: string) => void;
     onParticipantChange: (value: string) => void;
+    categories: Category[];
+    members: Member[];
 }
 
 export default function MeetingFilters({
     selectedCategory,
     selectedParticipant,
     onCategoryChange,
-    onParticipantChange
+    onParticipantChange,
+    categories,
+    members
 }: MeetingFiltersProps) {
-    // 카테고리 옵션
+    // 카테고리 옵션 (실제 데이터 기반)
     const categoryOptions = [
         { value: '', label: '카테고리를 선택해주세요.' },
-        { value: 'planning', label: '기획' },
-        { value: 'development', label: '개발' },
-        { value: 'design', label: '디자인' },
-        { value: 'marketing', label: '마케팅' },
-        { value: 'operation', label: '운영' }
+        ...(categories || []).map(category => ({
+            value: category.categoryId.toString(),
+            label: category.categoryName
+        }))
     ];
 
-    // 참석자 옵션
+    // 참석자 옵션 (실제 데이터 기반)
     const participantOptions = [
         { value: '', label: '참석자를 선택해주세요.' },
-        { value: 'all', label: '모든 참석자' },
-        { value: 'leader', label: '팀장' },
-        { value: 'member', label: '팀원' },
-        { value: 'guest', label: '게스트' }
+        ...(members || []).map(member => ({
+            value: member.userId.toString(),
+            label: member.userName
+        }))
     ];
 
     return (

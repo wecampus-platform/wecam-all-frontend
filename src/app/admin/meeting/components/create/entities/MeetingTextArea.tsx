@@ -1,6 +1,6 @@
 import { TEMPLATES } from "@/mocks/meeting/create/templates";
 
-export default function MeetingTextArea({ value, onChange }) {
+export default function MeetingTextArea({ value, onChange, readOnly = false }) {
   const template = ({ text, onClick }) => {
     return <button onClick={onClick}>{text}</button>;
   };
@@ -11,11 +11,14 @@ export default function MeetingTextArea({ value, onChange }) {
         placeholder="아래에서 템플릿 또는 입력 방식을 선택하거나, 회의 내용을 입력하세요."
         value={value}
         onChange={onChange}
+        readOnly={readOnly}
         className={`w-full rounded-md py-2 ${
           value === "" ? "h-12" : "h-60"
-        } placeholder-gray-300 focus:outline-none resize-none `}
+        } placeholder-gray-300 focus:outline-none resize-none ${
+          readOnly ? 'bg-gray-50 cursor-not-allowed' : ''
+        }`}
       />
-      {value === "" && (
+      {value === "" && !readOnly && (
         <div className="flex flex-col text-sm text-gray-300 space-y-2">
           {TEMPLATES.map((tpl, idx) => (
             <div key={idx}>{template(tpl)}</div>

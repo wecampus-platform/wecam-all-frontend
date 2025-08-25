@@ -5,6 +5,7 @@ import MeetingTextArea from "@/app/admin/meeting/components/create/entities/Meet
 import MeetingHeader from "@/app/admin/meeting/components/create/MeetingHeader";
 import MeetingInfo from "@/app/admin/meeting/components/create/MeetingInfo";
 import { useMeetingForm } from "@/hooks/meeting/create/useMeetingForm";
+import SideBarPage from '@/components/side-bar';
 
 export default function MeetingCreatePage() {
   const {
@@ -16,32 +17,41 @@ export default function MeetingCreatePage() {
     resetForm,
     removeCategory,
     removeParticipant,
+    members,
+    categories,
   } = useMeetingForm();
 
   return (
-    <div className="py-12 px-12 bg-[#F5F7FA] min-h-screen">
-      <MeetingHeader form={form} resetForm={resetForm} />
+    <div className="h-screen w-full flex">
+      <SideBarPage />
+      <div className="px-[76px] w-full flex flex-col gap-8 bg-cream">
+        <div className="py-12">
+          <MeetingHeader form={form} resetForm={resetForm} />
 
-      <div className="bg-white p-10 rounded-lg shadow-sm">
-        <MeetingInput
-          placeholder="제목을 입력하세요."
-          value={form.title}
-          onChange={handleInputChange("title")}
-          customCSS="w-full text-4xl font-semibold mb-6 outline-none placeholder-gray-200"
-        />
-        <MeetingInfo
-          form={form}
-          handleInputChange={handleInputChange}
-          handleAttachmentsChange={handleAttachmentsChange}
-          addParticipant={addParticipant}
-          addCategory={addCategory}
-          removeCategory={removeCategory}
-          removeParticipant={removeParticipant}
-        />
-        <MeetingTextArea
-          value={form.content}
-          onChange={handleInputChange("content")}
-        />
+          <div className="bg-white p-10 rounded-lg shadow-sm">
+            <MeetingInput
+              placeholder="제목을 입력하세요."
+              value={form.title}
+              onChange={handleInputChange("title")}
+              customCSS="w-full text-4xl font-semibold mb-6 outline-none placeholder-gray-200"
+            />
+            <MeetingInfo
+              form={form}
+              handleInputChange={handleInputChange}
+              handleAttachmentsChange={handleAttachmentsChange}
+              addParticipant={addParticipant}
+              addCategory={addCategory}
+              removeCategory={removeCategory}
+              removeParticipant={removeParticipant}
+              members={members}
+              categories={categories}
+            />
+            <MeetingTextArea
+              value={form.content}
+              onChange={handleInputChange("content")}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

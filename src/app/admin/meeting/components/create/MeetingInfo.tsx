@@ -1,13 +1,10 @@
 import CategoryChips from "@/app/admin/meeting/components/create/entities/CategoryChips";
 import FileUpload from "@/app/admin/meeting/components/create/entities/FileUpload";
-import MeetingEntityPickerField from "@/app/admin/meeting/components/create/entities/MeetingEntityPickerField";
 import MeetingInput from "@/app/admin/meeting/components/create/entities/MeetingInput";
 import MeetingInputField from "@/app/admin/meeting/components/create/entities/MeetingInputField";
 import ParticipationChips from "@/app/admin/meeting/components/create/entities/ParticipationChips";
-import {
-  CATEGORY_SUGGESTIONS,
-  PARTICIPANT_SUGGESTIONS,
-} from "@/mocks/meeting/create/meetingInfo";
+import MeetingEntityPickerField from "@/app/admin/meeting/components/create/entities/MeetingEntityPickerField";
+import { Member, Category } from "@/hooks/meeting/create/useMeetingForm";
 
 export default function MeetingInfo({
   form,
@@ -17,6 +14,20 @@ export default function MeetingInfo({
   addCategory,
   removeCategory,
   removeParticipant,
+  members,
+  categories,
+  readOnly = false,
+}: {
+  form: any;
+  handleInputChange: (key: any) => (e: any) => void;
+  handleAttachmentsChange: (files: File[]) => void;
+  addParticipant: (participantIds: number[]) => void;
+  addCategory: (categoryIds: number[]) => void;
+  removeCategory: (categoryId: number) => void;
+  removeParticipant: (participantId: number) => void;
+  members: Member[];
+  categories: Category[];
+  readOnly?: boolean;
 }) {
   return (
     <>
@@ -26,6 +37,7 @@ export default function MeetingInfo({
             value={form.date}
             onChange={handleInputChange("date")}
             type="date"
+            disabled={readOnly}
           />
         </MeetingInputField>
 
@@ -34,46 +46,115 @@ export default function MeetingInfo({
             placeholder="회의 장소를 입력하세요."
             value={form.location}
             onChange={handleInputChange("location")}
+            disabled={readOnly}
           />
         </MeetingInputField>
 
-        <MeetingEntityPickerField
-          label="참석자"
-          value={form.participants}
-          suggestions={PARTICIPANT_SUGGESTIONS}
-          onAdd={addParticipant}
-          onRemove={removeParticipant}
-          placeholder="아래에서 참석자를 선택하세요"
-          allowCreate={false}
-          renderEntity={(item, selected, onClick) => (
-            <ParticipationChips
-              key={item.id}
-              onClick={onClick}
-              selected={selected}
-              avatar={item.avatar || ""}
-            >
-              {item.name}
-            </ParticipationChips>
+        <MeetingInputField label="참석자">
+          {readOnly ? (
+            <div className="flex flex-wrap gap-2">
+              {form.participants.map((id: number) => {
+                const member = members.find(m => m.userId === id);
+                return (
+                  <ParticipationChips
+                    key={id}
+                    avatar=""
+                    readOnly={true}
+                  >
+                    {member?.userName || ''}
+                  </ParticipationChips>
+                );
+              })}
+            </div>
+          ) : (
+            <MeetingEntityPickerField
+              label="참석자 선택"
+              value={form.participants.map((id: number) => {
+                const member = members.find(m => m.userId === id);
+                return { id: id.toString(), name: member?.userName || '', avatar: '' };
+              })}
+              suggestions={members.map(member => ({
+                id: member.userId.toString(),
+                name: member.userName,
+                avatar: ''
+              }))}
+              onAdd={(entities) => {
+                const ids = entities.map(e => parseInt(e.id));
+                addParticipant(ids);
+              }}
+              onRemove={(entity) => {
+                removeParticipant(parseInt(entity.id));
+              }}
+              placeholder="참석자를 선택하세요"
+              readOnly={false}
+              renderEntity={(entity, selected, onClick) => (
+                <ParticipationChips
+                  key={entity.id}
+                  avatar={entity.avatar || ''}
+                  readOnly={false}
+                  onClick={onClick}
+                >
+                  {entity.name}
+                </ParticipationChips>
+              )}
+            />
           )}
-        />
-
-        <MeetingEntityPickerField
-          label="카테고리"
-          value={form.category}
-          suggestions={CATEGORY_SUGGESTIONS}
-          onAdd={addCategory}
-          onRemove={removeCategory}
-          placeholder="카테고리를 선택하거나, 새 카테고리 이름을 입력하세요."
-          renderEntity={(item, selected, onClick) => (
-            <CategoryChips key={item.id} onClick={onClick} selected={selected}>
-              {item.name}
-            </CategoryChips>
-          )}
-        />
-
-        <MeetingInputField label="첨부파일">
-          <FileUpload onFilesSelected={handleAttachmentsChange} />
         </MeetingInputField>
+
+        <MeetingInputField label="카테고리">
+          {readOnly ? (
+            <div className="flex flex-wrap gap-2">
+              {form.category.map((id: number) => {
+                const category = categories.find(c => c.categoryId === id);
+                return (
+                  <CategoryChips 
+                    key={id} 
+                    readOnly={true}
+                  >
+                    {category?.categoryName || ''}
+                  </CategoryChips>
+                );
+              })}
+            </div>
+          ) : (
+            <MeetingEntityPickerField
+              label="카테고리 선택"
+              value={form.category.map(id => {
+                const category = categories.find(c => c.categoryId === id);
+                return { id: id.toString(), name: category?.categoryName || '', avatar: '' };
+              })}
+              suggestions={categories.map(category => ({
+                id: category.categoryId.toString(),
+                name: category.categoryName,
+                avatar: ''
+              }))}
+              onAdd={(entities) => {
+                const ids = entities.map(e => parseInt(e.id));
+                addCategory(ids);
+              }}
+              onRemove={(entity) => {
+                removeCategory(parseInt(entity.id));
+              }}
+              placeholder="카테고리를 선택하세요"
+              readOnly={false}
+              renderEntity={(entity, selected, onClick) => (
+                <CategoryChips
+                  key={entity.id}
+                  readOnly={false}
+                  onClick={onClick}
+                >
+                  {entity.name}
+                </CategoryChips>
+              )}
+            />
+          )}
+        </MeetingInputField>
+
+        {!readOnly && (
+          <MeetingInputField label="첨부파일">
+            <FileUpload onFilesSelected={handleAttachmentsChange} />
+          </MeetingInputField>
+        )}
       </div>
     </>
   );

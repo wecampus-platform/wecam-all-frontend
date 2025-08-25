@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import CustomDropdown from '@/components/drop-down';
 
 interface MeetingSortProps {
     selectedSort: string;
@@ -14,25 +15,18 @@ export default function MeetingSort({
     // 정렬 옵션
     const sortOptions = [
         { value: 'latest', label: '최신순' },
-        { value: 'oldest', label: '오래된순' },
-        { value: 'title', label: '제목순' },
-        { value: 'category', label: '카테고리순' }
+        { value: 'oldest', label: '오래된순' }
     ];
 
     return (
         <div className="flex items-center gap-3">
             <span className="text-sm font-medium text-gray-700">정렬</span>
-            <select
+            <CustomDropdown
+                options={sortOptions}
                 value={selectedSort}
-                onChange={(e) => onSortChange(e.target.value)}
-                className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-point focus:border-transparent"
-            >
-                {sortOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                ))}
-            </select>
+                onChange={onSortChange}
+                placeholder="정렬을 선택해주세요."
+            />
         </div>
     );
 }

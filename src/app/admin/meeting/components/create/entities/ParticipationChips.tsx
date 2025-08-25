@@ -1,39 +1,36 @@
 export type ParticipationChipsProps = {
-  avatar: string;
+  avatar: string | undefined;
   onClick?: () => void;
-  selected?: boolean;
+  readOnly?: boolean;
   children?: React.ReactNode;
 };
 
 export default function ParticipationChips({
   avatar,
   onClick,
-  selected = false,
+  readOnly = false,
   children,
 }: ParticipationChipsProps) {
   return (
     <div
       className={`
-        inline-flex items-center gap-2 px-3 py-1.5 rounded-full  text-sm bg-gray-50 border-gray-200 cursor-pointer `}
-      onClick={onClick}
+        inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm bg-gray-50 border-gray-200
+        ${readOnly ? 'cursor-default' : 'cursor-pointer hover:bg-gray-100'}
+      `}
+      onClick={readOnly ? undefined : onClick}
+      style={{ pointerEvents: readOnly ? 'none' : 'auto' }}
     >
-      <img
-        src={avatar}
-        alt={name}
-        className="w-6 h-6 rounded-full object-cover"
-      />
+      {avatar && avatar.trim() !== "" && (
+        <img
+          src={avatar}
+          alt="avatar"
+          className="w-6 h-6 rounded-full object-cover"
+        />
+      )}
 
       <span className="text-gray-700">{children}</span>
 
-      {selected && (
-        <button
-          type="button"
-          onClick={onClick}
-          className="ml-1 text-gray-400 hover:text-gray-600 focus:outline-none"
-        >
-          X
-        </button>
-      )}
+      {/* X 버튼 제거 - 읽기 전용 모드 */}
     </div>
   );
 }

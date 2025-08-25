@@ -10,6 +10,7 @@ export const useAuthStore = create(
       role: null,
       auth: false,
       councilList: [],
+      councilName: null,
       refreshToken: null,
       ready: false,
 
@@ -19,6 +20,7 @@ export const useAuthStore = create(
         role: data.role,
         auth: data.auth,
         councilList: data.councilList,
+        councilName: data.councilList?.[0]?.name || null,
         refreshToken: data.refreshToken,
         ready: true,
       }),
@@ -29,6 +31,7 @@ export const useAuthStore = create(
         role: null,
         auth: false,
         councilList: [],
+        councilName: null,
         refreshToken: null,
         ready: true,
       }),
@@ -39,6 +42,7 @@ export const useAuthStore = create(
         role: state.role,
         auth: state.auth,
         councilList: state.councilList,
+        councilName: state.councilName,
         refreshToken: state.refreshToken,
       }),
     }

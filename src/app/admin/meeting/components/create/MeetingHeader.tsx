@@ -1,14 +1,78 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/authStore';
+import { createMeeting } from '@/api-service/meetingApi';
 
-export default function MeetingHeader({ form, resetForm }) {
+import { MeetingFormState } from '@/hooks/meeting/create/useMeetingForm';
+
+export default function MeetingHeader({ 
+  form, 
+  resetForm, 
+  onSave,
+  isEdit = false 
+}: { 
+  form: MeetingFormState; 
+  resetForm: () => void;
+  onSave?: () => Promise<void>;
+  isEdit?: boolean;
+}) {
   const router = useRouter();
+  const { councilName } = useAuthStore();
 
-  const handleSave = () => {
-    console.log(form);
-    alert("저장되었습니다!");
-    resetForm();
+  const handleSave = async () => {
+    // onSave가 제공된 경우 (수정 모드) 그것을 사용
+    if (onSave) {
+      await onSave();
+      return;
+    }
+
+    // 기본 생성 로직
+    try {
+      // 필수 필드 유효성 검사
+      if (!form.title.trim()) {
+        alert("회의록 제목을 입력해주세요.");
+        return;
+      }
+      if (!form.date) {
+        alert("회의 일시를 선택해주세요.");
+        return;
+      }
+      if (!form.location.trim()) {
+        alert("회의 장소를 입력해주세요.");
+        return;
+      }
+      if (form.participants.length === 0) {
+        alert("참석자를 최소 1명 이상 선택해주세요.");
+        return;
+      }
+      if (form.category.length === 0) {
+        alert("카테고리를 최소 1개 이상 선택해주세요.");
+        return;
+      }
+
+      // API 요청을 위한 데이터 변환
+      const meetingData = {
+        title: form.title.trim(),
+        meetingDateTime: new Date(form.date).toISOString(),
+        location: form.location.trim(),
+        content: form.content.trim(),
+        categoryIds: form.category,
+        attendees: form.participants.map((participantId: number) => ({
+          councilMemberId: participantId,
+          attendanceStatus: "PRESENT",
+          role: "ATTENDEE"
+        }))
+      };
+
+      await createMeeting(councilName, meetingData);
+      alert("회의록이 성공적으로 저장되었습니다!");
+      resetForm();
+      router.push('/admin/meeting/main');
+    } catch (error) {
+      console.error('회의록 저장 실패:', error);
+      alert("회의록 저장에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   const handleExit = () => {
@@ -18,10 +82,21 @@ export default function MeetingHeader({ form, resetForm }) {
   return (
     <div className="flex justify-between items-center mb-6">
       <div>
-        <h1 className="text-2xl mb-2 ">회의록 작성하기</h1>
-        <p className="text-sm text-gray-400">
-          회의록 작성 이후 반드시 우측의 저장하기 버튼을 눌러주세요.
-        </p>
+        {isEdit ? (
+          <>
+            <h1 className="text-2xl mb-2">회의록 수정</h1>
+            <p className="text-sm text-gray-400">
+              회의록 내용을 수정한 후 우측의 저장하기 버튼을 눌러주세요.
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="text-2xl mb-2 ">회의록 작성하기</h1>
+            <p className="text-sm text-gray-400">
+              회의록 작성 이후 반드시 우측의 저장하기 버튼을 눌러주세요.
+            </p>
+          </>
+        )}
       </div>
 
       <div className="flex gap-2">

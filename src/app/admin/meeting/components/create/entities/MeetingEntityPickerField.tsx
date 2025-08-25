@@ -12,6 +12,7 @@ type EntityFieldProps = {
   onRemove: (removed: Entity) => void;
   placeholder: string;
   allowCreate?: boolean;
+  readOnly?: boolean;
   renderEntity: (
     entity: Entity,
     value: boolean,
@@ -27,6 +28,7 @@ export default function MeetingEntityPickerField({
   onRemove,
   placeholder,
   allowCreate = true,
+  readOnly = false,
   renderEntity,
 }: EntityFieldProps) {
   const [open, setOpen] = useState(false);
@@ -36,10 +38,10 @@ export default function MeetingEntityPickerField({
       <div className="flex items-center gap-2">
         {value.length > 0 &&
           value.map((item) => renderEntity(item, true, () => onRemove(item)))}
-        <AddButton onclick={() => setOpen(true)} />
+        {!readOnly && <AddButton onclick={() => setOpen(true)} />}
       </div>
 
-      {open && (
+      {open && !readOnly && (
         <EntityPicker
           suggestions={suggestions}
           value={value}
