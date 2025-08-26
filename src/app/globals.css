@@ -104,6 +104,40 @@ body {
   @apply rounded-[32px] bg-gray9 text-gray8;
 }
 
+// ... existing code ...
+
 .button-very-round.active {
   @apply bg-point text-white;
+}
+
+/* 슬라이드 업 애니메이션 */
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up-1 {
+  animation: slideUp 0.8s ease-out 0.2s forwards;
+}
+
+.animate-slide-up-2 {
+  animation: slideUp 0.8s ease-out 0.4s forwards;
+}
+
+.animate-slide-up-3 {
+  animation: slideUp 0.8s ease-out 0.6s forwards;
+}
+
+.animate-slide-up-4 {
+  animation: slideUp 0.8s ease-out 0.8s forwards;
+}
+
+.animate-slide-up-5 {
+  animation: slideUp 0.8s ease-out 1.0s forwards;
 }

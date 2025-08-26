@@ -5,7 +5,6 @@ import { DragDropContext } from '@hello-pangea/dnd';
 import { useAuthStore } from '@/store/authStore';
 import { moveMemberToDepartment, fetchDepartments } from '@/api-service/councilAffiliationApi';
 
-import SideBarPage from '@/components/side-bar';
 import FilterTabs from '@/components/filterTabs';
 import { Search } from '@/components/search';
 import CouncilMemberSection from './councilMemberSection';
@@ -212,9 +211,8 @@ export default function MemberManagePage() {
     };
 
     return (
-        <div className="h-screen w-full flex">
-            <SideBarPage />
-            <div className="px-[76px] w-full flex flex-col gap-8 bg-cream">
+        <div className="h-full w-full flex flex-col">
+            <div className="px-[76px] w-full flex flex-col gap-8 bg-cream flex-1">
                 <b className="text-[40px] font-pretendard text-darkslategray text-left">
                     구성원 및 조직 관리
                 </b>

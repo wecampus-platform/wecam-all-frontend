@@ -7,13 +7,18 @@ import Nav from './nav';
 export default function Header() {
   const pathname = usePathname();
 
+  // 특정 경로에서만 헤더 표시
+  if (pathname !== '/' && !pathname.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <header className="flex items-center justify-between px-20 py-4 h-16 min-h-[64px] bg-inherit shadow-none">
       <Link href="/">
         <img src="/logo-black.svg" alt="Logo" className="h-8 w-auto cursor-pointer" />
       </Link>
 
-      {pathname === '/' && <Nav />}
+      <Nav />
     </header>
   );
 }

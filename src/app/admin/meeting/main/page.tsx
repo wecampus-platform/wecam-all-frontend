@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import SideBarPage from '@/components/side-bar';
 import { Search } from '@/components/search';
 import Link from 'next/link';
 import MeetingFilters from '../components/main/MeetingFilters';
@@ -80,9 +79,8 @@ export default function MeetingMainPage() {
     }, [councilName]);
 
     return (
-        <div className="h-screen w-full flex">
-            <SideBarPage />
-            <div className="px-[76px] w-full flex flex-col gap-8 bg-cream">
+        <div className="h-full w-full flex flex-col">
+            <div className="px-[76px] w-full flex flex-col gap-8 bg-cream flex-1">
                 <div className="w-full flex flex-col gap-2">
                     <div className="flex flex-row justify-center items-center">
                         <b className="relative text-[40px] font-pretendard text-darkslategray text-left">

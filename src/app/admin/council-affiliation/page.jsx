@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-import SideBarPage from '@/components/side-bar';
 import { Search } from '@/components/search';
 import { DefaultSection } from './defaultSection';
 
@@ -17,10 +16,8 @@ export default function CouncilAffiliationPage() {
         // inputValue로 API 요청 등 처리
     };
     return (
-        <div className="h-screen w-full flex">
-            <SideBarPage />
-            {/* 가장 오른쪽 공간 */}
-            <div className="px-[76px] w-full flex flex-col gap-8">
+        <div className="h-full w-full p-6">
+            <div className="flex flex-col gap-8">
                 <div className="w-full flex flex-col gap-2">
                     <b className="relative text-[40px] font-pretendard text-darkslategray text-left">소속 인증 관리</b>
                     <div className="flex flex-row gap-4">
@@ -51,7 +48,7 @@ export default function CouncilAffiliationPage() {
                     ))}
                 </div>
                 {/* 주요 공간 */}
-                <div className="flex bg-white rounded h-screen">
+                <div className="flex bg-white rounded h-full">
                     {/* 그룹 필터 */}
                     <DefaultSection/>
                 </div>

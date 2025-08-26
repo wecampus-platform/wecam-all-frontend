@@ -3,7 +3,6 @@
 import { getAllTasks } from '@/api-service/adminTodoApi';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import SideBarPage from '@/components/side-bar';
 import Task from './task';
 import { useAuthStore } from '@/store/authStore';
 import TaskModal from '../modals/task-modal';
@@ -38,10 +37,8 @@ export default function MainPage() {
   const goToAddPage = () => router.push('/admin/todo/add');
 
   return (
-    <div className="min-h-screen w-full bg-[#F5F7FA] flex">
-      <SideBarPage />
-
-      <div className="mt-[60px] px-[60px] w-full flex flex-col pb-[60px]">
+    <div className="h-full w-full bg-[#F5F7FA] flex flex-col">
+      <div className="px-[60px] w-full flex flex-col pb-[60px] pt-6">
         <div className="flex justify-between items-center w-full mb-[24px]">
           <h1 className="w-40 h-14 text-zinc-800 text-4xl font-bold">
             할 일 관리
