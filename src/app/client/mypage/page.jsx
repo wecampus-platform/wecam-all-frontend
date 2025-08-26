@@ -10,6 +10,7 @@ import SideBarPage from './side-bar';
 import InputModal from '@/components/modals/Inputmodal';
 import { OrganizationModal } from './modals/organizationModal';
 import {fetchEditUserOrganizationInfo,fetchEditUserInfo} from '@/api-service/mypageApi'
+import { useInvitationCode } from '@/api-service/invitationApi';
 
 export default function MyPage() {
   const [user, setUser] = useState(null);
@@ -79,13 +80,34 @@ export default function MyPage() {
   }, []);
 
 
-  const handleModalConfirm = () => {
+  const handleModalConfirm = async () => {
     if (modalType === 'organization') {
       console.log('소속 인증 요청:', inputValue);
     } else if (modalType === 'schoolEmail') {
       console.log('학교 이메일 인증 요청:', inputValue);
     } else if (modalType === 'studentCouncil') {
-      console.log('학생회 인증 요청:', inputValue);
+      try {
+        console.log('학생회 인증 요청:', inputValue);
+        const result = await useInvitationCode('council_member', inputValue);
+        console.log('학생회 인증 성공:', result);
+        
+        // API 응답에서 권한 정보 업데이트
+        if (result && result.isSuccess) {
+          const currentAuth = useAuthStore.getState();
+          useAuthStore.getState().setAuth({
+            ...currentAuth,
+            role: 'COUNCIL', // 초대코드 사용 성공 시 학생회 권한 부여
+            councilList: currentAuth.councilList || []
+          });
+        }
+        
+        alert('학생회 인증이 완료되었습니다.');
+        // 페이지 새로고침 또는 상태 업데이트
+        window.location.reload();
+      } catch (err) {
+        console.error('학생회 인증 실패:', err);
+        alert('학생회 인증 중 오류가 발생했습니다.');
+      }
     }
     setModalType(null);
     setInputValue('');
