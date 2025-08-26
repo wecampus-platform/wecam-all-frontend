@@ -72,7 +72,7 @@ export function DefaultSection({ onRefresh, onShowHistory }) {
     ];
 
     return (
-        <div className="w-full flex flex-col items-start justify-start text-left text-base text-gray4 font-pretendard">
+        <div className="w-full flex flex-col bg-white items-start justify-start text-left text-base text-gray4 font-pretendard">
             {/* 탭 영역 */}
             <div className="flex flex-row items-center w-full mx-10 my-6">
                 {tabs.map((tab) => {

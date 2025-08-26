@@ -31,7 +31,7 @@ export default function LeftIconBar() {
                             }`}
                             onClick={() => handleCouncilClick(council)}
                             title={council.name}
-                        />ㄹ
+                        />
                     ))
                 ) : (
                     <div className="w-14 h-14 bg-zinc-300 rounded-xl" />

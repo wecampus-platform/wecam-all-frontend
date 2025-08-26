@@ -221,7 +221,7 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
                     {sections.map((section) => (
                     <div
                         key={section.id}
-                        className="h-fit bg-white border border-gray9 rounded-[12px] p-8 flex flex-col gap-4 cursor-pointer hover:shadow-md transition-shadow"
+                        className="h-fit bg-white border border-gray9 rounded-[12px] p-8 flex flex-col gap-4 cursor-pointer hover:brightness-98"
                         onClick={() => handleSectionClick(section)}
                     >
                         {/* 섹션 제목 */}

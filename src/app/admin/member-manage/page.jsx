@@ -7,6 +7,7 @@ import { moveMemberToDepartment, fetchDepartments } from '@/api-service/councilA
 
 import FilterTabs from '@/components/filterTabs';
 import { Search } from '@/components/search';
+import AdminLayout from '../AdminLayout';
 import CouncilMemberSection from './councilMemberSection';
 import NotPlacedMember from './notPlacedMember';
 import AllStudentsSection from './allStudentsSection';
@@ -211,97 +212,101 @@ export default function MemberManagePage() {
     };
 
     return (
-        <div className="h-full w-full flex flex-col">
-            <div className="px-[76px] w-full flex flex-col gap-8 bg-cream flex-1">
-                <b className="text-[40px] font-pretendard text-darkslategray text-left">
-                    구성원 및 조직 관리
-                </b>
-
-                <FilterTabs
-                    options={filters}
-                    activeLabel={activeLabel}
-                    onChange={setActiveLabel}
-                />
-
-                <div className="flex gap-2">
-                    <Search
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onSearchClick={() => console.log('검색 버튼 눌림:', inputValue)}
-                        placeholder="이름을 입력하세요."
-                    />
-                </div>
-
-
-                {activeLabel === '학생회 구성원 관리' && (
-                    <DragDropContext onDragEnd={onDragEnd}>
-                        <CouncilMemberSection
-                            sections={sections}
-                            setSections={setSections}
-                            councilName={councilName}
-                            councilId={councilId}
-                            setNotPlacedMembers={stableSetNotPlacedMembers}
-                            refreshDepartments={refreshDepartments}
+        <>
+            <AdminLayout
+                title="구성원 및 조직 관리"
+                additionalContent={
+                    <div className="flex flex-col gap-4">
+                        <FilterTabs
+                            options={filters}
+                            activeLabel={activeLabel}
+                            onChange={setActiveLabel}
                         />
-                        <NotPlacedMember 
-                            members={notPlacedMembers} 
-                            onSectionClick={() => {
-                                console.log('미배치 명단 섹션 클릭됨');
-                                setIsModalOpen(true);
-                            }}
-                        />
-                    </DragDropContext>
-                )}
 
-                {activeLabel === '하위 학생회 관리' && (
-                    <div>
-                        <LowerCounCilManagementSection/>
+                        <div className="flex gap-2">
+                            <Search
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onSearchClick={() => console.log('검색 버튼 눌림:', inputValue)}
+                                placeholder="이름을 입력하세요."
+                            />
+                        </div>
                     </div>
-                )}
+                }
+                mainContent={
+                    <div className="w-full h-full ">
+                        {activeLabel === '학생회 구성원 관리' && (
+                            <DragDropContext onDragEnd={onDragEnd}>
+                                <CouncilMemberSection
+                                    sections={sections}
+                                    setSections={setSections}
+                                    councilName={councilName}
+                                    councilId={councilId}
+                                    setNotPlacedMembers={stableSetNotPlacedMembers}
+                                    refreshDepartments={refreshDepartments}
+                                />
+                                <NotPlacedMember 
+                                    members={notPlacedMembers} 
+                                    onSectionClick={() => {
+                                        console.log('미배치 명단 섹션 클릭됨');
+                                        setIsModalOpen(true);
+                                    }}
+                                />
+                            </DragDropContext>
+                        )}
 
-                {activeLabel === '학생 전체 관리' && (
-                    <AllStudentsSection />
-                )}
+                        {activeLabel === '하위 학생회 관리' && (
+                            <div className="w-full h-full">
+                                <LowerCounCilManagementSection/>
+                            </div>
+                        )}
 
-                                 {/* 미배치 명단 모달 */}
-                 {isModalOpen && (
-                     <OrgMemberManageModal
-                         onClose={() => setIsModalOpen(false)}
-                         title="미배치 명단"
-                     >
-                         <div className="flex flex-col gap-6">
-                             {/* 미배치 구성원 목록 */}
-                             <div>
-                                 <div className="flex items-center gap-3 mb-4">
-                                     <h3 className="text-xl font-semibold text-gray-800">미배치 구성원</h3>
-                                     <span className="text-gray-500 text-sm">({notPlacedMembers.length}명)</span>
-                                 </div>
-                                 
-                                 {notPlacedMembers.length > 0 ? (
-                                     <div className="space-y-3">
-                                         {notPlacedMembers.map((member) => (
-                                             <AffiliationList
-                                                 key={member.id}
-                                                 imgSrc="/default-profile.png"
-                                                 name={member.name || 'Unknown'}
-                                                 studentId={member.id || 'N/A'}
-                                                 major={member.role || 'N/A'}
-                                                 department="미배치"
-                                                 joinDate={member.councilRole || 'N/A'}
-                                             />
-                                         ))}
-                                     </div>
-                                 ) : (
-                                     <div className="text-center text-gray-500 py-8 bg-gray-50 rounded-lg">
-                                         <p className="text-sm">미배치된 구성원이 없습니다.</p>
-                                     </div>
-                                 )}
-                             </div>
-                         </div>
-                     </OrgMemberManageModal>
-                 )}
+                        {activeLabel === '학생 전체 관리' && (
+                            <div className="w-full h-full">
+                                <AllStudentsSection />
+                            </div>
+                        )}
+                    </div>
+                }
+            />
 
-            </div>
-        </div>
+            {/* 미배치 명단 모달 */}
+            {isModalOpen && (
+                <OrgMemberManageModal
+                    onClose={() => setIsModalOpen(false)}
+                    title="미배치 명단"
+                >
+                    <div className="flex flex-col gap-6 bg-black">
+                        {/* 미배치 구성원 목록 */}
+                        <div>
+                            <div className="flex items-center gap-3 mb-4">
+                                <h3 className="text-xl font-semibold text-gray-800">미배치 구성원</h3>
+                                <span className="text-gray-500 text-sm">({notPlacedMembers.length}명)</span>
+                            </div>
+                            
+                            {notPlacedMembers.length > 0 ? (
+                                <div className="space-y-3">
+                                    {notPlacedMembers.map((member) => (
+                                        <AffiliationList
+                                            key={member.id}
+                                            imgSrc="/default-profile.png"
+                                            name={member.name || 'Unknown'}
+                                            studentId={member.id || 'N/A'}
+                                            major={member.role || 'N/A'}
+                                            department="미배치"
+                                            joinDate={member.councilRole || 'N/A'}
+                                        />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center text-gray-500 py-8 bg-gray-50 rounded-lg">
+                                    <p className="text-sm">미배치된 구성원이 없습니다.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </OrgMemberManageModal>
+            )}
+        </>
     );
 }

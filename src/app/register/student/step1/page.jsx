@@ -11,12 +11,12 @@ function RegisterPage1() {
 
   const handleFormSubmit = (data) => {
     setRegisterInfo(data);
-    router.push('/register/step2');
+    router.push('/register/student/step2');
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-full bg-white p-8 rounded-lg">
+    <div className="h-screen bg-cream overflow-hidden flex items-center justify-center">
+      <div className="w-full bg-cream p-8 rounded-lg">
         <RegisterForm onSubmit={handleFormSubmit} />
       </div>
     </div>

@@ -9,7 +9,7 @@ export default function NotPlacedMember({ members, onSectionClick }) {
         <Droppable droppableId="notPlaced" direction="horizontal">
             {(provided) => (
                 <div
-                    className="h-[100px] bg-white border border-gray9 rounded-[12px] px-8 flex items-center cursor-pointer hover:bg-gray-50 transition-colors"
+                    className="h-[100px] mt-10 bg-white border border-gray9 rounded-[12px] px-8 flex items-center cursor-pointer hover:brightness-98"
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     onClick={onSectionClick}

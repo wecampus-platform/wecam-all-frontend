@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { publicapi } from '@/lib/fetchClient';
 import { useAuthStore } from '@/store/authStore';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import Header from '@/components/header';
+
 
 
 
@@ -50,8 +53,8 @@ export default function LoginPage() {
         refreshToken: data.refreshToken,
       });
 
-console.log("이거임,",redirect)
-router.push(redirect); // ✅ 로그인 후 목적지로 이동
+      console.log("이거임,", redirect)
+      router.push(redirect); // ✅ 로그인 후 목적지로 이동
     } catch (err) {
       console.error(err);
       setError('아이디 또는 비밀번호가 일치하지 않습니다.');
@@ -61,15 +64,28 @@ router.push(redirect); // ✅ 로그인 후 목적지로 이동
   };
 
   return (
-    <div className="w-full relative min-h-screen overflow-hidden text-center text-4xl text-darkslategray font-pretendard">
+    <div className="w-full bg-cream relative min-h-screen overflow-hidden text-center text-4xl text-darkslategray font-pretendard">
+      
+      {/* 왼쪽 영역: 로고와 플랫폼 설명 */}
+      <div className="absolute left-40 top-1/2 -translate-y-1/2 flex flex-col items-start gap-3">
+        <div className="text-sm font-base text-gray2 text-left">
+          학생회 통합 플랫폼
+        </div>
+        <img src="/logo-black.svg" alt="Logo" className="h-12 w-auto cursor-pointer" />
+      </div>
+
+      {/* 오른쪽 영역: 로그인 폼 */}
       <form
         onSubmit={handleSubmit}
-        className="absolute top-[120px] left-1/2 -translate-x-1/2 shadow-[0px_0px_4px_rgba(44,_45,_47,_0.24)] rounded-[20px] border border-gray2 bg-white flex flex-col items-center justify-center py-24 px-[72px] gap-12 max-w-[500px]"
+        className="absolute right-50 top-1/2 -translate-y-1/2 rounded-[20px] bg-white flex flex-col items-center justify-center py-20 px-16 gap-8 max-w-[700px] border border-gray2/50 shadow-[0_20px_40px_rgba(0,0,0,0.08)] backdrop-blur-sm"
       >
-        <h2 className="w-[376px] font-semibold">로그인</h2>
+        <div>
+          
+        </div>
+        <div className="text-4xl font-semibold text-darkslategray mb-2">로그인</div>
         <div className="w-[376px] flex flex-col items-center justify-start text-left text-base text-dimgray gap-10">
           <div className="w-full flex flex-col gap-3">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-2">
                 <label className="font-semibold text-gray4">이메일</label>
                 <input
@@ -104,9 +120,9 @@ router.push(redirect); // ✅ 로그인 후 목적지로 이동
                   onChange={(e) => setRemember(e.target.checked)}
                   className="w-4 h-4 cursor-pointer border border-gray2 appearance-none checked:bg-transparent checked:before:content-['✔'] checked:before:text-point checked:before:text-xs checked:before:block checked:before:text-center"
                 />
-                <label className="select-none">자동로그인</label>
+                <label className="select-none text-gray8">자동로그인</label>
               </div>
-              <div className="cursor-pointer gray8">비밀번호를 잊으셨나요?</div>
+              <div className="cursor-pointer text-gray8">비밀번호를 잊으셨나요?</div>
             </div>
           </div>
           <div className="w-full flex flex-col gap-4 text-center text-white">
@@ -118,11 +134,10 @@ router.push(redirect); // ✅ 로그인 후 목적지로 이동
             <button
               type="submit"
               disabled={loading || !email || !password}
-              className={`w-full rounded-lg py-4 font-semibold transition ${
-                email && password && !loading
+              className={`w-full rounded-lg py-4 font-semibold transition ${email && password && !loading
                   ? 'bg-point text-white cursor-pointer hover:bg-point/80'
                   : 'bg-gray2 text-white cursor-default'
-              }`}
+                }`}
             >
               로그인
             </button>

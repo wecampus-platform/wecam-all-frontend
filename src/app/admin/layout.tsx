@@ -3,7 +3,7 @@
 import SideBarPage from '@/components/side-bar';
 import Header from '@/components/header';
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="flex flex-col h-screen">
             <Header />
