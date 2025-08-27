@@ -80,8 +80,20 @@ export async function fetchSchoolName() {
   });
   if (!res.ok) throw new Error('학교 이름을 불러오지 못했습니다.');
   const data = await res.json();
-  return data.result; 
   
+  console.log('🔍 fetchSchoolName 응답 데이터:', data);
+  
+  // result가 객체인 경우 school_name 필드 확인
+  if (data.result && typeof data.result === 'object') {
+    if (data.result.school_name) {
+      return data.result.school_name; // 학교 이름만 반환
+    } else {
+      console.warn('🔍 school_name 필드를 찾을 수 없습니다:', data.result);
+      return data.result; // 전체 객체 반환 (기존 동작 유지)
+    }
+  }
+  
+  return data.result;
 }
 
 

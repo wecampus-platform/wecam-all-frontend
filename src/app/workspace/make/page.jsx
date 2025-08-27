@@ -47,14 +47,25 @@ export default function MakeWorkspacePage() {
   }, []);
 
   useEffect(() => {
-    const getSchoolName = async () => {
-      try {
-        const name = await fetchSchoolName();
-        setSchoolName(name);
-      } catch (error) {
-        console.error('학교 이름 불러오기 실패:', error);
+      const getSchoolName = async () => {
+    try {
+      const response = await fetchSchoolName();
+      console.log('🔍 학교 정보 응답:', response);
+      
+      // 응답이 객체인 경우 school_name 필드에서 학교 이름 추출
+      if (response && typeof response === 'object' && response.school_name) {
+        setSchoolName(response.school_name);
+      } else if (typeof response === 'string') {
+        setSchoolName(response);
+      } else {
+        console.warn('예상과 다른 학교 정보 응답 구조:', response);
+        setSchoolName('');
       }
-    };
+    } catch (error) {
+      console.error('학교 이름 불러오기 실패:', error);
+      setSchoolName('');
+    }
+  };
   
     getSchoolName();
   }, []);
@@ -246,7 +257,11 @@ export default function MakeWorkspacePage() {
         <div className="mt-[8px] w-[656px] h-11 px-4 py-3 bg-white rounded-xl outline outline-1 outline-blue-500 flex items-center text-zinc-600 text-base font-medium">
           {loading 
             ? '로딩 중...' 
-              : schoolName || '학교 정보 없음'
+            : typeof schoolName === 'object' && schoolName?.school_name 
+              ? schoolName.school_name 
+              : typeof schoolName === 'string' 
+                ? schoolName 
+                : '학교 정보 없음'
           }
         </div>
 
