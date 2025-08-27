@@ -89,7 +89,7 @@ function RegisterForm({ onSubmit }) {
                             type="text"
                             value={studentNumberInput}
                             onChange={(e) => setStudentNumberInput(e.target.value)}
-                            placeholder="학번을 입력하세요."
+                            placeholder="입학 연도를 입력하세요."
                             className="rounded-xl bg-white border-gray2 border-[1px] flex items-center justify-between py-3 px-4 w-full focus:border-point outline-none"
                         />
                     </div>

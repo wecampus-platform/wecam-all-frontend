@@ -17,7 +17,7 @@ export function CodeModal({ onClose, onBack }) {
             const result = await useInvitationCode('student_member', code);
             console.log('초대 코드 사용 성공:', result);
             close();
-            window.location.href = '/mypage';
+            window.location.href = '/client/mypage';
           } catch (err) {
             alert('초대 코드 사용 중 오류 발생');
             console.error(err);
