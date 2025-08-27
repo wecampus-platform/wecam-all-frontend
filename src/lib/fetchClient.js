@@ -54,8 +54,8 @@ export const adminapi = async (path, options = {}) => {
     await new Promise((resolve) => setTimeout(resolve, 50));
   }
 
-  const { accessToken, councilList } = useAuthStore.getState();
-  const councilId = councilList?.[0]?.id;
+  const { accessToken, selectedCouncilId, councilList } = useAuthStore.getState();
+  const councilId = selectedCouncilId || councilList?.[0]?.id;
 
   if (!accessToken) throw new Error('AccessToken이 없습니다.');
   if (!councilId) throw new Error('Council ID가 없습니다.');

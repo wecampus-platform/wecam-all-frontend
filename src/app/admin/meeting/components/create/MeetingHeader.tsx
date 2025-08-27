@@ -30,25 +30,25 @@ export default function MeetingHeader({
     // 기본 생성 로직
     try {
       // 필수 필드 유효성 검사
-      if (!form.title.trim()) {
-        alert("회의록 제목을 입력해주세요.");
-        return;
+      if (!form.title.trim()) { 
+          console.error("회의록 제목을 입력해주세요."); 
+          return; 
       }
-      if (!form.date) {
-        alert("회의 일시를 선택해주세요.");
-        return;
+      if (!form.date) { 
+          console.error("회의 일시를 선택해주세요."); 
+          return; 
       }
-      if (!form.location.trim()) {
-        alert("회의 장소를 입력해주세요.");
-        return;
+      if (!form.location.trim()) { 
+          console.error("회의 장소를 입력해주세요."); 
+          return; 
       }
-      if (form.participants.length === 0) {
-        alert("참석자를 최소 1명 이상 선택해주세요.");
-        return;
+      if (form.participants.length === 0) { 
+          console.error("참석자를 최소 1명 이상 선택해주세요."); 
+          return; 
       }
-      if (form.category.length === 0) {
-        alert("카테고리를 최소 1개 이상 선택해주세요.");
-        return;
+      if (form.category.length === 0) { 
+          console.error("카테고리를 최소 1개 이상 선택해주세요."); 
+          return; 
       }
 
       // API 요청을 위한 데이터 변환
@@ -65,10 +65,14 @@ export default function MeetingHeader({
         }))
       };
 
-      await createMeeting(councilName, meetingData);
-      alert("회의록이 성공적으로 저장되었습니다!");
-      resetForm();
-      router.push('/admin/meeting/main');
+      const success = await createMeeting(councilName, meetingData);
+      if (success) {
+        console.log("회의록이 성공적으로 저장되었습니다!");
+        resetForm();
+        router.push('/admin/meeting/main');
+      } else {
+        console.error("회의록 저장에 실패했습니다. 다시 시도해주세요.");
+      }
     } catch (error) {
       console.error('회의록 저장 실패:', error);
       alert("회의록 저장에 실패했습니다. 다시 시도해주세요.");

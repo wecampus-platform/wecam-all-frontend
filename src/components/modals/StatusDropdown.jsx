@@ -35,8 +35,8 @@ const handleClick = async (newStatus) => {
     setStatus(newStatus);
     setOpen(false);
     alert('상태가 저장되었습니다. ✅');
-  } catch {
-    alert('상태 변경 실패 ❌');
+  } catch (error) {
+    console.error('상태 변경 실패:', error);
   }
 };
 

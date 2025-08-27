@@ -6,10 +6,12 @@ import MyPageBox from './mypagebox';
 import { getMyPageBoxes } from '@/utils/getmypagebox';
 import { clientapi } from '@/lib/fetchClient';
 import { useAuthStore } from '@/store/authStore';
-import SideBarPage from './side-bar';
+import SideBarPage from '@/components/sidebar/LeftIconBar';
 import InputModal from '@/components/modals/Inputmodal';
 import { OrganizationModal } from './modals/organizationModal';
 import {fetchEditUserOrganizationInfo,fetchEditUserInfo} from '@/api-service/mypageApi'
+import CustomScrollbar from '@/components/CustomScrollbar';
+
 
 export default function MyPage() {
   const [user, setUser] = useState(null);
@@ -38,10 +40,13 @@ export default function MyPage() {
       };
   
     try {
-      await fetchEditUserOrganizationInfo(payload);
-      alert('저장 완료!');
+      const response = await fetchEditUserOrganizationInfo(payload);
+      if (response.ok) {
+        console.log('저장 완료!');
+      } else {
+        console.error('저장 실패');
+      }
     } catch (e) {
-      alert('저장 실패');
       console.error(e);
     }
   };
@@ -53,10 +58,13 @@ export default function MyPage() {
     const userName = findValue('이름');
   
     try {
-      await fetchEditUserInfo(userName); // ← 이미 만든 API 사용
-      alert('이름 저장 완료!');
+      const response = await fetchEditUserInfo(userName); // ← 이미 만든 API 사용
+      if (response.ok) {
+        console.log('이름 저장 완료!');
+      } else {
+        console.error('이름 저장 실패');
+      }
     } catch (e) {
-      alert('이름 저장 실패');
       console.error(e);
     }
   };
@@ -91,7 +99,7 @@ export default function MyPage() {
     setInputValue('');
   };
 
-  if (loading) return <div>로딩중...</div>;
+  if (loading) return <div></div>;
   if (error) return <div>에러가 발생했습니다.</div>;
   if (!user) return <div>사용자 정보가 없습니다.</div>;
 
@@ -99,29 +107,38 @@ export default function MyPage() {
   const boxList = getMyPageBoxes(user, authLinks);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
+    <div className="flex h-screen">
+      {/* Sidebar - 고정 */}
       <SideBarPage />
-      <div className="w-full lg:w-1/3">
-        <MyPageCard user={user} />
-      </div>
-      <div className="w-full lg:w-2/3 space-y-6">
-        {boxList.map((box, idx) => (
-          <MyPageBox
-            key={idx}
-            title={box.title}
-            contents={box.contents}
-            blurred={box.title === '소속 정보' && !user.isAuthentication}
-            onVerifyClick={() => setModalType('organization')}
-            onSave={
-              box.title === '소속 정보'
-                ? handleSaveOrganizationInfo
-                : box.title === '기본 정보'
-                ? handleSaveNameInfo
-                : undefined
-            }
-          />
-
-        ))}
+      
+      {/* Main Content - 스크롤 가능 */}
+      <div className="flex-1 flex flex-col lg:flex-row gap-6 overflow-hidden">
+        {/* MyPageCard - 고정 */}
+        <div className="w-full lg:w-1/3 p-6">
+          <MyPageCard user={user} />
+        </div>
+        
+        {/* MyPageBox 영역 */}
+        <CustomScrollbar className="w-full lg:w-2/3 px-15 h-full">
+          <div className="space-y-6 my-10">
+            {boxList.map((box, idx) => (
+              <MyPageBox
+                key={idx}
+                title={box.title}
+                contents={box.contents}
+                blurred={box.title === '소속 정보' && !user.isAuthentication}
+                onVerifyClick={() => setModalType('organization')}
+                onSave={
+                  box.title === '소속 정보'
+                    ? handleSaveOrganizationInfo
+                    : box.title === '기본 정보'
+                    ? handleSaveNameInfo
+                    : undefined
+                }
+              />
+            ))}
+          </div>
+        </CustomScrollbar>
       </div>
 
 

@@ -24,11 +24,10 @@ export function DefaultSection({ onRefresh, onShowHistory }) {
         
         try {
             await updateInvitationExpiry(currentCouncil.name, invitationId, currentExpiredAt);
-            alert('만료일이 1시간 연장되었습니다.');
-            fetchData(); // 연장 후 목록 새로고침
+            console.log('만료일이 1시간 연장되었습니다.');
+            onRefresh();
         } catch (e) {
-            console.error('[handleExtendExpiry] 오류:', e);
-            alert(`만료일 연장 실패: ${e.message}`);
+            console.error(`만료일 연장 실패: ${e.message}`);
         }
     };
     

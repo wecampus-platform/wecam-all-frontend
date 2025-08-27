@@ -8,9 +8,12 @@ export default function Header() {
   const pathname = usePathname();
 
   // 특정 경로에서만 헤더 표시
-  if (pathname !== '/' && pathname !== '/login' && !pathname.startsWith('/admin')) {
+  if (pathname !== '/' && pathname !== '/login') {
     return null;
   }
+  // if (pathname !== '/' && pathname !== '/login' && !pathname.startsWith('/admin')) {
+  //   return null;
+  // }
 
   return (
     <header 

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 
 export default function AuthInitializer() {
-  const setAccessTokenOnly = (accessToken) => {
+  const setAccessTokenOnly = (accessToken: string) => {
     useAuthStore.setState({
       accessToken,
       ready: true,

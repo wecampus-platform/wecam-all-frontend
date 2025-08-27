@@ -111,7 +111,7 @@ const CodeMakeModal = ({ onClose, onSuccess }) => {
               if (!checked || !onSuccess || isLoading) return;
               
               if (!currentCouncil) {
-                alert('학생회 정보를 찾을 수 없습니다.');
+                console.error('학생회 정보를 찾을 수 없습니다.');
                 return;
               }
 
@@ -147,8 +147,7 @@ const CodeMakeModal = ({ onClose, onSuccess }) => {
                 });
 
               } catch (error) {
-                console.error('초대코드 생성 실패:', error);
-                alert('초대코드 생성에 실패했습니다. 다시 시도해주세요.');
+                console.error('초대코드 생성에 실패했습니다. 다시 시도해주세요.');
               } finally {
                 setIsLoading(false);
               }

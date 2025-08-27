@@ -63,7 +63,7 @@ function NavLink({ href, children }) {
     return (
         <Link
             href={href}
-            className="px-4 py-2 rounded-[32px] hover:bg-point hover:text-white transition-colors duration-200 text-sm"
+            className="px-4 py-2 rounded-[32px] hover:bg-point hover:text-white transition-colors duration-200"
         >
             {children}
         </Link>

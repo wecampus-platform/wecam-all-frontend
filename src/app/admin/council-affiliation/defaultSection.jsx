@@ -42,7 +42,7 @@ export function DefaultSection() {
         authType: req.authType ?? 'NEW_STUDENT',
       });
 
-      alert(`${req.name}님의 요청이 승인되었습니다.`);
+      console.log(`${req.name}님의 요청이 승인되었습니다.`);
       refreshRequests();
     } catch (e) {
       console.error('승인 실패:', e);
@@ -60,7 +60,7 @@ export function DefaultSection() {
         authType: req.authType ?? 'NEW_STUDENT',
       });
 
-      alert(`${req.name}님의 요청이 거절되었습니다.`);
+      console.log(`${req.name}님의 요청이 거절되었습니다.`);
       refreshRequests();
     } catch (e) {
       console.error('거절 실패:', e);

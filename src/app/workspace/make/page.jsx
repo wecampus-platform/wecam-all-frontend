@@ -134,7 +134,7 @@ export default function MakeWorkspacePage() {
         stack: error.stack,
         name: error.name
       });
-      alert(`워크스페이스 생성 요청에 실패했습니다: ${error.message}`);
+      console.error(`워크스페이스 생성 요청에 실패했습니다: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }

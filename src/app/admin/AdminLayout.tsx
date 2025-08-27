@@ -2,14 +2,16 @@
 
 interface AdminLayoutProps {
     title: string;
+    description?: string;
     actionButton?: React.ReactNode;
-    subtitle?: string;
+    subtitle?: React.ReactNode;
     additionalContent?: React.ReactNode;
     mainContent: React.ReactNode;
 }
 
 export default function AdminLayout({ 
     title, 
+    description,
     actionButton, 
     subtitle, 
     additionalContent, 
@@ -26,6 +28,11 @@ export default function AdminLayout({
                             <b className="relative text-[35px] font-pretendard text-darkslategray text-left">
                                 {title}
                             </b>
+                            {description && (
+                                <div className="mt-2 text-gray6 text-base font-normal">
+                                    {description}
+                                </div>
+                            )}
                         </div>
                         {actionButton && (
                             <div className="ml-auto">
@@ -39,7 +46,7 @@ export default function AdminLayout({
                 {(subtitle || additionalContent) && (
                     <div className="w-full">
                         {subtitle && (
-                            <div className="relative text-[25px] font-pretendard font-semibold text-left">
+                            <div className="relative font-pretendard font-semibold text-left">
                                 {subtitle}
                             </div>
                         )}

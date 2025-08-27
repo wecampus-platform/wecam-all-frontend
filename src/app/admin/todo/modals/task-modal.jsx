@@ -60,7 +60,7 @@ const statusMap = [
       close();
       window.location.href = '/admin/todo/main';
     } catch (err) {
-      alert(err.message);
+      console.error(err.message);
     }
   };
 

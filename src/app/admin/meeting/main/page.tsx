@@ -8,6 +8,7 @@ import MeetingSort from '../components/main/MeetingSort';
 import MeetingList from '../components/main/MeetingList';
 import { getMeetings, getMemberList, getCategoryList } from '@/api-service/meetingApi';
 import { useAuthStore } from '@/store/authStore';
+import AdminLayout from '@/app/admin/AdminLayout';
 
 export default function MeetingMainPage() {
     const { councilName } = useAuthStore();
@@ -79,22 +80,18 @@ export default function MeetingMainPage() {
     }, [councilName]);
 
     return (
-        <div className="h-full w-full flex flex-col">
-            <div className="px-[76px] w-full flex flex-col gap-8 bg-cream flex-1">
-                <div className="w-full flex flex-col gap-2">
-                    <div className="flex flex-row justify-center items-center">
-                        <b className="relative text-[40px] font-pretendard text-darkslategray text-left">
-                            회의록 작성 및 관리
-                        </b>
-                        <Link 
-                            href="/admin/meeting/create"
-                            className="button-common ml-auto w-[200px] h-[50px] flex items-center justify-center"
-                        >
-                            + 새 회의록 작성하기
-                        </Link>
-                    </div>
-                </div>
-
+        <AdminLayout
+            title="회의록 작성 및 관리"
+            actionButton={
+                <Link 
+                    href="/admin/meeting/create"
+                    className="button-common w-[200px] h-[50px] flex items-center justify-center"
+                >
+                    + 새 회의록 작성하기
+                </Link>
+            }
+            subtitle="회의록 목록"
+            additionalContent={
                 <div className="flex gap-2">
                     <Search
                         value={inputValue}
@@ -103,33 +100,36 @@ export default function MeetingMainPage() {
                         placeholder="회의록 제목 또는 회의 일시를 입력하세요."
                     />
                 </div>
-
-                {/* 필터 및 정렬 */}
-                <div className="flex items-center justify-between">
-                    <MeetingFilters
-                        selectedCategory={selectedCategory}
-                        selectedParticipant={selectedParticipant}
-                        onCategoryChange={setSelectedCategory}
-                        onParticipantChange={setSelectedParticipant}
-                        categories={categories}
-                        members={members}
-                    />
-                    
-                    <MeetingSort
-                        selectedSort={selectedSort}
-                        onSortChange={setSelectedSort}
-                    />
-                </div>
-
-                {/* 회의록 목록 */}
-                {loading ? (
-                    <div className="flex justify-center items-center py-8">
-                        <div className="text-gray-600">로딩 중...</div>
+            }
+            mainContent={
+                <div className="w-full">
+                    {/* 필터 및 정렬 */}
+                    <div className="flex items-center justify-between mb-6">
+                        <MeetingFilters
+                            selectedCategory={selectedCategory}
+                            selectedParticipant={selectedParticipant}
+                            onCategoryChange={setSelectedCategory}
+                            onParticipantChange={setSelectedParticipant}
+                            categories={categories}
+                            members={members}
+                        />
+                        
+                        <MeetingSort
+                            selectedSort={selectedSort}
+                            onSortChange={setSelectedSort}
+                        />
                     </div>
-                ) : (
-                    <MeetingList meetings={meetings} />
-                )}
-            </div>
-        </div>
+
+                    {/* 회의록 목록 */}
+                    {loading ? (
+                        <div className="flex justify-center items-center py-8">
+                            <div className="text-gray-600">로딩 중...</div>
+                        </div>
+                    ) : (
+                        <MeetingList meetings={meetings} />
+                    )}
+                </div>
+            }
+        />
     );
 }

@@ -13,24 +13,34 @@ const DashboardSummary = () => {
   const [summary, setSummary] = useState(null);
 
   useEffect(() => {
+    if (!accessToken || !councilName || !councilId) return;
+    
     fetchTodoSummary(accessToken, councilName, councilId)
       .then(setSummary)
       .catch((err) => {
         console.error('요약 정보 가져오기 실패:', err);
         setSummary(null);
       });
-  }, []);
+  }, [accessToken, councilName, councilId]);
 
   if (!summary) return null;
+  
+  // summary 객체의 속성들이 존재하는지 확인
+  const todayTodo = summary.todayTodo || {};
+  const weekTodo = summary.weekTodo || {};
+  const receivedTodo = summary.receivedTodo || {};
+  const sentTodo = summary.sentTodo || {};
+  
   return (
     <div className={styles.wrapper}>
-      <SummaryCard title="오늘의 할 일" left={summary.todayTodo.done} right={`${summary.todayTodo.total}`} />
+      <SummaryCard title="오늘의 할 일" left={todayTodo.done || 0} right={`${todayTodo.total || 0}`} />
       <SummaryCard
-  title="이번 주 현황 및 완료율"
-  left={`${summary.weekTodo.done} / ${summary.weekTodo.total}`}
-  right={`${summary.weekTodo.rate}%`}/>
-        <SummaryCard title="받은 일 현황" left={summary.receivedTodo.done} right={`${summary.receivedTodo.total}`}/>
-      <SummaryCard title="보낸 일 현황" left={summary.sentTodo.done} right={`${summary.sentTodo.total}`} />
+        title="이번 주 현황 및 완료율"
+        left={`${weekTodo.done || 0} / ${weekTodo.total || 0}`}
+        right={`${weekTodo.rate || 0}%`}
+      />
+      <SummaryCard title="받은 일 현황" left={receivedTodo.done || 0} right={`${receivedTodo.total || 0}`} />
+      <SummaryCard title="보낸 일 현황" left={sentTodo.done || 0} right={`${sentTodo.total || 0}`} />
     </div>
   );
 };

@@ -67,7 +67,7 @@ export default function AllStudentsSection() {
     );
 
     const handleReject = (req) => {
-        alert(`제명: ${req.name}`);
+        console.log(`제명: ${req.name}`);
     };
 
     return (

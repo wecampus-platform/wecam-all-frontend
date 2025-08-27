@@ -12,6 +12,7 @@ export default function MainPage() {
   const router = useRouter();
   const [todoType, setTodoType] = useState('');
   const [progressStatus, setProgressStatus] = useState('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const [tasks, setTasks] = useState([]);
 
@@ -21,6 +22,8 @@ export default function MainPage() {
   const councilId = councilList?.[0]?.id || 2;
 
   useEffect(() => {
+    if (!accessToken || !councilName || !councilId) return;
+    
     getAllTasks(accessToken, councilName, councilId, todoType, progressStatus)
       .then(res => {
         // API가 이미 result 배열을 반환하므로 직접 사용
@@ -31,7 +34,7 @@ export default function MainPage() {
         console.error('할 일 목록 가져오기 실패:', error);
         setTasks([]);
       });
-  }, [todoType, progressStatus]);
+  }, [accessToken, councilName, councilId, todoType, progressStatus]);
 
 
   const goToAddPage = () => router.push('/admin/todo/add');
@@ -45,7 +48,7 @@ export default function MainPage() {
           </h1>
           <button
             className="button-common w-[200px] h-[50px] flex items-center justify-center"
-            onClick={() => setShowCreateModal(true)}
+            onClick={goToAddPage}
           >
             + 할 일 등록하기
           </button>
@@ -155,7 +158,10 @@ export default function MainPage() {
             <Task key={task.todoId} task={task} />
           ))}
         </div>
-        <TaskModal />
+        <TaskModal 
+          isOpen={showCreateModal} 
+          onClose={() => setShowCreateModal(false)} 
+        />
       </div>
     </div>
   );

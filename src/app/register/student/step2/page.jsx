@@ -12,7 +12,7 @@ export default function RegisterStep2Page() {
 
   const handleSubmit = async (form2Data) => {
     if (!school || !college || !department) {
-      alert('소속 정보를 다시 선택해주세요.');
+      console.error('소속 정보를 다시 선택해주세요.');
       return;
     }
 
@@ -27,9 +27,8 @@ export default function RegisterStep2Page() {
       console.log(data);
       await registerUser(data);
       router.push('/register/student/success');
-    } catch (err) {
-      alert('회원가입 중 문제가 발생했습니다.');
-      console.error(err);
+    } catch (error) {
+      console.error('회원가입 중 문제가 발생했습니다.');
     }
   };
 

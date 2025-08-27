@@ -9,7 +9,7 @@ export default function NotPlacedMember({ members, onSectionClick }) {
         <Droppable droppableId="notPlaced" direction="horizontal">
             {(provided) => (
                 <div
-                    className="h-[100px] mt-10 bg-white border border-gray9 rounded-[12px] px-8 flex items-center cursor-pointer hover:brightness-98"
+                    className="h-[100px] my-10 bg-white border border-gray9 rounded-[12px] px-8 flex items-center cursor-pointer hover:brightness-98"
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     onClick={onSectionClick}
@@ -20,13 +20,14 @@ export default function NotPlacedMember({ members, onSectionClick }) {
                             <div className="text-gray3 text-[16px]">{members.length}명</div>
                         </div>
                         <div className="flex items-center gap-2">
-                            {members?.filter(m => m && m.id).map((m, index) => (
-                                <Draggable key={m.id} draggableId={m.id.toString()} index={index}>
+                            {members?.filter(m => m && m.userId).map((m, index) => (
+                                <Draggable key={m.userId} draggableId={m.userId.toString()} index={index}>
                                     {(provided) => (
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
+                                            className="cursor-grab active:cursor-grabbing"
                                         >
                                             <NameTag name={m.name || 'Unknown'} />
                                         </div>

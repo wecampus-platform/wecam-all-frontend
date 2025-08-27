@@ -18,9 +18,8 @@ export function CodeModal({ onClose, onBack }) {
             console.log('초대 코드 사용 성공:', result);
             close();
             window.location.href = '/mypage';
-          } catch (err) {
-            alert('초대 코드 사용 중 오류 발생');
-            console.error(err);
+          } catch (error) {
+            console.error('초대 코드 사용 중 오류 발생');
           }
     };
 
