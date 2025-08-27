@@ -50,8 +50,8 @@ export default function AffiliationList({
           console.log('부서 목록 result:', response.result);
           // API 응답 구조에 맞게 name 필드 사용하고 undefined 값 필터링
           const deptNames = response.result
-            .filter(dept => dept && dept.name && dept.name.trim() !== '')
-            .map(dept => dept.name);
+            .filter(dept => dept && dept.departmentName && dept.departmentName.trim() !== '')
+            .map(dept => dept.departmentName);
           console.log('추출된 부서명들:', deptNames);
           console.log('departments 배열 길이:', deptNames.length);
           setDepartments(deptNames);
@@ -106,23 +106,23 @@ export default function AffiliationList({
         throw new Error('부서 목록 데이터가 올바르지 않습니다.');
       }
       
-      // API 응답 구조에 맞게 name 필드로 검색
-      const targetDept = deptResponse.result.find(dept => dept.name === newDepartment);
+      // API 응답 구조에 맞게 departmentName 필드로 검색
+      const targetDept = deptResponse.result.find(dept => dept.departmentName === newDepartment);
       console.log('찾은 부서 정보:', targetDept);
       
       if (!targetDept) {
         throw new Error(`'${newDepartment}' 부서를 찾을 수 없습니다.`);
       }
       
-      // API 응답 구조에 맞게 id 필드 사용
-      if (!targetDept.id) {
+      // API 응답 구조에 맞게 departmentId 필드 사용
+      if (!targetDept.departmentId) {
         throw new Error(`'${newDepartment}' 부서의 ID가 없습니다.`);
       }
 
       console.log('부서 이동 API 호출:', {
         councilName,
         councilMemberId,
-        departmentId: targetDept.id,
+        departmentId: targetDept.departmentId,
         departmentLevel: 1,
         selectedCouncilId
       });
@@ -131,7 +131,7 @@ export default function AffiliationList({
       const moveResponse = await moveMemberToDepartment(
         councilName, 
         councilMemberId, 
-        targetDept.id, // API 응답 구조에 맞게 id 사용
+        targetDept.departmentId,
         1, // departmentLevel (부원으로 설정)
         selectedCouncilId
       );

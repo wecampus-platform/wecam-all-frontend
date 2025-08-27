@@ -416,6 +416,7 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
                                             major={member?.major || 'N/A'}
                                             department={selectedSection.title}
                                             joinDate={member?.joinDate || 'N/A'}
+                                            councilMemberId={member?.councilMemberId}
                                         />
                                     ))}
                                 </div>
@@ -443,6 +444,7 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
                                             major={member?.major || 'N/A'}
                                             department={selectedSection.title}
                                             joinDate={member?.joinDate || 'N/A'}
+                                            councilMemberId={member?.councilMemberId}
                                         />
                                     ))}
                                 </div>
