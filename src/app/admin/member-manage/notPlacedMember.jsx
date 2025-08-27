@@ -20,8 +20,8 @@ export default function NotPlacedMember({ members, onSectionClick }) {
                             <div className="text-gray3 text-[16px]">{members.length}명</div>
                         </div>
                         <div className="flex items-center gap-2">
-                            {members?.filter(m => m && m.userId).map((m, index) => (
-                                <Draggable key={m.userId} draggableId={m.userId.toString()} index={index}>
+                            {members?.filter(m => m && m.councilMemberId).map((m, index) => (
+                                <Draggable key={m.councilMemberId} draggableId={m.councilMemberId.toString()} index={index}>
                                     {(provided) => (
                                         <div
                                             ref={provided.innerRef}

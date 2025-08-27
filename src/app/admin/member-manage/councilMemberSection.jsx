@@ -53,16 +53,16 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
                      number: `${(dept.lead?.length || 0) + (dept.sub?.length || 0)}명`,
                      leadTitle: '부장',
                      subTitle: '부원',
-                     lead: dept.lead?.filter(member => member && member.userId).map(member => ({
-                         id: member.userId,
-                         userId: member.userId, // userId 필드 추가
+                     lead: dept.lead?.filter(member => member && member.councilMemberId).map(member => ({
+                         id: member.councilMemberId,
+                         councilMemberId: member.councilMemberId,
                          name: member.userName || 'Unknown',
                          role: member.departmentRoleName || 'Unknown',
                          councilRole: member.userCouncilRole || 'Unknown'
                      })) || [],
-                     sub: dept.sub?.filter(member => member && member.userId).map(member => ({
-                         id: member.userId,
-                         userId: member.userId, // userId 필드 추가
+                     sub: dept.sub?.filter(member => member && member.councilMemberId).map(member => ({
+                         id: member.councilMemberId,
+                         councilMemberId: member.councilMemberId,
                          name: member.userName || 'Unknown',
                          role: member.departmentRoleName || 'Unknown',
                          councilRole: member.userCouncilRole || 'Unknown'
@@ -73,8 +73,8 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
                  
                  // unassigned 상태를 부모 컴포넌트에 설정
                  stableSetNotPlacedMembers(unassignedMembers.map(member => ({
-                     id: member.userId,
-                     userId: member.userId, // userId 필드 추가
+                     id: member.councilMemberId,
+                     councilMemberId: member.councilMemberId,
                      name: member.userName,
                      role: member.departmentRoleName,
                      councilRole: member.userCouncilRole
@@ -214,15 +214,15 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
                 if (section.title === updateInfo.oldDepartment) {
                     return {
                         ...section,
-                        lead: section.lead.filter(member => member.userId !== updateInfo.userId),
-                        sub: section.sub.filter(member => member.userId !== updateInfo.userId)
+                        lead: section.lead.filter(member => member.councilMemberId !== updateInfo.councilMemberId),
+                        sub: section.sub.filter(member => member.councilMemberId !== updateInfo.councilMemberId)
                     };
                 }
                 // 새 부서에 멤버 추가 (부원으로 추가)
                 if (section.title === updateInfo.newDepartment) {
                     const newMember = {
-                        id: updateInfo.userId,
-                        userId: updateInfo.userId,
+                        id: updateInfo.councilMemberId,
+                        councilMemberId: updateInfo.councilMemberId,
                         name: updateInfo.memberInfo.name,
                         studentId: updateInfo.memberInfo.studentId,
                         major: updateInfo.memberInfo.major,
@@ -244,16 +244,16 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
         if (selectedSection && selectedSection.title === updateInfo.oldDepartment) {
             setSelectedSection(prev => ({
                 ...prev,
-                lead: prev.lead.filter(member => member.userId !== updateInfo.userId),
-                sub: prev.sub.filter(member => member.userId !== updateInfo.userId)
+                lead: prev.lead.filter(member => member.councilMemberId !== updateInfo.councilMemberId),
+                sub: prev.sub.filter(member => member.councilMemberId !== updateInfo.councilMemberId)
             }));
         }
         
         // 새 부서가 현재 표시된 섹션이라면 멤버 추가
         if (selectedSection && selectedSection.title === updateInfo.newDepartment) {
             const newMember = {
-                id: updateInfo.userId,
-                userId: updateInfo.userId,
+                id: updateInfo.councilMemberId,
+                councilMemberId: updateInfo.councilMemberId,
                 name: updateInfo.memberInfo.name,
                 studentId: updateInfo.memberInfo.studentId,
                 major: updateInfo.memberInfo.major,
@@ -303,8 +303,8 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
                                                 ref={provided.innerRef}
                                                 {...provided.droppableProps}
                                             >
-                                                {section.lead?.filter(m => m && m.userId).map((m, index) => (
-                                                    <Draggable key={m.userId} draggableId={m.userId.toString()} index={index}>
+                                                {section.lead?.filter(m => m && m.councilMemberId).map((m, index) => (
+                                                    <Draggable key={m.councilMemberId} draggableId={m.councilMemberId.toString()} index={index}>
                                                         {(provided) => (
                                                             <div
                                                                 ref={provided.innerRef}
@@ -334,8 +334,8 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
                                                 ref={provided.innerRef}
                                                 {...provided.droppableProps}
                                             >
-                                                {section.sub?.filter(m => m && m.userId).map((m, index) => (
-                                                    <Draggable key={m.userId} draggableId={m.userId.toString()} index={index}>
+                                                {section.sub?.filter(m => m && m.councilMemberId).map((m, index) => (
+                                                    <Draggable key={m.councilMemberId} draggableId={m.councilMemberId.toString()} index={index}>
                                                         {(provided) => (
                                                             <div
                                                                 ref={provided.innerRef}

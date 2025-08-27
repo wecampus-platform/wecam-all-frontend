@@ -13,7 +13,7 @@ export default function AffiliationList({
   major,
   department,
   joinDate,
-  userId, // userId prop 추가
+  councilMemberId,
   onMemberUpdate, // 부서 변경 후 콜백 함수 추가
 }) {
   const {
@@ -77,14 +77,14 @@ export default function AffiliationList({
       return;
     }
     
-    if (!userId || !councilName || !selectedCouncilId) {
+    if (!councilMemberId || !councilName || !selectedCouncilId) {
       const missingInfo = [];
-      if (!userId) missingInfo.push('userId');
+      if (!councilMemberId) missingInfo.push('councilMemberId');
       if (!councilName) missingInfo.push('councilName');
       if (!selectedCouncilId) missingInfo.push('selectedCouncilId');
       
       setError(`필수 정보가 누락되었습니다: ${missingInfo.join(', ')}`);
-      console.error('부서 이동 실패 - 필수 정보 누락:', { userId, councilName, selectedCouncilId });
+      console.error('부서 이동 실패 - 필수 정보 누락:', { councilMemberId, councilName, selectedCouncilId });
       return;
     }
 
@@ -92,7 +92,7 @@ export default function AffiliationList({
     setError(null);
 
     try {
-      console.log('부서 이동 시작:', { userId, newDepartment, councilName, selectedCouncilId });
+      console.log('부서 이동 시작:', { councilMemberId, newDepartment, councilName, selectedCouncilId });
       
       // 부서명으로 부서 ID 찾기
       const deptResponse = await fetchDepartmentRoles(councilName, selectedCouncilId);
@@ -121,7 +121,7 @@ export default function AffiliationList({
 
       console.log('부서 이동 API 호출:', {
         councilName,
-        userId,
+        councilMemberId,
         departmentId: targetDept.id,
         departmentLevel: 1,
         selectedCouncilId
@@ -130,7 +130,7 @@ export default function AffiliationList({
       // API 호출하여 부서 이동
       const moveResponse = await moveMemberToDepartment(
         councilName, 
-        userId, 
+        councilMemberId, 
         targetDept.id, // API 응답 구조에 맞게 id 사용
         1, // departmentLevel (부원으로 설정)
         selectedCouncilId
@@ -145,7 +145,7 @@ export default function AffiliationList({
       // 부모 컴포넌트에 업데이트 알림 - 구체적인 정보 전달
       if (onMemberUpdate) {
         onMemberUpdate({
-          userId,
+          councilMemberId,
           oldDepartment: department,
           newDepartment,
           memberInfo: {

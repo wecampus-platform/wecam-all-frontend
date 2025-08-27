@@ -17,7 +17,7 @@ import AffiliationList from './components/AffiliationList';
 
 interface Member {
   id: number;
-  userId: number;
+  councilMemberId: number;
   name: string;
   role: string;
   councilRole: string;
@@ -65,16 +65,16 @@ export default function MemberManagePage() {
                     number: `${(dept.lead?.length || 0) + (dept.sub?.length || 0)}명`,
                     leadTitle: '부장',
                     subTitle: '부원',
-                    lead: dept.lead?.filter((member: any) => member && member.userId).map((member: any) => ({
-                        id: member.userId,
-                        userId: member.userId,  // userId 필드 추가
+                    lead: dept.lead?.filter((member: any) => member && member.councilMemberId).map((member: any) => ({
+                        id: member.councilMemberId,
+                        councilMemberId: member.councilMemberId,
                         name: member.userName || 'Unknown',
                         role: member.departmentRoleName || 'Unknown',
                         councilRole: member.userCouncilRole || 'Unknown'
                     })) || [],
-                    sub: dept.sub?.filter((member: any) => member && member.userId).map((member: any) => ({
-                        id: member.userId,
-                        userId: member.userId,  // userId 필드 추가
+                    sub: dept.sub?.filter((member: any) => member && member.councilMemberId).map((member: any) => ({
+                        id: member.councilMemberId,
+                        councilMemberId: member.councilMemberId,
                         name: member.userName || 'Unknown',
                         role: member.departmentRoleName || 'Unknown',
                         councilRole: member.userCouncilRole || 'Unknown'
@@ -83,8 +83,8 @@ export default function MemberManagePage() {
                 
                 setSections(formattedSections);
                 stableSetNotPlacedMembers(unassignedMembers.map((member: any) => ({
-                    id: member.userId,
-                    userId: member.userId,  // userId 필드 추가
+                    id: member.councilMemberId,
+                    councilMemberId: member.councilMemberId,
                     name: member.userName,
                     role: member.departmentRoleName,
                     councilRole: member.userCouncilRole
@@ -185,7 +185,7 @@ export default function MemberManagePage() {
         }
 
         console.log('✅ 최종 dragged 멤버:', dragged);
-        console.log('dragged.userId:', dragged.userId);
+        console.log('dragged.councilMemberId:', dragged.councilMemberId);
         console.log('dragged.name:', dragged.name);
 
         // 도착지에 추가
@@ -264,7 +264,7 @@ export default function MemberManagePage() {
                     console.log('사용 가능한 ID 필드들:', Object.keys(targetMember).filter(key => key.includes('Id') || key.includes('id')));
                     
                     // 다양한 ID 필드를 시도
-                    let memberId = targetMember.userId; // 기본값
+                    let memberId = targetMember.councilMemberId; // 기본값을 councilMemberId로
                     
                     // 다른 ID 필드들을 우선적으로 시도
                     if (targetMember.id !== undefined) {
@@ -275,7 +275,7 @@ export default function MemberManagePage() {
                         console.log('memberId 필드 사용:', memberId);
                     } else if (targetMember.userId !== undefined) {
                         memberId = targetMember.userId;
-                        console.log('userId 필드 사용:', memberId);
+                        console.log('userId 필드 사용(백워드 호환):', memberId);
                     }
                     
                     console.log('전송할 데이터:', {
@@ -291,18 +291,18 @@ export default function MemberManagePage() {
                 } catch (fetchError) {
                     console.error('fetchAllMembers API 호출 실패:', fetchError);
                     
-                    // fallback: 기존 방식으로 시도 (dragged.userId 사용)
-                    console.log('fallback: 기존 userId로 시도:', dragged.userId);
+                    // fallback: 기존 방식으로 시도 (dragged.councilMemberId 사용)
+                    console.log('fallback: 기존 councilMemberId로 시도:', dragged.councilMemberId);
                     
                     console.log('전송할 데이터 (fallback):', {
                         councilName,
-                        memberId: dragged.userId,
+                        memberId: dragged.councilMemberId,
                         departmentId,
                         departmentLevel,
                         selectedCouncilId
                     });
                     
-                    await moveMemberToDepartment(councilName, dragged.userId, departmentId, departmentLevel, selectedCouncilId);
+                    await moveMemberToDepartment(councilName, dragged.councilMemberId, departmentId, departmentLevel, selectedCouncilId);
                     console.log(`멤버 이동 성공 (fallback): 부서 ${departmentId}, 레벨 ${departmentLevel === 0 ? '부장' : '부원'}`);
                 }
             } else {
@@ -311,7 +311,7 @@ export default function MemberManagePage() {
             
             console.log('=== API 호출 완료 ===');
             console.log('이동된 멤버 정보:', {
-                userId: dragged.userId,
+                councilMemberId: dragged.councilMemberId,
                 name: dragged.name,
                 source: source.droppableId,
                 destination: destination.droppableId
@@ -368,7 +368,7 @@ export default function MemberManagePage() {
                         <DragDropContext onDragEnd={onDragEnd}>
                             <div className="flex flex-col gap-6">
                                                                  <CouncilMemberSection 
-                                     sections={sections} 
+                                     sections={sections as any} 
                                      setSections={setSections}
                                      setNotPlacedMembers={stableSetNotPlacedMembers}
                                      refreshDepartments={refreshDepartments}
