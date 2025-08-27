@@ -61,9 +61,8 @@ export default function Header({
       }
       router.push('/admin/todo/main');
       router.refresh();                // 메인 새로고침
-    } catch (err) {
-      console.error(err);
-      alert('저장 중 오류가 발생했습니다.');
+    } catch (error) {
+      console.error('저장 중 오류가 발생했습니다.');
     }
   };
 

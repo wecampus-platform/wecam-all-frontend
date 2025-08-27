@@ -14,7 +14,7 @@ export default function RegisterStep2Page() {
 
   const handleSubmit = async (form2Data) => {
     if (!school || !college || !department) {
-      alert('소속 정보를 다시 선택해주세요.');
+      console.error('소속 정보를 다시 선택해주세요.');
       return;
     }
     const selectOrganizationId =
@@ -35,9 +35,8 @@ export default function RegisterStep2Page() {
     try {
       await presidentRegisterUser(data);
       router.push(`/register/president/success?redirect=${encodeURIComponent(redirect)}`);
-    } catch (err) {
-      alert('회원가입 중 문제가 발생했습니다.');
-      console.error(err);
+    } catch (error) {
+      console.error('회원가입 중 문제가 발생했습니다.');
     }
   };
 

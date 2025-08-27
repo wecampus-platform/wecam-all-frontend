@@ -1,4 +1,3 @@
-// pages/index.tsx
 'use client';
 
 import { useRouter } from "next/navigation"; 
@@ -38,11 +37,11 @@ const LandingPage = () => {
 
       {/* CTA 버튼 */}
       <button
-  onClick={() => router.push("/workspace")}
-  className="absolute top-[666px] left-1/2 -translate-x-1/2 bg-blue-500 text-white text-[32px] font-bold rounded-xl px-14 py-7 cursor-pointer hover:bg-blue-600 transition"
->
-  WeCampus 워크스페이스 생성하기
-</button>
+        onClick={() => router.push("/workspace")}
+        className="absolute top-[666px] left-1/2 -translate-x-1/2 bg-blue-500 text-white text-[32px] font-bold rounded-xl px-14 py-7 cursor-pointer hover:bg-blue-600 transition"
+      >
+        WeCampus 워크스페이스 생성하기
+      </button>
 
       {/* 공사중 안내 */}
       <p className="absolute top-[949px] left-1/2 -translate-x-1/2 text-[32px] font-extrabold text-[#9bc1ff]">

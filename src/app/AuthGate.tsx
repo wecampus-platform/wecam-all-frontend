@@ -3,7 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 
-export default function AuthGate({ children }) {
+interface AuthGateProps {
+  children: React.ReactNode;
+}
+
+export default function AuthGate({ children }: AuthGateProps) {
     const ready = useAuthStore((state) => state.ready);
     const [hydrated, setHydrated] = useState(false);
 
@@ -13,5 +17,5 @@ export default function AuthGate({ children }) {
 
     if (!hydrated || !ready) return null;
 
-    return children;
+    return <>{children}</>;
 }

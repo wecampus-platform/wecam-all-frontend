@@ -23,7 +23,6 @@ export default function MeetingCreatePage() {
 
   return (
     <div className="h-screen w-full flex">
-      <SideBarPage />
       <div className="px-[76px] w-full flex flex-col gap-8 bg-cream">
         <div className="py-12">
           <MeetingHeader form={form} resetForm={resetForm} />

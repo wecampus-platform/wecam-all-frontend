@@ -42,7 +42,7 @@ export function DefaultSection() {
         authType: req.authType ?? 'NEW_STUDENT',
       });
 
-      alert(`${req.name}님의 요청이 승인되었습니다.`);
+      console.log(`${req.name}님의 요청이 승인되었습니다.`);
       refreshRequests();
     } catch (e) {
       console.error('승인 실패:', e);
@@ -60,7 +60,7 @@ export function DefaultSection() {
         authType: req.authType ?? 'NEW_STUDENT',
       });
 
-      alert(`${req.name}님의 요청이 거절되었습니다.`);
+      console.log(`${req.name}님의 요청이 거절되었습니다.`);
       refreshRequests();
     } catch (e) {
       console.error('거절 실패:', e);
@@ -95,7 +95,7 @@ export function DefaultSection() {
   };
 
   return (
-    <div className="w-full flex flex-col items-start justify-start text-left text-base text-gray4 font-pretendard rounded">
+    <div className="w-full flex flex-col bg-white items-start justify-start text-left text-base text-gray4 font-pretendard rounded">
       {/* 탭 + 전체 체크 */}
       <div className="flex flex-row items-center w-full mx-10 my-6">
         <Checkbox className="mr-10" checked={checkedList.every(Boolean)} onChange={toggleAll} variant="filled" />

@@ -11,6 +11,7 @@ export const useAuthStore = create(
       auth: false,
       councilList: [],
       councilName: null,
+      selectedCouncilId: null,
       refreshToken: null,
       ready: false,
 
@@ -21,6 +22,7 @@ export const useAuthStore = create(
         auth: data.auth,
         councilList: data.councilList,
         councilName: data.councilList?.[0]?.name || null,
+        selectedCouncilId: data.selectedCouncilId || data.councilList?.[0]?.id || null,
         refreshToken: data.refreshToken,
         ready: true,
       }),
@@ -35,6 +37,27 @@ export const useAuthStore = create(
         refreshToken: null,
         ready: true,
       }),
+
+      // 권한 확인 함수들
+      isAdmin: () => {
+        const state = useAuthStore.getState();
+        return state.role === 'COUNCIL' || state.role === 'PRESIDENT';
+      },
+
+      isCouncil: () => {
+        const state = useAuthStore.getState();
+        return state.role === 'COUNCIL';
+      },
+
+      isPresident: () => {
+        const state = useAuthStore.getState();
+        return state.role === 'PRESIDENT';
+      },
+
+      hasAdminAccess: () => {
+        const state = useAuthStore.getState();
+        return state.auth && (state.role === 'COUNCIL' || state.role === 'PRESIDENT');
+      },
     }),
     {
       name: 'auth-storage',
@@ -43,6 +66,7 @@ export const useAuthStore = create(
         auth: state.auth,
         councilList: state.councilList,
         councilName: state.councilName,
+        selectedCouncilId: state.selectedCouncilId,
         refreshToken: state.refreshToken,
       }),
     }

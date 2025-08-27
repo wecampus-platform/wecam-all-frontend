@@ -26,11 +26,10 @@ export function CertificateModal({ onClose, onBack }) {
     const handleSubmit = async () => {
         try {
             await requestCurrentStudentAffiliation(file);
-            alert('인증 요청이 성공적으로 전송되었습니다.');
+            console.log('인증 요청이 성공적으로 전송되었습니다.');
             onClose();
         } catch (err) {
-            alert(err.message || '요청 중 오류 발생');
-            console.error(err);
+            console.error(err.message || '요청 중 오류 발생');
         }
     };
 

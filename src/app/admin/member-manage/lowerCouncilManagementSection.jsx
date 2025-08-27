@@ -88,15 +88,15 @@ export default function LowerCouncilManagementSection() {
     ]);
 
     const handleApprove = (req) => {
-        alert(`${req.councilName} 승인`);
+        console.log(`${req.councilName} 승인`);
     };
 
     const handleReject = (req) => {
-        alert(`${req.councilName} 거절`);
+        console.log(`${req.councilName} 거절`);
     };
 
     const handleDetail = (req) => {
-        alert(`${req.councilName} 상세보기`);
+        console.log(`${req.councilName} 상세보기`);
     };
 
     return (

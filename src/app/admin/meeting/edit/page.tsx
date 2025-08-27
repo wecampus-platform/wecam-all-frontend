@@ -9,7 +9,6 @@ import MeetingHeader from "@/app/admin/meeting/components/create/MeetingHeader";
 import { getMeetingDetail, updateMeeting } from "@/api-service/meetingApi";
 import { useAuthStore } from "@/store/authStore";
 import { getMemberList, getCategoryList } from "@/api-service/meetingApi";
-import SideBarPage from '@/components/side-bar';
 
 interface MeetingDetail {
     meetingId: number;
@@ -78,7 +77,7 @@ export default function MeetingEditPage() {
     useEffect(() => {
         const fetchData = async () => {
             if (!councilName || !meetingId) {
-                alert("회의록 ID가 필요합니다.");
+                console.error("회의록 ID가 필요합니다.");
                 router.push('/admin/meeting/main');
                 return;
             }
@@ -125,7 +124,7 @@ export default function MeetingEditPage() {
                 
             } catch (error) {
                 console.error('데이터 로딩 실패:', error);
-                alert("회의록 데이터를 불러오는데 실패했습니다.");
+                console.error("회의록 데이터를 불러오는데 실패했습니다.");
                 router.push('/admin/meeting/main');
             } finally {
                 setLoading(false);
@@ -182,7 +181,6 @@ export default function MeetingEditPage() {
     if (loading) {
         return (
             <div className="h-screen w-full flex">
-                <SideBarPage />
                 <div className="px-[76px] w-full flex flex-col gap-8 bg-cream">
                     <div className="py-12">
                         <div className="flex justify-center items-center h-64">
@@ -197,7 +195,6 @@ export default function MeetingEditPage() {
     if (!meetingDetail) {
         return (
             <div className="h-screen w-full flex">
-                <SideBarPage />
                 <div className="px-[76px] w-full flex flex-col gap-8 bg-cream">
                     <div className="py-12">
                         <div className="flex justify-center items-center h-64">
@@ -211,7 +208,6 @@ export default function MeetingEditPage() {
 
     return (
         <div className="h-screen w-full flex">
-            <SideBarPage />
             <div className="px-[76px] w-full flex flex-col gap-8 bg-cream">
                 <div className="py-12">
                     <MeetingHeader
@@ -234,11 +230,26 @@ export default function MeetingEditPage() {
 
                             try {
                                 // 클라이언트 측 유효성 검사
-                                if (!form.title.trim()) { alert("회의록 제목을 입력해주세요."); return; }
-                                if (!form.date) { alert("회의 일시를 선택해주세요."); return; }
-                                if (!form.location.trim()) { alert("회의 장소를 입력해주세요."); return; }
-                                if (form.participants.length === 0) { alert("참석자를 최소 1명 이상 선택해주세요."); return; }
-                                if (form.category.length === 0) { alert("카테고리를 최소 1개 이상 선택해주세요."); return; }
+                                if (!form.title.trim()) { 
+                                    console.error("회의록 제목을 입력해주세요."); 
+                                    return; 
+                                }
+                                if (!form.date) { 
+                                    console.error("회의 일시를 선택해주세요."); 
+                                    return; 
+                                }
+                                if (!form.location.trim()) { 
+                                    console.error("회의 장소를 입력해주세요."); 
+                                    return; 
+                                }
+                                if (form.participants.length === 0) { 
+                                    console.error("참석자를 최소 1명 이상 선택해주세요."); 
+                                    return; 
+                                }
+                                if (form.category.length === 0) { 
+                                    console.error("카테고리를 최소 1개 이상 선택해주세요."); 
+                                    return; 
+                                }
 
                                 const meetingData = {
                                     title: form.title.trim(),
@@ -257,12 +268,12 @@ export default function MeetingEditPage() {
                                 const response = await updateMeeting(councilName, meetingDetail.meetingId, meetingData);
                                 console.log('수정 응답:', response);
                                 
-                                alert("회의록이 성공적으로 수정되었습니다!");
+                                console.log("회의록이 성공적으로 수정되었습니다!");
                                 // 페이지 새로고침을 위해 window.location 사용
-                                window.location.href = '/admin/meeting/main';
+                                router.push('/admin/meeting/main');
                             } catch (error) {
                                 console.error('회의록 수정 실패:', error);
-                                alert("회의록 수정에 실패했습니다. 다시 시도해주세요.");
+                                console.error("회의록 수정에 실패했습니다. 다시 시도해주세요.");
                             }
                         }}
                         isEdit={true}

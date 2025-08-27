@@ -20,8 +20,8 @@ export default function RegisterForm2({ onSubmit }) {
   } = useRegisterForm2();
 
   return (
-    <div className="w-full relative bg-whitesmoke h-[1330px] overflow-hidden text-left text-xs text-dimgray-100 font-pretendard">
-      <div className="absolute top-[160px] left-[calc(50%-129px)] text-4xl font-semibold text-darkslategray text-center">
+    <div className="w-full relative bg-cream min-h-screen overflow-hidden text-left text-xs text-dimgray-100 font-pretendard">
+      <div className="absolute top-[120px] left-[calc(50%-129px)] text-4xl font-semibold text-darkslategray text-center">
         회원정보 입력하기
       </div>
 
@@ -31,13 +31,13 @@ export default function RegisterForm2({ onSubmit }) {
           if (!isFormValid) return;
           onSubmit({ email, password, name, phoneNumber });
         }}
-        className="absolute top-[231px] left-[calc(50%-328px)] w-[656px] flex flex-col gap-[52px]"
+                 className="absolute top-[180px] left-[calc(50%-328px)] w-[656px] flex flex-col gap-8"
       >
         {/* 소속 */}
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2">
             <b>소속</b>
-            <div className="rounded-xl bg-white border border-point flex gap-1 px-4 py-3 text-base text-dimgray-200">
+            <div className="rounded-xl w-[656px] h-[43px] bg-gray-100 border border-gray-200 flex items-center px-4 gap-1 text-base text-gray-500 opacity-75 cursor-default">
               <b>{school?.name ?? '학교명'}</b>
               <b>{college?.name ?? '단과대학'}</b>
               <b>{department?.name ?? '학과'}</b>
@@ -182,13 +182,11 @@ export default function RegisterForm2({ onSubmit }) {
         <button
           type="submit"
           disabled={!isFormValid}
-          className="w-[376px] mx-auto rounded-lg bg-gray2 text-white py-4 text-base font-semibold button-common"
+          className="w-[376px] h-[43px] flex items-center justify-center mx-auto rounded-lg bg-gray2 text-white py-4 text-base font-semibold button-common"
         >
           회원가입 완료하기
         </button>
       </form>
-
-      <div className="absolute top-[1130px] left-0 bg-gainsboro-200 w-full h-[200px]" />
     </div>
   );
 }

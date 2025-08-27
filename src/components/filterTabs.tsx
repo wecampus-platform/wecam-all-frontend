@@ -1,6 +1,12 @@
 'use client';
 
-export default function FilterTabs({ options = [], activeLabel = '', onChange = () => {} }) {
+interface FilterTabsProps {
+  options: string[];
+  activeLabel: string;
+  onChange: (label: string) => void;
+}
+
+const FilterTabs = ({ options = [], activeLabel = '', onChange }: FilterTabsProps) => {
   return (
     <div className="flex flex-row gap-2">
       {options.map((label) => (
@@ -15,4 +21,6 @@ export default function FilterTabs({ options = [], activeLabel = '', onChange = 
       ))}
     </div>
   );
-}
+};
+
+export default FilterTabs;

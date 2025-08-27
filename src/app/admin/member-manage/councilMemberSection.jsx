@@ -6,25 +6,26 @@ import NameTag from './nameTag';
 import OrgMemberManageModal from './modals/OrgMemberManageModal';
 import AffiliationList from './components/AffiliationList';
 import EditIcon from '@/components/icons/EditIcon';
-import { renameDepartment, createDepartment, fetchDepartments } from '@/api-service/councilAffiliationApi';
+import { renameDepartment, createDepartment, fetchDepartments, fetchDepartmentRoles } from '@/api-service/councilAffiliationApi';
+import { useAuthStore } from '@/store/authStore';
 
-export default function CouncilMemberSection({ sections = [], setSections, councilName, councilId, setNotPlacedMembers: stableSetNotPlacedMembers, refreshDepartments }) {
+export default function CouncilMemberSection({ sections = [], setSections, setNotPlacedMembers: stableSetNotPlacedMembers, refreshDepartments }) {
+    const { councilName, selectedCouncilId } = useAuthStore();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedSection, setSelectedSection] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editingTitle, setEditingTitle] = useState('');
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [newDepartmentTitle, setNewDepartmentTitle] = useState('');
+
     const [isLoading, setIsLoading] = useState(true);
 
     // 부서 목록 불러오기
     useEffect(() => {
         const loadDepartments = async () => {
-            if (!councilName) return;
+            if (!councilName || !selectedCouncilId) return;
             
             try {
                 setIsLoading(true);
-                                 const response = await fetchDepartments(councilName, councilId);
+                                 const response = await fetchDepartments(councilName, selectedCouncilId);
                 console.log('API 응답:', response); // 응답 구조 확인
                 
                                                   // API 응답에서 departments 배열과 unassigned 배열 추출
@@ -54,12 +55,14 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
                      subTitle: '부원',
                      lead: dept.lead?.filter(member => member && member.userId).map(member => ({
                          id: member.userId,
+                         userId: member.userId, // userId 필드 추가
                          name: member.userName || 'Unknown',
                          role: member.departmentRoleName || 'Unknown',
                          councilRole: member.userCouncilRole || 'Unknown'
                      })) || [],
                      sub: dept.sub?.filter(member => member && member.userId).map(member => ({
                          id: member.userId,
+                         userId: member.userId, // userId 필드 추가
                          name: member.userName || 'Unknown',
                          role: member.departmentRoleName || 'Unknown',
                          councilRole: member.userCouncilRole || 'Unknown'
@@ -71,6 +74,7 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
                  // unassigned 상태를 부모 컴포넌트에 설정
                  stableSetNotPlacedMembers(unassignedMembers.map(member => ({
                      id: member.userId,
+                     userId: member.userId, // userId 필드 추가
                      name: member.userName,
                      role: member.departmentRoleName,
                      councilRole: member.userCouncilRole
@@ -96,47 +100,40 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
         };
 
         loadDepartments();
-    }, [councilName, councilId]);
+    }, [councilName, selectedCouncilId]);
 
-    const handleAddSection = () => {
-        setIsCreateModalOpen(true);
-    };
-
-    const handleCreateDepartment = async () => {
-        if (!newDepartmentTitle.trim()) {
-            alert('부서명을 입력해주세요.');
-            return;
-        }
+    const handleAddSection = async () => {
+        console.log('🔍 부서 생성 시작:', {
+            councilName,
+            departmentTitle: '새로운 부서',
+            selectedCouncilId
+        });
 
         try {
-            // API를 통해 부서 생성
-                         const response = await createDepartment(councilName, newDepartmentTitle.trim(), councilId);
+            // API를 통해 "새로운 부서"라는 이름으로 부서 생성
+            const response = await createDepartment(councilName, '새로운 부서', selectedCouncilId);
             
-                         // 생성된 부서 정보로 새 섹션 생성
-             const newSection = {
-                 id: `section-${Date.now()}`,
-                 departmentId: response.result?.departmentId || Date.now(), // API에서 반환된 실제 부서 ID 사용
-                 title: newDepartmentTitle.trim(),
-                 number: '0명',
-                 leadTitle: '부장',
-                 subTitle: '부원',
-                 lead: [],
-                 sub: [],
-             };
+            console.log('🔍 API 응답:', response);
+            
+            // 생성된 부서 정보로 새 섹션 생성
+            const newSection = {
+                id: `section-${Date.now()}`,
+                departmentId: response.result?.departmentId || Date.now(),
+                title: '새로운 부서',
+                number: '0명',
+                leadTitle: '부장',
+                subTitle: '부원',
+                lead: [],
+                sub: [],
+            };
+            
+            console.log('🔍 새로 생성할 섹션:', newSection);
             
             setSections((prev) => [...prev, newSection]);
-            setIsCreateModalOpen(false);
-            setNewDepartmentTitle('');
-            refreshDepartments(); // 부서 생성 후 목록 새로고침
+            refreshDepartments();
         } catch (error) {
-            console.error('부서 생성 실패:', error);
-            alert('부서 생성에 실패했습니다: ' + error.message);
+            console.error('부서 생성에 실패했습니다: ' + error.message);
         }
-    };
-
-    const handleCloseCreateModal = () => {
-        setIsCreateModalOpen(false);
-        setNewDepartmentTitle('');
     };
 
     const handleSectionClick = (section) => {
@@ -158,13 +155,13 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
 
     const handleSaveTitle = async () => {
         if (!editingTitle.trim()) {
-            alert('부서명을 입력해주세요.');
+            console.error('부서명을 입력해주세요.');
             return;
         }
 
         try {
             if (!selectedSection.departmentId) {
-                alert('부서 ID를 찾을 수 없습니다.');
+                console.error('부서 ID를 찾을 수 없습니다.');
                 return;
             }
             
@@ -172,7 +169,7 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
                  councilName,
                  selectedSection.departmentId,
                  editingTitle.trim(),
-                 councilId
+                 selectedCouncilId
              );
 
             // 로컬 상태 업데이트
@@ -188,10 +185,9 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
             setSelectedSection(prev => ({ ...prev, title: editingTitle.trim() }));
             
             setIsEditing(false);
-            alert('부서명이 성공적으로 변경되었습니다.');
             refreshDepartments(); // 부서 이름 변경 후 목록 새로고침
         } catch (error) {
-            alert('부서명 변경에 실패했습니다: ' + error.message);
+            console.error('부서명 변경에 실패했습니다: ' + error.message);
         }
     };
 
@@ -208,7 +204,70 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
         }
     };
 
-
+    const handleMemberUpdate = (updateInfo) => {
+        console.log('멤버 업데이트 정보:', updateInfo);
+        
+        // sections 상태에서 해당 멤버를 찾아 부서 정보 업데이트
+        setSections(prev => 
+            prev.map(section => {
+                // 이전 부서에서 멤버 제거
+                if (section.title === updateInfo.oldDepartment) {
+                    return {
+                        ...section,
+                        lead: section.lead.filter(member => member.userId !== updateInfo.userId),
+                        sub: section.sub.filter(member => member.userId !== updateInfo.userId)
+                    };
+                }
+                // 새 부서에 멤버 추가 (부원으로 추가)
+                if (section.title === updateInfo.newDepartment) {
+                    const newMember = {
+                        id: updateInfo.userId,
+                        userId: updateInfo.userId,
+                        name: updateInfo.memberInfo.name,
+                        studentId: updateInfo.memberInfo.studentId,
+                        major: updateInfo.memberInfo.major,
+                        joinDate: updateInfo.memberInfo.joinDate,
+                        role: '부원',
+                        councilRole: 'Unknown'
+                    };
+                    
+                    return {
+                        ...section,
+                        sub: [...section.sub, newMember]
+                    };
+                }
+                return section;
+            })
+        );
+        
+        // 선택된 섹션이 현재 표시된 섹션이라면 즉시 업데이트
+        if (selectedSection && selectedSection.title === updateInfo.oldDepartment) {
+            setSelectedSection(prev => ({
+                ...prev,
+                lead: prev.lead.filter(member => member.userId !== updateInfo.userId),
+                sub: prev.sub.filter(member => member.userId !== updateInfo.userId)
+            }));
+        }
+        
+        // 새 부서가 현재 표시된 섹션이라면 멤버 추가
+        if (selectedSection && selectedSection.title === updateInfo.newDepartment) {
+            const newMember = {
+                id: updateInfo.userId,
+                userId: updateInfo.userId,
+                name: updateInfo.memberInfo.name,
+                studentId: updateInfo.memberInfo.studentId,
+                major: updateInfo.memberInfo.major,
+                joinDate: updateInfo.memberInfo.joinDate,
+                role: '부원',
+                councilRole: 'Unknown'
+            };
+            
+            setSelectedSection(prev => ({
+                ...prev,
+                sub: [...prev.sub, newMember]
+            }));
+        }
+    };
 
     return (
         <>
@@ -219,90 +278,94 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
             ) : (
                 <div className="grid grid-cols-2 gap-4 w-full">
                     {sections.map((section) => (
-                    <div
-                        key={section.id}
-                        className="h-fit bg-white border border-gray9 rounded-[12px] p-8 flex flex-col gap-4 cursor-pointer hover:shadow-md transition-shadow"
-                        onClick={() => handleSectionClick(section)}
-                    >
-                        {/* 섹션 제목 */}
-                        <div className="flex flex-row gap-3">
-                            <div className="font-semibold text-[24px]">{section.title}</div>
-                            <div className="text-gray3 text-[16px]">
-                                {section.lead.length + section.sub.length}명
+                        <div
+                            key={section.id}
+                            className="h-fit bg-white border border-gray9 rounded-[12px] p-8 flex flex-col gap-4 hover:brightness-98"
+                        >
+                            {/* 섹션 제목 - 클릭 가능 영역 */}
+                            <div 
+                                className="flex flex-row gap-3 cursor-pointer"
+                                onClick={() => handleSectionClick(section)}
+                            >
+                                <div className="font-semibold text-[24px]">{section.title}</div>
+                                <div className="text-gray3 text-[16px]">
+                                    {section.lead.length + section.sub.length}명
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <div className="text-gray8 text-[12px]">{section.leadTitle}</div>
+                                <Droppable droppableId={`${section.id}:lead`} direction="horizontal">
+                                    {(provided) => (
+                                        <div className="relative">
+                                            <div
+                                                className="flex flex-wrap gap-2 min-h-[40px]"
+                                                ref={provided.innerRef}
+                                                {...provided.droppableProps}
+                                            >
+                                                {section.lead?.filter(m => m && m.userId).map((m, index) => (
+                                                    <Draggable key={m.userId} draggableId={m.userId.toString()} index={index}>
+                                                        {(provided) => (
+                                                            <div
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}
+                                                                className="cursor-grab active:cursor-grabbing"
+                                                            >
+                                                                <NameTag name={m.name || 'Unknown'} />
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                ))}
+                                                {provided.placeholder}
+                                            </div>
+                                        </div>
+                                    )}
+                                </Droppable>
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <div className="text-gray8 text-[12px]">{section.subTitle}</div>
+                                <Droppable droppableId={`${section.id}:sub`} direction="horizontal">
+                                    {(provided) => (
+                                        <div className="relative">
+                                            <div
+                                                className="flex flex-wrap gap-2 min-h-[40px]"
+                                                ref={provided.innerRef}
+                                                {...provided.droppableProps}
+                                            >
+                                                {section.sub?.filter(m => m && m.userId).map((m, index) => (
+                                                    <Draggable key={m.userId} draggableId={m.userId.toString()} index={index}>
+                                                        {(provided) => (
+                                                            <div
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}
+                                                                className="cursor-grab active:cursor-grabbing"
+                                                            >
+                                                                <NameTag name={m.name || 'Unknown'} />
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                ))}
+                                                {provided.placeholder}
+                                            </div>
+                                        </div>
+                                    )}
+                                </Droppable>
                             </div>
                         </div>
+                    ))}
 
-                        <div className="flex flex-col gap-1">
-                            <div className="text-gray8 text-[12px]">{section.leadTitle}</div>
-                            <Droppable droppableId={`${section.id}:lead`} direction="horizontal">
-                                {(provided) => (
-                                    <div className="relative">
-                                        <div
-                                            className="flex flex-wrap gap-2 min-h-[40px]"
-                                            ref={provided.innerRef}
-                                            {...provided.droppableProps}
-                                        >
-                                            {section.lead?.filter(m => m && m.id).map((m, index) => (
-                                                <Draggable key={m.id} draggableId={m.id.toString()} index={index}>
-                                                    {(provided) => (
-                                                        <div
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                        >
-                                                            <NameTag name={m.name || 'Unknown'} />
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            ))}
-                                            {provided.placeholder}
-                                        </div>
-                                    </div>
-                                )}
-                            </Droppable>
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <div className="text-gray8 text-[12px]">{section.subTitle}</div>
-                            <Droppable droppableId={`${section.id}:sub`} direction="horizontal">
-                                {(provided) => (
-                                    <div className="relative">
-                                        <div
-                                            className="flex flex-wrap gap-2 min-h-[40px]"
-                                            ref={provided.innerRef}
-                                            {...provided.droppableProps}
-                                        >
-                                            {section.sub?.filter(m => m && m.id).map((m, index) => (
-                                                <Draggable key={m.id} draggableId={m.id.toString()} index={index}>
-                                                    {(provided) => (
-                                                        <div
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                        >
-                                                            <NameTag name={m.name || 'Unknown'} />
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            ))}
-                                            {provided.placeholder}
-                                        </div>
-                                    </div>
-                                )}
-                            </Droppable>
-                        </div>
+                    {/* + 버튼 */}
+                    <button
+                        onClick={handleAddSection}
+                        className="min-h-[200px] py-8 rounded-[12px] border border-gray9 bg-white text-point text-3xl font-semibold flex items-center justify-center"
+                    >
+                        +
+                    </button>
                     </div>
-                ))}
-
-                 {/* + 버튼 */}
-                 <button
-                     onClick={handleAddSection}
-                     className="min-h-[200px] py-8 rounded-[12px] border border-gray9 bg-white text-point text-3xl font-semibold flex items-center justify-center"
-                 >
-                     +
-                 </button>
-                 </div>
-             )}
+            )}
 
             {/* OrgMemberManageModal */}
             {isModalOpen && selectedSection && (
@@ -324,9 +387,9 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
                     }
                     icon={
                         !isEditing && (
-                            <button
+                                                         <button
                                 onClick={handleEditSection}
-                                className="ml-3 p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                className="ml-3 p-2 text-gray-600 hover:text-blue-600 transition-colors"
                                 title="수정"
                             >
                                 <EditIcon />
@@ -390,64 +453,13 @@ export default function CouncilMemberSection({ sections = [], setSections, counc
                             )}
                         </div>
                                          </div>
+
                  </OrgMemberManageModal>
+
              )}
 
-             {/* 부서 생성 모달 */}
-             {isCreateModalOpen && (
-                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                     <div 
-                         className="w-[500px] bg-white rounded-2xl p-8"
-                         onClick={(e) => e.stopPropagation()}
-                     >
-                         <div className="mb-6">
-                             <h2 className="text-2xl font-bold text-gray-800 mb-2">새 부서 생성</h2>
-                             <p className="text-gray-600">새로 생성할 부서의 이름을 입력해주세요.</p>
-                         </div>
-                         
-                         <div className="mb-6">
-                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                 부서명
-                             </label>
-                             <input
-                                 type="text"
-                                 value={newDepartmentTitle}
-                                 onChange={(e) => setNewDepartmentTitle(e.target.value)}
-                                 onKeyDown={(e) => {
-                                     if (e.key === 'Enter') {
-                                         handleCreateDepartment();
-                                     } else if (e.key === 'Escape') {
-                                         handleCloseCreateModal();
-                                     }
-                                 }}
-                                 placeholder="부서명을 입력하세요"
-                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                 autoFocus
-                             />
-                         </div>
-                         
-                         <div className="flex gap-3 justify-end">
-                             <button
-                                 onClick={handleCloseCreateModal}
-                                 className="px-6 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                             >
-                                 취소
-                             </button>
-                             <button
-                                 onClick={handleCreateDepartment}
-                                 disabled={!newDepartmentTitle.trim()}
-                                 className={`px-6 py-2 text-white rounded-lg transition-colors ${
-                                     newDepartmentTitle.trim() 
-                                         ? 'bg-blue-500 hover:bg-blue-600' 
-                                         : 'bg-gray-300 cursor-not-allowed'
-                                 }`}
-                             >
-                                 생성하기
-                             </button>
-                         </div>
-                     </div>
-                 </div>
-             )}
+             
+
          </>
      );
  }

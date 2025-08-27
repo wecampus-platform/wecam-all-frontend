@@ -2,7 +2,9 @@ import DepartmentSelectPanel from "./DepartmentSelectPanel";
 import MemberActionMenu from "./MemberActionMenu";
 import OptionsIcon from "@/components/icons/OptionsIcon";
 import useToggleMenu from "@/hooks/useToggleMenu";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuthStore } from "@/store/authStore";
+import { fetchDepartmentRoles, moveMemberToDepartment } from "@/api-service/councilAffiliationApi";
 
 export default function AffiliationList({
   imgSrc,
@@ -11,6 +13,8 @@ export default function AffiliationList({
   major,
   department,
   joinDate,
+  userId, // userId prop 추가
+  onMemberUpdate, // 부서 변경 후 콜백 함수 추가
 }) {
   const {
     toggleMemberActionMenu,
@@ -23,14 +27,146 @@ export default function AffiliationList({
   } = useToggleMenu();
 
   const [selectedDept, setSelectedDept] = useState(department);
+  const [departments, setDepartments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
+  const { councilName, selectedCouncilId } = useAuthStore();
 
-  const handleSelectDepartment = (value) => {
-    setSelectedDept(value);
-    closeMoveDepartment();
+  // 부서 목록 가져오기
+  useEffect(() => {
+    const loadDepartments = async () => {
+      if (!councilName || !selectedCouncilId) {
+        console.log('councilName 또는 selectedCouncilId가 없음:', { councilName, selectedCouncilId });
+        return;
+      }
+      
+      try {
+        console.log('부서 목록 로드 시작:', { councilName, selectedCouncilId });
+        const response = await fetchDepartmentRoles(councilName, selectedCouncilId);
+        console.log('부서 목록 API 전체 응답:', response);
+        
+        if (response.isSuccess && response.result) {
+          console.log('부서 목록 result:', response.result);
+          // API 응답 구조에 맞게 name 필드 사용하고 undefined 값 필터링
+          const deptNames = response.result
+            .filter(dept => dept && dept.name && dept.name.trim() !== '')
+            .map(dept => dept.name);
+          console.log('추출된 부서명들:', deptNames);
+          console.log('departments 배열 길이:', deptNames.length);
+          setDepartments(deptNames);
+        } else {
+          console.warn('부서 목록 API 응답이 예상과 다름:', response);
+          setError('부서 목록을 불러올 수 없습니다.');
+        }
+      } catch (err) {
+        console.error('부서 목록 로드 실패:', err);
+        setError('부서 목록을 불러올 수 없습니다.');
+      }
+    };
+
+    loadDepartments();
+  }, [councilName, selectedCouncilId]);
+
+  const handleSelectDepartment = async (newDepartment) => {
+    console.log('handleSelectDepartment 호출됨:', { newDepartment, type: typeof newDepartment });
+    
+    if (!newDepartment || newDepartment === 'undefined' || newDepartment.trim() === '') {
+      setError('유효하지 않은 부서명입니다.');
+      console.error('부서 이동 실패 - 유효하지 않은 부서명:', newDepartment);
+      return;
+    }
+    
+    if (!userId || !councilName || !selectedCouncilId) {
+      const missingInfo = [];
+      if (!userId) missingInfo.push('userId');
+      if (!councilName) missingInfo.push('councilName');
+      if (!selectedCouncilId) missingInfo.push('selectedCouncilId');
+      
+      setError(`필수 정보가 누락되었습니다: ${missingInfo.join(', ')}`);
+      console.error('부서 이동 실패 - 필수 정보 누락:', { userId, councilName, selectedCouncilId });
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      console.log('부서 이동 시작:', { userId, newDepartment, councilName, selectedCouncilId });
+      
+      // 부서명으로 부서 ID 찾기
+      const deptResponse = await fetchDepartmentRoles(councilName, selectedCouncilId);
+      console.log('부서 목록 API 응답:', deptResponse);
+      
+      if (!deptResponse.isSuccess) {
+        throw new Error(`부서 목록 조회 실패: ${deptResponse.message || '알 수 없는 오류'}`);
+      }
+      
+      if (!deptResponse.result || !Array.isArray(deptResponse.result)) {
+        throw new Error('부서 목록 데이터가 올바르지 않습니다.');
+      }
+      
+      // API 응답 구조에 맞게 name 필드로 검색
+      const targetDept = deptResponse.result.find(dept => dept.name === newDepartment);
+      console.log('찾은 부서 정보:', targetDept);
+      
+      if (!targetDept) {
+        throw new Error(`'${newDepartment}' 부서를 찾을 수 없습니다.`);
+      }
+      
+      // API 응답 구조에 맞게 id 필드 사용
+      if (!targetDept.id) {
+        throw new Error(`'${newDepartment}' 부서의 ID가 없습니다.`);
+      }
+
+      console.log('부서 이동 API 호출:', {
+        councilName,
+        userId,
+        departmentId: targetDept.id,
+        departmentLevel: 1,
+        selectedCouncilId
+      });
+
+      // API 호출하여 부서 이동
+      const moveResponse = await moveMemberToDepartment(
+        councilName, 
+        userId, 
+        targetDept.id, // API 응답 구조에 맞게 id 사용
+        1, // departmentLevel (부원으로 설정)
+        selectedCouncilId
+      );
+      
+      console.log('부서 이동 API 응답:', moveResponse);
+
+      // 성공 시 로컬 상태 업데이트
+      setSelectedDept(newDepartment);
+      closeMoveDepartment();
+      
+      // 부모 컴포넌트에 업데이트 알림 - 구체적인 정보 전달
+      if (onMemberUpdate) {
+        onMemberUpdate({
+          userId,
+          oldDepartment: department,
+          newDepartment,
+          memberInfo: {
+            name,
+            studentId,
+            major,
+            joinDate
+          }
+        });
+      }
+      
+    } catch (err) {
+      console.error('부서 이동 실패:', err);
+      setError(err.message || '부서 이동에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition">
+    <div className="flex items-center justify-between px-4 py-3 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition">
       <div className="flex gap-8">
         <div className="flex items-center gap-4">
           <img
@@ -46,9 +182,9 @@ export default function AffiliationList({
           <div className="text-gray-700">{major}</div>
         </div>
 
-        {department.length !== 0 && (
+        {department && department.length !== 0 && (
           <div className="flex justify-center items-center px-2 bg-blue-100 text-blue-600 rounded-2xl text-xs">
-            {selectedDept} {/* 선택된 부서 표시 (임시) */}
+            {selectedDept}
           </div>
         )}
       </div>
@@ -57,7 +193,7 @@ export default function AffiliationList({
         <div>{joinDate}</div>
         <div className="relative w-full h-full">
           <button
-            className="text-[#ABAEB4] hover:text-gray-600 "
+            className="text-[#ABAEB4] hover:text-gray-600"
             onClick={openMemberActionMenu}
           >
             <OptionsIcon />
@@ -77,6 +213,9 @@ export default function AffiliationList({
               onClose={closeMoveDepartment}
               selected={selectedDept}
               onSelect={handleSelectDepartment}
+              departments={departments}
+              isLoading={isLoading}
+              error={error}
             />
           )}
         </div>

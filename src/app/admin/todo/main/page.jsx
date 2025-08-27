@@ -12,15 +12,18 @@ export default function MainPage() {
   const router = useRouter();
   const [todoType, setTodoType] = useState('');
   const [progressStatus, setProgressStatus] = useState('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const [tasks, setTasks] = useState([]);
 
 
-  const {accessToken, councilList} = useAuthStore();
+  const { accessToken, councilList } = useAuthStore();
   const councilName = councilList?.[0]?.name || '위캠퍼스';
   const councilId = councilList?.[0]?.id || 2;
 
   useEffect(() => {
+    if (!accessToken || !councilName || !councilId) return;
+    
     getAllTasks(accessToken, councilName, councilId, todoType, progressStatus)
       .then(res => {
         // API가 이미 result 배열을 반환하므로 직접 사용
@@ -31,8 +34,8 @@ export default function MainPage() {
         console.error('할 일 목록 가져오기 실패:', error);
         setTasks([]);
       });
-  }, [todoType, progressStatus]);
-  
+  }, [accessToken, councilName, councilId, todoType, progressStatus]);
+
 
   const goToAddPage = () => router.push('/admin/todo/add');
 
@@ -43,22 +46,16 @@ export default function MainPage() {
           <h1 className="w-40 h-14 text-zinc-800 text-4xl font-bold">
             할 일 관리
           </h1>
-
           <button
+            className="button-common w-[200px] h-[50px] flex items-center justify-center"
             onClick={goToAddPage}
-            className="pl-4 pr-5 py-3 bg-blue-500 rounded-lg inline-flex items-center gap-1"
           >
-            <span className="w-6 h-6 relative overflow-hidden">
-              <span className="w-3 h-3 absolute left-[5.5px] top-[5.5px] bg-white" />
-            </span>
-            <span className="text-white text-xl font-semibold">
-              할 일 등록하기
-            </span>
+            + 할 일 등록하기
           </button>
         </div>
 
         {/* (예시) 검색·필터 바 ------------------------------------ */}
-     <DashboardSummary />
+        <DashboardSummary />
 
         {/* 역할별 + 상태별 필터 UI ------------------------------- */}
         {/* …필터 UI 그대로 유지 (생략 없음) … */}
@@ -70,37 +67,37 @@ export default function MainPage() {
               역할별 필터
             </div>
             <div className="flex gap-[12px]">
-            <div
-  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+              <div
+                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
     ${todoType === '' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-  onClick={() => setTodoType('')}
->
-  <span className="text-xl">전체 할 일</span>
-</div>
+                onClick={() => setTodoType('')}
+              >
+                <span className="text-xl">전체 할 일</span>
+              </div>
 
-<div
-  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+              <div
+                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
     ${todoType === 'MY_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-  onClick={() => setTodoType('MY_TODO')}
->
-  <span className="text-xl">내 할 일</span>
-</div>
+                onClick={() => setTodoType('MY_TODO')}
+              >
+                <span className="text-xl">내 할 일</span>
+              </div>
 
-<div
-  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+              <div
+                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
     ${todoType === 'RECEIVED_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-  onClick={() => setTodoType('RECEIVED_TODO')}
->
-  <span className="text-xl">받은 할 일</span>
-</div>
+                onClick={() => setTodoType('RECEIVED_TODO')}
+              >
+                <span className="text-xl">받은 할 일</span>
+              </div>
 
-<div
-  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+              <div
+                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
     ${todoType === 'SENT_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-  onClick={() => setTodoType('SENT_TODO')}
->
-  <span className="text-xl">보낸 할 일</span>
-</div>
+                onClick={() => setTodoType('SENT_TODO')}
+              >
+                <span className="text-xl">보낸 할 일</span>
+              </div>
             </div>
           </div>
 
@@ -111,45 +108,45 @@ export default function MainPage() {
               상태별 필터
             </div>
             <div className="flex gap-[12px]">
-              <div   className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+              <div className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
     ${progressStatus === 'DUE_TODAY' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-    onClick={() => setProgressStatus('DUE_TODAY')}>
+                onClick={() => setProgressStatus('DUE_TODAY')}>
 
                 <span className="text-xl">
                   오늘까지
                 </span>
               </div>
               <div
-  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
     ${progressStatus === '' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-  onClick={() => setProgressStatus('')}
->
-  <span className="text-xl">전체</span>
-</div>
+                onClick={() => setProgressStatus('')}
+              >
+                <span className="text-xl">전체</span>
+              </div>
 
-<div
-  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+              <div
+                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
     ${progressStatus === 'NOT_STARTED' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-  onClick={() => setProgressStatus('NOT_STARTED')}
->
-  <span className="text-xl">진행 전</span>
-</div>
+                onClick={() => setProgressStatus('NOT_STARTED')}
+              >
+                <span className="text-xl">진행 전</span>
+              </div>
 
-<div
-  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+              <div
+                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
     ${progressStatus === 'IN_PROGRESS' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-  onClick={() => setProgressStatus('IN_PROGRESS')}
->
-  <span className="text-xl">진행 중</span>
-</div>
+                onClick={() => setProgressStatus('IN_PROGRESS')}
+              >
+                <span className="text-xl">진행 중</span>
+              </div>
 
-<div
-  className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+              <div
+                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
     ${progressStatus === 'COMPLETED' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-  onClick={() => setProgressStatus('COMPLETED')}
->
-  <span className="text-xl">진행 완료</span>
-</div>
+                onClick={() => setProgressStatus('COMPLETED')}
+              >
+                <span className="text-xl">진행 완료</span>
+              </div>
 
 
             </div>
@@ -157,11 +154,14 @@ export default function MainPage() {
         </div>
 
         <div className="grid grid-cols-3 gap-x-[28px] gap-y-[24px]">
-        {tasks.map(task => (
-  <Task key={task.todoId} task={task} />
-        ))}
+          {tasks.map(task => (
+            <Task key={task.todoId} task={task} />
+          ))}
         </div>
-        <TaskModal />
+        <TaskModal 
+          isOpen={showCreateModal} 
+          onClose={() => setShowCreateModal(false)} 
+        />
       </div>
     </div>
   );

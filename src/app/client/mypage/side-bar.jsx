@@ -12,13 +12,13 @@ export default function SideBarPage(){
     console.log("현재 role 값:", role);
 
     const handleCouncilClick = async () => {
-      if (role !== 'COUNCIL') {
-        alert('학생회 권한이 있는 사용자만 접근할 수 있습니다.');
+      if (!hasAdminAccess()) {
+        console.error('학생회 권한이 있는 사용자만 접근할 수 있습니다.');
         return;
       }
   
       if (!accessToken || councilList.length === 0) {
-        alert('인증 정보가 올바르지 않습니다.');
+        console.error('인증 정보가 올바르지 않습니다.');
         return;
       }
   
@@ -31,9 +31,8 @@ export default function SideBarPage(){
         console.log('useAuthStore:', resText);
         // 성공 시 관리자 페이지로 이동
         router.push('/admin/main');
-      } catch (err) {
-        console.error('학생회 홈 정보 불러오기 실패:', err);
-        alert('학생회 홈 정보를 불러오지 못했습니다.');
+      } catch (error) {
+        console.error('학생회 홈 정보를 불러오지 못했습니다.');
       }
     };
   
