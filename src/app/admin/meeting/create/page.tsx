@@ -5,7 +5,6 @@ import MeetingTextArea from "@/app/admin/meeting/components/create/entities/Meet
 import MeetingHeader from "@/app/admin/meeting/components/create/MeetingHeader";
 import MeetingInfo from "@/app/admin/meeting/components/create/MeetingInfo";
 import { useMeetingForm } from "@/hooks/meeting/create/useMeetingForm";
-import SideBarPage from '@/components/side-bar';
 
 export default function MeetingCreatePage() {
   const {
