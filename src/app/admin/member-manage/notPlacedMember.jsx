@@ -1,10 +1,15 @@
 'use client';
 
 import { Droppable, Draggable } from '@hello-pangea/dnd';
+import { createPortal } from 'react-dom';
 import NameTag from './nameTag';
 import { ArrowRightIcon } from '@/components/icons/arrowRightIcon';
 
 export default function NotPlacedMember({ members, onSectionClick }) {
+    const DragPortal = ({ children }) => {
+        if (typeof window === 'undefined') return null;
+        return createPortal(children, document.body);
+    };
     return (
         <Droppable droppableId="notPlaced" direction="horizontal">
             {(provided) => (
@@ -20,18 +25,25 @@ export default function NotPlacedMember({ members, onSectionClick }) {
                             <div className="text-gray3 text-[16px]">{members.length}명</div>
                         </div>
                         <div className="flex items-center gap-2">
-                            {members?.filter(m => m && m.userId).map((m, index) => (
-                                <Draggable key={m.userId} draggableId={m.userId.toString()} index={index}>
-                                    {(provided) => (
-                                        <div
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
-                                            className="cursor-grab active:cursor-grabbing"
-                                        >
-                                            <NameTag name={m.name || 'Unknown'} />
-                                        </div>
-                                    )}
+                            {members?.filter(m => m && m.councilMemberId).map((m, index) => (
+                                <Draggable key={m.councilMemberId} draggableId={m.councilMemberId.toString()} index={index}>
+                                    {(provided, snapshot) => {
+                                        const content = (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                className="cursor-grab active:cursor-grabbing"
+                                            >
+                                                <NameTag name={m.name || 'Unknown'} />
+                                            </div>
+                                        );
+                                        return snapshot.isDragging ? (
+                                            <DragPortal>{content}</DragPortal>
+                                        ) : (
+                                            content
+                                        );
+                                    }}
                                 </Draggable>
                             ))}
                             {provided.placeholder}
