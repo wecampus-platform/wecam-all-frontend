@@ -28,10 +28,10 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
     }, [showMoreMenu]);
 
     return (
-        <CustomScrollbar 
-          key={showMoreMenu ? 'expanded' : 'collapsed'}
-          className="w-[250px] flex flex-col items-center border-r border-slate-100 h-screen"
-          forceUpdate={showMoreMenu}
+        <CustomScrollbar
+            key={showMoreMenu ? 'expanded' : 'collapsed'}
+            className="w-[250px] flex flex-col items-center border-r border-slate-100 h-screen"
+            forceUpdate={showMoreMenu}
         >
             <div className="p-5 w-full">
                 <div className="flex items-center justify-between mb-[16px]">
@@ -55,9 +55,13 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                 {/* 직책 */}
                 <div className="w-full h-16 px-5 py-5 bg-blue-50 rounded-xl outline outline-1 outline-offset-[-1px] outline-sky-100 inline-flex flex-col justify-start items-start gap-2">
                     <div className="flex items-center">
-                        <div className="justify-start text-blue-500 text-base font-semibold">{role || '직책'}</div>
+                        <div className="justify-start text-blue-500 text-base font-semibold">직책</div>
                         <div className="w-[1px] h-5 bg-blue-300 mx-[16px]" />
-                        <div className="justify-start text-black text-xl font-semibold">{/* 이름 수정 필요 */}</div>
+                        <div className="justify-start text-black text-base font-semibold ml-auto">
+                            {role === 'COUNCIL' ? '학생회' :
+                                role === 'PRESIDENT' ? '학생회장' :
+                                    role || '직책'}
+                        </div>
                     </div>
                 </div>
 
@@ -137,11 +141,11 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                             <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/category') ? 'text-point' : 'text-gray6'}`}>카테고리 관리</div>
                         </div>
 
-                                                <div
-                          className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/file') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'}`}
-                          onClick={() => router.push('/admin/file')}
+                        <div
+                            className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/file') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'}`}
+                            onClick={() => router.push('/admin/file')}
                         >
-                          <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/file') ? 'text-point' : 'text-gray6'}`}>학생회 파일함</div>
+                            <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/file') ? 'text-point' : 'text-gray6'}`}>학생회 파일함</div>
                         </div>
 
                         <div className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">

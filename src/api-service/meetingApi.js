@@ -11,7 +11,7 @@ export const getMeetings = async (councilName, params = {}) => {
     if (sortOrder) queryParams.append('sortOrder', sortOrder);
     
     const queryString = queryParams.toString();
-    const url = `/council/${councilName}/meeting${queryString ? `?${queryString}` : ''}`;
+    const url = `/council/${encodeURIComponent(councilName)}/meeting${queryString ? `?${queryString}` : ''}`;
     
     try {
         const response = await adminapi(url);
@@ -25,7 +25,7 @@ export const getMeetings = async (councilName, params = {}) => {
 // 회의록 상세 조회
 export const getMeetingDetail = async (councilName, meetingId) => {
     try {
-        const response = await adminapi(`/council/${councilName}/meeting/${meetingId}`);
+        const response = await adminapi(`/council/${encodeURIComponent(councilName)}/meeting/${meetingId}`);
         return response.json();
     } catch (error) {
         console.error('회의록 상세 조회 실패:', error);
@@ -36,7 +36,7 @@ export const getMeetingDetail = async (councilName, meetingId) => {
 // 회의록 생성
 export const createMeeting = async (councilName, meetingData) => {
     try {
-        const response = await adminapi(`/council/${councilName}/meeting/create`, {
+        const response = await adminapi(`/council/${encodeURIComponent(councilName)}/meeting/create`, {
             method: 'POST',
             body: JSON.stringify(meetingData)
         });
@@ -50,7 +50,7 @@ export const createMeeting = async (councilName, meetingData) => {
 // 회의록 수정
 export const updateMeeting = async (councilName, meetingId, meetingData) => {
     try {
-        const response = await adminapi(`/council/${councilName}/meeting/${meetingId}`, {
+        const response = await adminapi(`/council/${encodeURIComponent(councilName)}/meeting/${meetingId}`, {
             method: 'PATCH',
             body: JSON.stringify(meetingData)
         });
@@ -64,7 +64,7 @@ export const updateMeeting = async (councilName, meetingId, meetingData) => {
 // 회의록 삭제
 export const deleteMeeting = async (councilName, meetingId) => {
     try {
-        const response = await adminapi(`/council/${councilName}/meeting/${meetingId}`, {
+        const response = await adminapi(`/council/${encodeURIComponent(councilName)}/meeting/${meetingId}`, {
             method: 'DELETE'
         });
         return response.json();
@@ -77,17 +77,32 @@ export const deleteMeeting = async (councilName, meetingId) => {
 // 전체 멤버 목록 조회
 export const getMemberList = async (councilName) => {
     try {
-        const response = await adminapi(`/council/${councilName}/member/list`, {
+        console.log('🔍 getMemberList 호출:', { councilName });
+        
+        const response = await adminapi(`/council/${encodeURIComponent(councilName)}/member/list`, {
             method: 'POST'
         });
-        const data = await response.json();
         
+        console.log('🔍 getMemberList 응답:', response);
+        
+        const data = await response.json();
+        console.log('🔍 getMemberList 응답 데이터:', data);
+        
+        // 응답이 성공인지 확인
         if (!response.ok) {
             console.error('멤버 목록 조회 실패:', data);
             throw new Error(data.message || '멤버 목록을 가져올 수 없습니다.');
         }
         
-        return data.result || [];
+        // data.result가 배열인지 확인
+        if (Array.isArray(data.result)) {
+            return data.result;
+        } else if (Array.isArray(data)) {
+            return data;
+        } else {
+            console.warn('🔍 예상과 다른 멤버 데이터 구조:', data);
+            return [];
+        }
     } catch (error) {
         console.error('멤버 목록 조회 실패:', error);
         // 에러가 발생해도 빈 배열 반환하여 앱이 중단되지 않도록 함
@@ -98,7 +113,7 @@ export const getMemberList = async (councilName) => {
 // 전체 멤버 조회
 export const getMembers = async (councilName) => {
     try {
-        const response = await adminapi(`/council/${councilName}/member/list`, {
+        const response = await adminapi(`/council/${encodeURIComponent(councilName)}/member/list`, {
             method: 'POST'
         });
         const data = await response.json();
@@ -118,13 +133,33 @@ export const getMembers = async (councilName) => {
 // 카테고리 목록 조회
 export const getCategoryList = async (councilName) => {
     try {
-        const response = await adminapi(`/council/${councilName}/category`, {
-            method: 'GET'
-        });
+        console.log('🔍 getCategoryList 호출:', { councilName });
+        
+        const response = await adminapi(`/council/${encodeURIComponent(councilName)}/category`);
+        
+        console.log('🔍 getCategoryList 응답:', response);
+        
         const data = await response.json();
-        return data.result || [];
+        console.log('🔍 getCategoryList 응답 데이터:', data);
+        
+        // 응답이 성공인지 확인
+        if (!response.ok) {
+            console.error('카테고리 목록 조회 실패:', data);
+            throw new Error(data.message || '카테고리 목록을 가져올 수 없습니다.');
+        }
+        
+        // data.result가 배열인지 확인
+        if (Array.isArray(data.result)) {
+            return data.result;
+        } else if (Array.isArray(data)) {
+            return data;
+        } else {
+            console.warn('🔍 예상과 다른 카테고리 데이터 구조:', data);
+            return [];
+        }
     } catch (error) {
         console.error('카테고리 목록 조회 실패:', error);
-        throw error;
+        // 에러가 발생해도 빈 배열 반환하여 앱이 중단되지 않도록 함
+        return [];
     }
 };
