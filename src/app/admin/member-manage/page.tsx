@@ -246,65 +246,20 @@ export default function MemberManagePage() {
                 // 특정 부서로 이동하는 경우
                 console.log('특정 부서로 이동 - API 호출');
                 
-                try {
-                    // fetchAllMembers API를 사용하여 올바른 memberId 찾기
-                    const allMembersResponse = await fetchAllMembers(councilName, selectedCouncilId);
-                    console.log('전체 멤버 목록:', allMembersResponse);
-                    
-                    // userName으로 멤버 찾기
-                    const targetMember = allMembersResponse.find((member: any) => 
-                        member.userName === dragged.name
-                    );
-                    
-                    if (!targetMember) {
-                        throw new Error(`멤버 '${dragged.name}'을(를) 전체 멤버 목록에서 찾을 수 없습니다.`);
-                    }
-                    
-                    console.log('찾은 멤버 정보:', targetMember);
-                    console.log('사용 가능한 ID 필드들:', Object.keys(targetMember).filter(key => key.includes('Id') || key.includes('id')));
-                    
-                    // 다양한 ID 필드를 시도
-                    let memberId = targetMember.councilMemberId; // 기본값을 councilMemberId로
-                    
-                    // 다른 ID 필드들을 우선적으로 시도
-                    if (targetMember.id !== undefined) {
-                        memberId = targetMember.id;
-                        console.log('id 필드 사용:', memberId);
-                    } else if (targetMember.memberId !== undefined) {
-                        memberId = targetMember.memberId;
-                        console.log('memberId 필드 사용:', memberId);
-                    } else if (targetMember.userId !== undefined) {
-                        memberId = targetMember.userId;
-                        console.log('userId 필드 사용(백워드 호환):', memberId);
-                    }
-                    
-                    console.log('전송할 데이터:', {
-                        councilName,
-                        memberId: memberId, // 선택된 ID 사용
-                        departmentId,
-                        departmentLevel,
-                        selectedCouncilId
-                    });
-                    
-                    await moveMemberToDepartment(councilName, memberId, departmentId, departmentLevel, selectedCouncilId);
-                    console.log(`멤버 이동 성공: 부서 ${departmentId}, 레벨 ${departmentLevel === 0 ? '부장' : '부원'}`);
-                } catch (fetchError) {
-                    console.error('fetchAllMembers API 호출 실패:', fetchError);
-                    
-                    // fallback: 기존 방식으로 시도 (dragged.councilMemberId 사용)
-                    console.log('fallback: 기존 councilMemberId로 시도:', dragged.councilMemberId);
-                    
-                    console.log('전송할 데이터 (fallback):', {
-                        councilName,
-                        memberId: dragged.councilMemberId,
-                        departmentId,
-                        departmentLevel,
-                        selectedCouncilId
-                    });
-                    
-                    await moveMemberToDepartment(councilName, dragged.councilMemberId, departmentId, departmentLevel, selectedCouncilId);
-                    console.log(`멤버 이동 성공 (fallback): 부서 ${departmentId}, 레벨 ${departmentLevel === 0 ? '부장' : '부원'}`);
+                // 이름 매칭 없이 드래그된 항목의 고유 ID만 사용
+                const memberId = dragged.councilMemberId;
+                if (memberId === undefined || memberId === null) {
+                    throw new Error('councilMemberId가 없습니다. 이동할 멤버를 식별할 수 없습니다.');
                 }
+                console.log('전송할 데이터:', {
+                    councilName,
+                    memberId,
+                    departmentId,
+                    departmentLevel,
+                    selectedCouncilId
+                });
+                await moveMemberToDepartment(councilName, memberId, departmentId, departmentLevel, selectedCouncilId);
+                console.log(`멤버 이동 성공: 부서 ${departmentId}, 레벨 ${departmentLevel === 0 ? '부장' : '부원'}`);
             } else {
                 throw new Error('부서 ID 또는 레벨을 찾을 수 없습니다.');
             }

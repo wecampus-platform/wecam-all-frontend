@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import NameTag from './nameTag';
 import OrgMemberManageModal from './modals/OrgMemberManageModal';
@@ -17,6 +18,11 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
     const [editingTitle, setEditingTitle] = useState('');
 
     const [isLoading, setIsLoading] = useState(true);
+
+    const DragPortal = ({ children }) => {
+        if (typeof window === 'undefined') return null;
+        return createPortal(children, document.body);
+    };
 
     // 부서 목록 불러오기
     useEffect(() => {
@@ -305,16 +311,23 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
                                             >
                                                 {section.lead?.filter(m => m && m.councilMemberId).map((m, index) => (
                                                     <Draggable key={m.councilMemberId} draggableId={m.councilMemberId.toString()} index={index}>
-                                                        {(provided) => (
-                                                            <div
-                                                                ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}
-                                                                className="cursor-grab active:cursor-grabbing"
-                                                            >
-                                                                <NameTag name={m.name || 'Unknown'} />
-                                                            </div>
-                                                        )}
+                                                        {(provided, snapshot) => {
+                                                            const content = (
+                                                                <div
+                                                                    ref={provided.innerRef}
+                                                                    {...provided.draggableProps}
+                                                                    {...provided.dragHandleProps}
+                                                                    className="cursor-grab active:cursor-grabbing"
+                                                                >
+                                                                    <NameTag name={m.name || 'Unknown'} />
+                                                                </div>
+                                                            );
+                                                            return snapshot.isDragging ? (
+                                                                <DragPortal>{content}</DragPortal>
+                                                            ) : (
+                                                                content
+                                                            );
+                                                        }}
                                                     </Draggable>
                                                 ))}
                                                 {provided.placeholder}
@@ -336,16 +349,23 @@ export default function CouncilMemberSection({ sections = [], setSections, setNo
                                             >
                                                 {section.sub?.filter(m => m && m.councilMemberId).map((m, index) => (
                                                     <Draggable key={m.councilMemberId} draggableId={m.councilMemberId.toString()} index={index}>
-                                                        {(provided) => (
-                                                            <div
-                                                                ref={provided.innerRef}
-                                                                {...provided.draggableProps}
-                                                                {...provided.dragHandleProps}
-                                                                className="cursor-grab active:cursor-grabbing"
-                                                            >
-                                                                <NameTag name={m.name || 'Unknown'} />
-                                                            </div>
-                                                        )}
+                                                        {(provided, snapshot) => {
+                                                            const content = (
+                                                                <div
+                                                                    ref={provided.innerRef}
+                                                                    {...provided.draggableProps}
+                                                                    {...provided.dragHandleProps}
+                                                                    className="cursor-grab active:cursor-grabbing"
+                                                                >
+                                                                    <NameTag name={m.name || 'Unknown'} />
+                                                                </div>
+                                                            );
+                                                            return snapshot.isDragging ? (
+                                                                <DragPortal>{content}</DragPortal>
+                                                            ) : (
+                                                                content
+                                                            );
+                                                        }}
                                                     </Draggable>
                                                 ))}
                                                 {provided.placeholder}
