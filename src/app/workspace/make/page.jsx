@@ -210,6 +210,7 @@ export default function MakeWorkspacePage() {
         list={list}
         onSelect={(item) => {
           setSelectedValue(item);
+
           setInputValue(''); // 선택 시 input 초기화
         }}
         onFocus={onFocus}
@@ -247,7 +248,8 @@ export default function MakeWorkspacePage() {
             selectedDepartment, setSelectedDepartment,
             departmentList, fetchDepartments,
             showDepartmentList, setShowDepartmentList,
-            !college.trim() // disabled
+            !(selectedCollege || college.trim())
+
           )}
         </div>
       );
@@ -269,7 +271,8 @@ export default function MakeWorkspacePage() {
             selectedDepartment, setSelectedDepartment,
             departmentList, fetchDepartments,
             showDepartmentList, setShowDepartmentList,
-            !college.trim()
+            !(selectedCollege || college.trim())
+
           )}
           <div className="flex flex-col mt-[12px]">
             <div className="self-stretch text-neutral-500 text-xs font-bold">전공</div>

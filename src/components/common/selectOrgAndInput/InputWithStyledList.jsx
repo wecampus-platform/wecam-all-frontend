@@ -15,22 +15,24 @@ export default function InputWithStyledList({
   setShowList,
   disabled
 }) {
+
     const filteredList = list.filter((item) =>
     item.name.toLowerCase().includes((input || '').toLowerCase())
   );
   return (
     <div className="w-[656px] relative">
       <div className="rounded-xl bg-white border-gray2 border-solid border-[1px] flex flex-row items-center justify-between py-3 px-4 gap-0 focus-within:border-point">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onFocus={!disabled ? onFocus : undefined}
-          onBlur={() => setTimeout(() => setShowList(false), 150)}
-          placeholder={label}
-          disabled={disabled}
-          className="flex-1 bg-transparent outline-none"
+      <input
+        type="text"
+        value={input ?? ""}
+        onChange={(e) => setInput(e.target.value)}
+        onFocus={!disabled ? onFocus : undefined}
+        onBlur={() => setTimeout(() => setShowList(false), 150)}
+        placeholder={label}
+        disabled={disabled}
+        className="flex-1 bg-transparent outline-none"
         />
+
         <SearchIcon className="w-6 h-6 shrink-0 text-gray3" />
       </div>
 
@@ -50,3 +52,4 @@ export default function InputWithStyledList({
     </div>
   );
 }
+

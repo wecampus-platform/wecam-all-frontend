@@ -86,7 +86,11 @@ export default function SideBarPage() {
                             <div className="text-center justify-start text-zinc-600 text-xl font-semibold">공지 관리</div>
                         </div>
 
-                        <div className="w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2">
+                        <div
+                            className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${
+                                isActive('/admin/member-manage') ? 'bg-gray-100 text-blue-500 font-bold' : 'hover:bg-gray-100 text-zinc-600'
+                            }`}
+                            onClick={() => router.push('/admin/member-manage')}>
                             <div className="text-center justify-start text-zinc-600 text-xl font-semibold">구성원 관리</div>
                         </div>
 

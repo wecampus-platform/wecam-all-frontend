@@ -51,6 +51,7 @@ export function useRegisterForm() {
   }, [selectedSchool]);
 
   const fetchDepartments = useCallback(async () => {
+    console.log(":::::: select collegeId:",selectedCollege?.id);
     const collegeId = showManualCollegeInput ? null : selectedCollege?.id;
     if (!collegeId) return;
     if (selectedCollege) {

@@ -10,6 +10,7 @@ import SideBarPage from './side-bar';
 import InputModal from '@/components/modals/Inputmodal';
 import { OrganizationModal } from './modals/organizationModal';
 import {fetchEditUserOrganizationInfo,fetchEditUserInfo} from '@/app/api-service/mypageApi'
+import { useInvitationCode } from '@/app/api-service/invitationApi';
 
 export default function MyPage() {
   const [user, setUser] = useState(null);
@@ -79,17 +80,51 @@ export default function MyPage() {
   }, []);
 
 
-  const handleModalConfirm = () => {
-    if (modalType === 'organization') {
-      console.log('소속 인증 요청:', inputValue);
-    } else if (modalType === 'schoolEmail') {
-      console.log('학교 이메일 인증 요청:', inputValue);
-    } else if (modalType === 'studentCouncil') {
-      console.log('학생회 인증 요청:', inputValue);
+// 상단: state 하나 추가 (중복 제출 방지용)
+const [submitting, setSubmitting] = useState(false);
+
+// 기존 handleModalConfirm 교체
+const handleModalConfirm = async () => {
+  if (submitting) return;
+
+  // 입력값 공통 체크
+  if (!inputValue || !inputValue.trim()) {
+    alert('코드를 입력하세요.');
+    return;
+  }
+
+  if (modalType === 'studentCouncil') {
+    try {
+      setSubmitting(true);
+      const result = await useInvitationCode('council_member', inputValue.trim());
+      console.log('초대 코드 사용 성공:', result);
+
+      // 모달 닫고 마이페이지로
+      setModalType(null);
+      setInputValue('');
+      window.location.href = 'client/mypage';
+    } catch (err) {
+      alert('초대 코드 사용 중 오류 발생');
+      console.error(err);
+    } finally {
+      setSubmitting(false);
     }
+    return;
+  }
+
+  // 다른 모달 타입(예: schoolEmail)은 필요 시 여기에 추가
+  if (modalType === 'schoolEmail') {
+    // TODO: 학교 이메일 인증 API 연결
     setModalType(null);
     setInputValue('');
-  };
+    return;
+  }
+
+  // 기본: 닫기
+  setModalType(null);
+  setInputValue('');
+};
+
 
   if (loading) return <div>로딩중...</div>;
   if (error) return <div>에러가 발생했습니다.</div>;
