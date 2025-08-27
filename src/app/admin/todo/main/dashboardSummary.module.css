@@ -1,83 +1,82 @@
 /* wrapper: 카드 4개 정렬 (grid) */
 .wrapper {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    width: 100%;
-    background-color: #fff;
-    height: 264px;
-    margin-bottom: 32px;
-    border-radius: 28px;
-    position: relative;
-    padding: 41px 40px 24px 40px;
-  }
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  width: 100%;
+  background-color: #fff;
+  height: 264px;
+  margin-bottom: 32px;
+  border-radius: 28px;
+  position: relative;
+  padding: 41px 40px 24px 40px;
+}
 
-  .cardRow {
-    display: flex;
-    gap: 24px; /* 카드와 선 간 간격 */
-    align-items: stretch; /* 선의 높이가 카드와 맞춰지도록 */
-  }
-
-
+.cardRow {
+  display: flex;
+  gap: 24px; /* 카드와 선 간 간격 */
+  align-items: stretch; /* 선의 높이가 카드와 맞춰지도록 */
+}
 
 .rectangleDiv {
-    position: relative;
+  position: relative;
 }
 
 .div {
-    width: 211px;
-    position: relative;
-    font-size: 24px;
-    font-weight: 500;
-    font-family: Pretendard;
-    color: #b4b5b5;
-    text-align: left;
-    display: inline-block;
-    margin-left: auto;
-    margin-right: 24px;
+  width: 211px;
+  position: relative;
+  font-size: 24px;
+  font-weight: 500;
+  font-family: Pretendard;
+  color: #b4b5b5;
+  text-align: left;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: 24px;
 }
 .b {
-    width: 80px;
-    position: relative;
-    font-size: 64px;
-    display: inline-block;
-    font-family: Pretendard;
-    color: #3b82f6;
-    text-align: left;
-    margin-right: 96px; /* ✅ 오른쪽 끝과 퍼센트 간 거리 확보 */
+  /* position: relative; */
+  font-size: 64px;
+  /* display: inline-block; */
+  /* font-family: Pretendard; */
+  color: #3b82f6;
+  line-height: 1;
+  /* text-align: left; */
 }
 .div1 {
-    position: absolute;
-    top: 31px;
-    left: 110px;
-    font-size: 32px;
-    color: #8f9195;
-}
-.groupChild {
-    position: absolute;
-    top: 39px;
-    left: 92px;
-    width: 6px;
-    height: 22px;
-}
-.group {
-    position: absolute;
-    top: 123px;
-    left: calc(50% - 6px);
-    width: 149px;
-    height: 76px;
-    font-size: 64px;
-    color: #3b82f6;
-    white-space: nowrap; 
-}
-.parent {
-    width: 100%;
-    position: relative;
-    height: 199px;
-    overflow: hidden;
-    text-align: left;
-    font-size: 24px;
-    color: #b4b5b5;
-    font-family: Pretendard;
+  font-size: 32px;
+  color: #8f9195;
+  line-height: 1;
 }
 
+.lineIcon {
+  /* background-color: red; */
+}
+
+.group {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  gap: 8px;
+  height: 76px;
+  font-size: 64px;
+  color: #3b82f6;
+  white-space: nowrap;
+  align-items: end;
+  /* background-color: aliceblue;/ */
+}
+
+.parent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  min-height: 199px;
+  height: 100%;
+  overflow: hidden;
+  text-align: left;
+  font-size: 24px;
+  color: #b4b5b5;
+  font-family: Pretendard;
+}
