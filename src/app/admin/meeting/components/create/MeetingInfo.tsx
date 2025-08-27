@@ -4,7 +4,11 @@ import MeetingInput from "@/app/admin/meeting/components/create/entities/Meeting
 import MeetingInputField from "@/app/admin/meeting/components/create/entities/MeetingInputField";
 import ParticipationChips from "@/app/admin/meeting/components/create/entities/ParticipationChips";
 import MeetingEntityPickerField from "@/app/admin/meeting/components/create/entities/MeetingEntityPickerField";
-import { Member, Category, MeetingFormState } from "@/hooks/meeting/create/useMeetingForm";
+import {
+  Member,
+  Category,
+  MeetingFormState,
+} from "@/hooks/meeting/create/useMeetingForm";
 
 export default function MeetingInfo({
   form,
@@ -19,7 +23,9 @@ export default function MeetingInfo({
   readOnly = false,
 }: {
   form: MeetingFormState;
-  handleInputChange: (key: keyof MeetingFormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  handleInputChange: (
+    key: keyof MeetingFormState
+  ) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleAttachmentsChange: (files: FileList | null) => void;
   addParticipant: (participantIds: number[]) => void;
   addCategory: (categoryIds: number[]) => void;
@@ -54,14 +60,10 @@ export default function MeetingInfo({
           {readOnly ? (
             <div className="flex flex-wrap gap-2">
               {form.participants.map((id: number) => {
-                const member = members.find(m => m.userId === id);
+                const member = members.find((m) => m.userId === id);
                 return (
-                  <ParticipationChips
-                    key={id}
-                    avatar=""
-                    readOnly={true}
-                  >
-                    {member?.userName || ''}
+                  <ParticipationChips key={id} avatar="" readOnly={true}>
+                    {member?.userName || ""}
                   </ParticipationChips>
                 );
               })}
@@ -70,27 +72,32 @@ export default function MeetingInfo({
             <MeetingEntityPickerField
               label="참석자 선택"
               value={form.participants.map((id: number) => {
-                const member = members.find(m => m.userId === id);
-                return { id: id.toString(), name: member?.userName || '', avatar: '' };
+                const member = members.find((m) => m.userId === id);
+                return {
+                  id: id.toString(),
+                  name: member?.userName || "",
+                  avatar: "",
+                };
               })}
-              suggestions={members.map(member => ({
+              suggestions={members.map((member) => ({
                 id: member.userId.toString(),
                 name: member.userName,
-                avatar: ''
+                avatar: "",
               }))}
               onAdd={(entities) => {
-                const ids = entities.map(e => parseInt(e.id));
+                const ids = entities.map((e) => parseInt(e.id));
                 addParticipant(ids);
               }}
               onRemove={(entity) => {
                 removeParticipant(parseInt(entity.id));
               }}
               placeholder="참석자를 선택하세요"
+              allowCreate={false}
               readOnly={false}
               renderEntity={(entity, selected, onClick) => (
                 <ParticipationChips
                   key={entity.id}
-                  avatar={entity.avatar || ''}
+                  avatar={entity.avatar || ""}
                   readOnly={false}
                   onClick={onClick}
                 >
@@ -105,13 +112,10 @@ export default function MeetingInfo({
           {readOnly ? (
             <div className="flex flex-wrap gap-2">
               {form.category.map((id: number) => {
-                const category = categories.find(c => c.categoryId === id);
+                const category = categories.find((c) => c.categoryId === id);
                 return (
-                  <CategoryChips 
-                    key={id} 
-                    readOnly={true}
-                  >
-                    {category?.categoryName || ''}
+                  <CategoryChips key={id} readOnly={true}>
+                    {category?.categoryName || ""}
                   </CategoryChips>
                 );
               })}
@@ -119,17 +123,22 @@ export default function MeetingInfo({
           ) : (
             <MeetingEntityPickerField
               label="카테고리 선택"
-              value={form.category.map(id => {
-                const category = categories.find(c => c.categoryId === id);
-                return { id: id.toString(), name: category?.categoryName || '', avatar: '' };
+              value={form.category.map((id) => {
+                const category = categories.find((c) => c.categoryId === id);
+                return {
+                  id: id.toString(),
+                  name: category?.categoryName || "",
+                  avatar: "",
+                };
               })}
-              suggestions={categories.map(category => ({
+              allowCreate={false}
+              suggestions={categories.map((category) => ({
                 id: category.categoryId.toString(),
                 name: category.categoryName,
-                avatar: ''
+                avatar: "",
               }))}
               onAdd={(entities) => {
-                const ids = entities.map(e => parseInt(e.id));
+                const ids = entities.map((e) => parseInt(e.id));
                 addCategory(ids);
               }}
               onRemove={(entity) => {
