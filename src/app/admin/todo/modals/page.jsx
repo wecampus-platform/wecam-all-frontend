@@ -11,7 +11,7 @@ export default function ModalPage() {
   const params = useSearchParams();
   const todoId = params.get('id');         // ?id=123
   const councilName = '위캠퍼스';
-  const councilId = 2;
+  const councilId = 4;
   const {accessToken} = useAuthStore();
 
   const [detail, setDetail] = useState(null);

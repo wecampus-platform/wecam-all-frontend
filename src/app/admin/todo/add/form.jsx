@@ -18,7 +18,7 @@ export default function Form(){
     const { setNewTask: setGlobalTask } = useTaskStore(); // ✅ 추가
     const { setNewTaskAll } = useTaskStore(); 
     const councilName = "위캠퍼스";
-    const councilId = 2;
+    const councilId = 4;
     const [newTask, setNewTask] = useState({
         title: '',
         deadline: null,

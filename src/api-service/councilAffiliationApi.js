@@ -1,285 +1,64 @@
 import { adminapi } from '@/lib/fetchClient';
 
-// 부서명 변경 API
-export const renameDepartment = async (councilName, departmentId, newName, councilId) => {
-  try {
-    const response = await adminapi(
-      `/council/${encodeURIComponent(councilName)}/composition/department/rename?departmentId=${departmentId}&newName=${encodeURIComponent(newName)}`,
-      {
-        method: 'PUT',
-        headers: {
-          'X-Council-Id': councilId.toString(),
-        },
-      }
-    );
-    
-    return await response.json();
-  } catch (error) {
-    console.error('부서명 변경 API 오류:', error);
-    throw error;
-  }
-};
-
-// 부서 생성 API
-export const createDepartment = async (councilName, departmentTitle, councilId) => {
-  try {
-    const url = `/council/${encodeURIComponent(councilName)}/composition/department/create?departmentName=${encodeURIComponent(departmentTitle)}`;
-    
-    console.log('🔍 createDepartment API 호출:', {
-      url,
-      method: 'POST',
-      headers: {
-        'X-Council-Id': councilId.toString(),
-      },
-      departmentTitle,
-      councilName,
-      councilId
-    });
-    
-    const response = await adminapi(url, {
-      method: 'POST',
-      headers: {
-        'X-Council-Id': councilId.toString(),
-      },
-    });
-    
-    console.log('🔍 createDepartment API 응답:', response);
-    
-    return await response.json();
-  } catch (error) {
-    console.error('부서 생성 API 오류:', error);
-    throw error;
-  }
-};
-
-// 부서 목록 조회 API
-export const fetchDepartments = async (councilName, councilId) => {
-  try {
-    const response = await adminapi(
-      `/council/${encodeURIComponent(councilName)}/composition/members`,
-      {
-        method: 'GET',
-        headers: {
-          'X-Council-Id': councilId.toString(),
-        },
-      }
-    );
-    
-    return await response.json();
-  } catch (error) {
-    console.error('부서 목록 조회 API 오류:', error);
-    throw error;
-  }
-};
-
-// 부서 및 역할 목록 조회 API (새로운 API 명세 기반)
-export const fetchDepartmentRoles = async (councilName, councilId) => {
-  try {
-    const response = await adminapi(
-      `/council/${encodeURIComponent(councilName)}/member/departments`,
-      {
-        method: 'GET',
-        headers: {
-          'X-Council-Id': councilId.toString(),
-        },
-      }
-    );
-    
-    return await response.json();
-  } catch (error) {
-    console.error('부서 및 역할 목록 조회 API 오류:', error);
-    throw error;
-  }
-};
-
-// 멤버 전체 조회 API (새로운 API 명세 기반)
-export const fetchAllMembers = async (councilName, councilId) => {
-  try {
-    const response = await adminapi(
-      `/council/${encodeURIComponent(councilName)}/member/list`,
-      {
-        method: 'POST',
-        headers: {
-          'X-Council-Id': councilId.toString(),
-        },
-      }
-    );
-    
-    return await response.json();
-  } catch (error) {
-    console.error('멤버 전체 조회 API 오류:', error);
-    throw error;
-  }
-};
-
-// 학생회 부원 부서 배치/이동 API (새로운 API 명세 기반)
-export const moveMemberToDepartment = async (councilName, memberId, departmentId, departmentLevel = 1, councilId) => {
-  try {
-    // API 명세에 따르면 departmentId는 필수이므로, 미배치 상태일 때는 특별한 처리 필요
-    if (departmentId === null) {
-      console.log('⚠️ 미배치 상태로 이동 요청 - departmentId가 null입니다.');
-      console.log('⚠️ 서버에서 미배치 전용 부서를 생성하거나 별도 API를 제공해야 합니다.');
-      throw new Error('미배치 상태로 이동하는 기능은 현재 지원되지 않습니다. 부서를 선택해주세요.');
-    }
-    
-    const requestBody = {
-      departmentId: departmentId,
-      departmentLevel: departmentLevel
-    };
-    
-    console.log('moveMemberToDepartment API 요청 정보:', {
-      url: `/council/${encodeURIComponent(councilName)}/member/${memberId}/department`,
-      method: 'PUT',
-      headers: {
-        'X-Council-Id': councilId.toString(),
-        'Content-Type': 'application/json',
-      },
-      body: requestBody,
-      memberId: memberId,
-      departmentId: departmentId,
-      departmentLevel: departmentLevel
-    });
-    
-    const response = await adminapi(
-      `/council/${encodeURIComponent(councilName)}/member/${memberId}/department`,
-      {
-        method: 'PUT',
-        headers: {
-          'X-Council-Id': councilId.toString(),
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      }
-    );
-    
-    console.log('moveMemberToDepartment API 응답 객체:', response);
-    console.log('moveMemberToDepartment API 응답 상태:', response.status, response.ok);
-    
-    const responseData = await response.json();
-    console.log('moveMemberToDepartment API 응답 데이터:', responseData);
-    
-    // 응답이 실패인 경우 에러 처리
-    if (!responseData.isSuccess) {
-      throw new Error(`API 호출 실패: ${responseData.message || '알 수 없는 오류'}`);
-    }
-    
-    return responseData;
-  } catch (error) {
-    console.error('구성원 배치 이동 API 오류:', error);
-    console.error('에러 상세 정보:', {
-      name: error.name,
-      message: error.message,
-      stack: error.stack
-    });
-    throw error;
-  }
-};
-
-// 소속 요청 목록 조회 API
+// 전체 리스트 조회
 export const fetchAffiliationRequests = async (councilName) => {
   try {
-    const response = await adminapi(
-      `/council/${encodeURIComponent(councilName)}/affiliation/requests/all`,
+    const res = await adminapi(`/council/${councilName}/affiliation/requests/all`, {
+      method: 'GET',
+    });
+
+    const result = res.json();
+    console.log("📋 응답 내용:", result);
+    return await result;
+  } catch (err) {
+    console.error('[fetchAffiliationRequests] 실패:', err);
+    return [
       {
-        method: 'GET',
-      }
-    );
-    
-    return await response.json();
-  } catch (error) {
-    console.error('소속 요청 목록 조회 API 오류:', error);
-    throw error;
+        id: 9999,
+        name: '홍길동',
+        studentNumber: '20230001',
+        department: '컴퓨터공학과',
+        requestedAt: '2025-07-25',
+      },
+    ];
   }
 };
 
-// 소속 요청 승인 API
+// 승인 요청
 export const approveAffiliationRequest = async ({ councilName, userId, authType }) => {
   try {
-    // 백엔드에서 기대하는 상태값으로 변환
-    let mappedAuthType = authType;
-    
-    // AuthenticationStatus를 BaseEntity.Status로 매핑
-    if (authType === 'PENDING') {
-      mappedAuthType = 'ACTIVE'; // 또는 백엔드에서 기대하는 값
-    } else if (authType === 'APPROVED') {
-      mappedAuthType = 'ACTIVE';
-    } else if (authType === 'REJECTED') {
-      mappedAuthType = 'INACTIVE';
-    }
-    
-    console.log('🔍 상태값 매핑:', { original: authType, mapped: mappedAuthType });
-    
-    const response = await adminapi(
-      `/council/${encodeURIComponent(councilName)}/affiliation/approve`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          authType: mappedAuthType,
-        }),
-      }
-    );
-    
-    return await response.json();
-  } catch (error) {
-    console.error('소속 요청 승인 API 오류:', error);
-    
-    // 타입 불일치 오류 특별 처리
-    if (error.message && error.message.includes('AuthenticationStatus') && error.message.includes('BaseEntity$Status')) {
-      console.error('🔍 타입 불일치 오류 감지: AuthenticationStatus와 BaseEntity.Status 타입이 맞지 않습니다.');
-      console.error('🔍 전달된 authType:', mappedAuthType);
-      throw new Error('상태값 타입 오류: 백엔드에서 기대하는 상태값과 다릅니다.');
-    }
-    
-    throw error;
+    const url = `/council/${councilName}/affiliation/approve?userId=${userId}&authType=${authType}`;
+    const res = await adminapi(url, { method: 'POST' });
+    const result = res.json();
+    console.log("📋 응답 내용:", result);
+    return await result;  } catch (err) {
+    console.error('[approveAffiliationRequest] 실패:', err);
+    throw err;
   }
 };
 
-// 소속 요청 거절 API
-export const rejectAffiliationRequest = async ({ councilName, userId, authType }) => {
+// 거절(삭제) 요청
+export const rejectAffiliationRequest = async ({ councilName, userId, authType,reason }) => {
   try {
-    // 백엔드에서 기대하는 상태값으로 변환
-    let mappedAuthType = authType;
-    
-    // AuthenticationStatus를 BaseEntity.Status로 매핑
-    if (authType === 'PENDING') {
-      mappedAuthType = 'INACTIVE'; // 거절 시 비활성 상태
-    } else if (authType === 'APPROVED') {
-      mappedAuthType = 'INACTIVE';
-    } else if (authType === 'REJECTED') {
-      mappedAuthType = 'INACTIVE';
-    }
-    
-    console.log('🔍 상태값 매핑 (거절):', { original: authType, mapped: mappedAuthType });
-    
-    const response = await adminapi(
-      `/council/${encodeURIComponent(councilName)}/affiliation/reject`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          authType: mappedAuthType,
-        }),
-      }
-    );
-    
-    return await response.json();
-  } catch (error) {
-    console.error('소속 요청 거절 API 오류:', error);
-    
-    // 타입 불일치 오류 특별 처리
-    if (error.message && error.message.includes('AuthenticationStatus') && error.message.includes('BaseEntity$Status')) {
-      console.error('🔍 타입 불일치 오류 감지: AuthenticationStatus와 BaseEntity.Status 타입이 맞지 않습니다.');
-      console.error('🔍 전달된 authType:', mappedAuthType);
-      throw new Error('상태값 타입 오류: 백엔드에서 기대하는 상태값과 다릅니다.');
-    }
-    
-    throw error;
+    const url = `/council/${councilName}/affiliation/reject?userId=${userId}&authType=${authType}&reason=${reason}`;
+    const res = await adminapi(url, { method: 'PUT' });
+    return await res.json();
+  } catch (err) {
+    console.error('[rejectAffiliationRequest] 실패:', err);
+    throw err;
+  }
+};
+
+
+export const detailAffiliationRequest  = async({ councilName, userId, authType }) => {
+  try {
+    const url = `/council/${councilName}/affiliation/requests/show?userId=${userId}&authType=${authType}`;
+    const res = await adminapi(url, { method: 'GET' });
+    const result = res.json();
+    console.log("📋 응답 내용:", result);
+    return await result;
+  } catch (err) {
+    console.error('[rejectAffiliationRequest] 실패:', err);
+    throw err;
   }
 };
