@@ -65,8 +65,10 @@ export default function EntityPicker({
     >
       <div className="w-full rounded-2xl border border-gray-200 bg-white p-3 shadow-lg">
         <div className="flex flex-wrap gap-2 mb-2 min-h-[2rem]">
-          {normalizedSelected.map((item) =>
-            renderEntity(item, true, () => remove(item))
+          {normalizedSelected.map((item, index) =>
+            <div key={`selected-${item.id}-${index}`}>
+              {renderEntity(item, true, () => remove(item))}
+            </div>
           )}
         </div>
 
@@ -91,8 +93,10 @@ export default function EntityPicker({
           {filtered.length === 0 ? (
             <span className="text-sm text-gray-500">추천 항목이 없습니다.</span>
           ) : (
-            filtered.map((item) =>
-              renderEntity(item, false, () => tryAdd(item))
+            filtered.map((item, index) =>
+              <div key={`filtered-${item.id}-${index}`}>
+                {renderEntity(item, false, () => tryAdd(item))}
+              </div>
             )
           )}
         </div>

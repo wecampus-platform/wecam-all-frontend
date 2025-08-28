@@ -87,31 +87,60 @@ export default function MeetingEditPage() {
                 console.log('현재 councilName:', councilName);
                 console.log('현재 meetingId:', meetingId);
                 
-                // 회의록 상세 정보는 필수이므로 먼저 가져옴
-                const meetingData = await getMeetingDetail(councilName, meetingId);
-                const meeting = meetingData.result;
-                setMeetingDetail(meeting);
-                
-                // 폼 데이터 설정
-                setForm({
-                    title: meeting.title,
-                    date: meeting.meetingDateTime.split('T')[0],
-                    location: meeting.location,
-                    content: meeting.content,
-                    participants: meeting.attendees.map((attendee: { attendeeId: number }) => attendee.attendeeId),
-                    category: meeting.categoryIds,
-                    attachments: [],
-                });
-                
-                // 멤버와 카테고리는 개별적으로 가져와서 에러가 발생해도 계속 진행
-                try {
-                    const membersData = await getMemberList(councilName);
-                    console.log('멤버 데이터:', membersData);
-                    setMembers(membersData);
-                } catch (memberError) {
-                    console.error('멤버 목록 조회 실패:', memberError);
-                    setMembers([]);
-                }
+                                 // 멤버와 카테고리를 먼저 가져와서 참석자 이름을 제대로 표시할 수 있도록 함
+                 let membersData: Member[] = [];
+                 let categoriesData: Category[] = [];
+                 
+                 try {
+                   membersData = await getMemberList(councilName);
+                   console.log('🔍 멤버 데이터:', membersData);
+                   console.log('🔍 멤버 데이터 타입:', typeof membersData);
+                   console.log('🔍 멤버 데이터 길이:', Array.isArray(membersData) ? membersData.length : '배열 아님');
+                   setMembers(membersData);
+                 } catch (memberError) {
+                   console.error('멤버 목록 조회 실패:', memberError);
+                   setMembers([]);
+                 }
+                 
+                 try {
+                   categoriesData = await getCategoryList(councilName);
+                   console.log('카테고리 데이터:', categoriesData);
+                   setCategories(categoriesData);
+                 } catch (categoryError) {
+                   console.error('카테고리 목록 조회 실패:', categoryError);
+                   setCategories([]);
+                 }
+                 
+                 // 회의록 상세 정보 가져오기
+                 const meetingData = await getMeetingDetail(councilName, meetingId);
+                 const meeting = meetingData.result;
+                 setMeetingDetail(meeting);
+                 
+                 // 폼 데이터 설정 (멤버 데이터가 로드된 후에 설정)
+                 console.log('🔍 회의록 데이터:', meeting);
+                 console.log('🔍 참석자 데이터:', meeting.attendees);
+                 
+                 const participantIds = meeting.attendees.map((attendee: { attendeeId: number }) => attendee.attendeeId);
+                 console.log('🔍 추출된 참석자 ID:', participantIds);
+                 
+                                    // 멤버 데이터가 있는지 확인하고 참석자 이름 검증
+                   if (Array.isArray(membersData) && membersData.length > 0) {
+                     console.log('🔍 참석자 ID 검증:');
+                     participantIds.forEach((id: number) => {
+                       const member = membersData.find(m => m.userId === id);
+                       console.log(`  - ID ${id}: ${member ? member.userName : '찾을 수 없음'}`);
+                     });
+                   }
+                 
+                 setForm({
+                   title: meeting.title,
+                   date: meeting.meetingDateTime.split('T')[0],
+                   location: meeting.location,
+                   content: meeting.content,
+                   participants: participantIds,
+                   category: meeting.categoryIds,
+                   attachments: [],
+                 });
                 
                 try {
                     const categoriesData = await getCategoryList(councilName);
@@ -140,6 +169,13 @@ export default function MeetingEditPage() {
             [key]: e.target.value
         }));
     };
+
+    // form 상태 변경 시 참석자 데이터 확인
+    useEffect(() => {
+        console.log('🔍 form 상태 변경:', form);
+        console.log('🔍 현재 참석자:', form.participants);
+        console.log('🔍 현재 멤버:', members);
+    }, [form, members]);
 
     const handleAttachmentsChange = (files: FileList | null) => {
         if (!files) return;
@@ -269,8 +305,8 @@ export default function MeetingEditPage() {
                                 console.log('수정 응답:', response);
                                 
                                 console.log("회의록이 성공적으로 수정되었습니다!");
-                                // 페이지 새로고침을 위해 window.location 사용
-                                router.push('/admin/meeting/main');
+                                // 수정 완료 후 메인 페이지로 이동하고 데이터 새로고침
+                                router.push('/admin/meeting/main?refresh=true');
                             } catch (error) {
                                 console.error('회의록 수정 실패:', error);
                                 console.error("회의록 수정에 실패했습니다. 다시 시도해주세요.");

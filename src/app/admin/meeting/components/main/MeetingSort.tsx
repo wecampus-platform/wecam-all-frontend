@@ -14,6 +14,7 @@ export default function MeetingSort({
 }: MeetingSortProps) {
     // 정렬 옵션
     const sortOptions = [
+        { value: 'all', label: '전체' },
         { value: 'latest', label: '최신순' },
         { value: 'oldest', label: '오래된순' }
     ];

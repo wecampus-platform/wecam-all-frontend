@@ -96,8 +96,12 @@ export const getMemberList = async (councilName) => {
         
         // data.result가 배열인지 확인
         if (Array.isArray(data.result)) {
+            console.log('🔍 data.result 배열 길이:', data.result.length);
+            console.log('🔍 data.result 첫 번째 항목:', data.result[0]);
             return data.result;
         } else if (Array.isArray(data)) {
+            console.log('🔍 data 배열 길이:', data.length);
+            console.log('🔍 data 첫 번째 항목:', data[0]);
             return data;
         } else {
             console.warn('🔍 예상과 다른 멤버 데이터 구조:', data);

@@ -53,21 +53,13 @@ export default function MeetingList({ meetings }: MeetingListProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    //샘플 데이터
-    const sampleMeetings: MeetingRecord[] = [
-        {
-            meetingId: 1,
-            title: '샘플 회의록',
-            meetingDateTime: '2025-08-11T19:14:25',
-            categoryNames: ['샘플 카테고리'],
-            authorName: '김위캠',
-            authorId: 1,
-            authorProfileThumbnailUrl: null,
-            createdAt: '2025-08-11T20:15:17'
-        }
-    ];
+    // 디버깅을 위한 로그
+    console.log('🔍 MeetingList props meetings:', meetings);
+    console.log('🔍 meetings type:', typeof meetings);
+    console.log('🔍 meetings isArray:', Array.isArray(meetings));
 
-    const displayMeetings = meetings.length > 0 ? meetings : sampleMeetings;
+    // meetings가 배열인지 확인하고 안전하게 처리
+    const displayMeetings = Array.isArray(meetings) ? meetings : [];
 
     // 날짜 포맷팅 함수
     const formatDate = (dateString: string) => {

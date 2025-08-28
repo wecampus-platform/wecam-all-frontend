@@ -178,6 +178,8 @@ export const moveMemberToDepartment = async (councilName, memberId, departmentId
 // 소속 요청 목록 조회 API
 export const fetchAffiliationRequests = async (councilName) => {
   try {
+    console.log('🔍 fetchAffiliationRequests 호출:', { councilName });
+    
     const response = await adminapi(
       `/council/${encodeURIComponent(councilName)}/affiliation/requests/all`,
       {
@@ -185,101 +187,135 @@ export const fetchAffiliationRequests = async (councilName) => {
       }
     );
     
-    return await response.json();
+    console.log('🔍 fetchAffiliationRequests 응답:', response);
+    
+    if (!response.ok) {
+      console.error('🔍 fetchAffiliationRequests HTTP 오류:', response.status, response.statusText);
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log('🔍 fetchAffiliationRequests 응답 데이터:', data);
+    
+    // 백엔드 응답에서 status 필드 분석
+    if (data && Array.isArray(data.result)) {
+      console.log('🔍 응답 데이터의 status 필드 분석:');
+      data.result.forEach((item, index) => {
+        console.log(`  - 항목 ${index}:`, {
+          userId: item.userId,
+          status: item.status,
+          statusType: typeof item.status,
+          authenticationType: item.authenticationType
+        });
+      });
+    }
+    
+    return data;
   } catch (error) {
-    console.error('소속 요청 목록 조회 API 오류:', error);
+    console.error('🔍 소속 요청 목록 조회 API 오류:', error);
+    
+    // 타입 불일치 오류 특별 처리
+    if (error.message && error.message.includes('AuthenticationStatus') && error.message.includes('BaseEntity$Status')) {
+      console.error('🔍 타입 불일치 오류 감지: AuthenticationStatus와 BaseEntity.Status 타입이 맞지 않습니다.');
+      console.error('🔍 이는 백엔드에서 상태값을 처리할 때 발생하는 문제입니다.');
+      console.error('🔍 백엔드 응답 예시:', {
+        "userId": 0,
+        "status": "string", // 이 필드가 문제
+        "authenticationType": "NEW_STUDENT"
+      });
+      throw new Error('백엔드 상태값 타입 오류: status 필드의 값이 BaseEntity.Status 타입과 맞지 않습니다.');
+    }
+    
     throw error;
   }
 };
 
 // 소속 요청 승인 API
-export const approveAffiliationRequest = async ({ councilName, userId, authType }) => {
-  try {
-    // 백엔드에서 기대하는 상태값으로 변환
-    let mappedAuthType = authType;
-    
-    // AuthenticationStatus를 BaseEntity.Status로 매핑
-    if (authType === 'PENDING') {
-      mappedAuthType = 'ACTIVE'; // 또는 백엔드에서 기대하는 값
-    } else if (authType === 'APPROVED') {
-      mappedAuthType = 'ACTIVE';
-    } else if (authType === 'REJECTED') {
-      mappedAuthType = 'INACTIVE';
-    }
-    
-    console.log('🔍 상태값 매핑:', { original: authType, mapped: mappedAuthType });
-    
-    const response = await adminapi(
-      `/council/${encodeURIComponent(councilName)}/affiliation/approve`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          authType: mappedAuthType,
-        }),
+export const approveAffiliationRequest = async ({ councilName, userId }) => {
+  // 백엔드에서 기대하는 상태값들을 순서대로 시도
+  const possibleStatusValues = ['PENDING', 'APPROVED', 'ACTIVE', 'ENABLED', 'ACTIVE'];
+  
+  for (const statusValue of possibleStatusValues) {
+    try {
+      console.log(`🔍 상태값 '${statusValue}'로 승인 시도 중...`);
+      
+      const response = await adminapi(
+        `/council/${encodeURIComponent(councilName)}/affiliation/approve`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            authType: statusValue,
+          }),
+        }
+      );
+      
+      const result = await response.json();
+      console.log(`✅ 상태값 '${statusValue}'로 승인 성공!`);
+      return result;
+      
+    } catch (error) {
+      console.log(`❌ 상태값 '${statusValue}'로 승인 실패:`, error.message);
+      
+      // 타입 불일치 오류가 아닌 경우 즉시 중단
+      if (!error.message.includes('AuthenticationStatus') && !error.message.includes('BaseEntity$Status')) {
+        throw error;
       }
-    );
-    
-    return await response.json();
-  } catch (error) {
-    console.error('소속 요청 승인 API 오류:', error);
-    
-    // 타입 불일치 오류 특별 처리
-    if (error.message && error.message.includes('AuthenticationStatus') && error.message.includes('BaseEntity$Status')) {
-      console.error('🔍 타입 불일치 오류 감지: AuthenticationStatus와 BaseEntity.Status 타입이 맞지 않습니다.');
-      console.error('🔍 전달된 authType:', mappedAuthType);
-      throw new Error('상태값 타입 오류: 백엔드에서 기대하는 상태값과 다릅니다.');
+      
+      // 마지막 시도였다면 오류 정보 출력
+      if (statusValue === possibleStatusValues[possibleStatusValues.length - 1]) {
+        console.error('🔍 모든 상태값 시도 실패');
+        console.error('🔍 백엔드에서 기대하는 정확한 상태값을 확인해주세요');
+        throw new Error(`승인 실패: 모든 상태값 시도 실패. 백엔드 개발자에게 문의해주세요.`);
+      }
     }
-    
-    throw error;
   }
 };
 
 // 소속 요청 거절 API
-export const rejectAffiliationRequest = async ({ councilName, userId, authType }) => {
-  try {
-    // 백엔드에서 기대하는 상태값으로 변환
-    let mappedAuthType = authType;
-    
-    // AuthenticationStatus를 BaseEntity.Status로 매핑
-    if (authType === 'PENDING') {
-      mappedAuthType = 'INACTIVE'; // 거절 시 비활성 상태
-    } else if (authType === 'APPROVED') {
-      mappedAuthType = 'INACTIVE';
-    } else if (authType === 'REJECTED') {
-      mappedAuthType = 'INACTIVE';
-    }
-    
-    console.log('🔍 상태값 매핑 (거절):', { original: authType, mapped: mappedAuthType });
-    
-    const response = await adminapi(
-      `/council/${encodeURIComponent(councilName)}/affiliation/reject`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          authType: mappedAuthType,
-        }),
+export const rejectAffiliationRequest = async ({ councilName, userId }) => {
+  // 백엔드에서 기대하는 상태값들을 순서대로 시도
+  const possibleStatusValues = ['PENDING', 'REJECTED', 'INACTIVE', 'DISABLED'];
+  
+  for (const statusValue of possibleStatusValues) {
+    try {
+      console.log(`🔍 상태값 '${statusValue}'로 거절 시도 중...`);
+      
+      const response = await adminapi(
+        `/council/${encodeURIComponent(councilName)}/affiliation/reject`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            authType: statusValue,
+          }),
+        }
+      );
+      
+      const result = await response.json();
+      console.log(`✅ 상태값 '${statusValue}'로 거절 성공!`);
+      return result;
+      
+    } catch (error) {
+      console.log(`❌ 상태값 '${statusValue}'로 거절 실패:`, error.message);
+      
+      // 타입 불일치 오류가 아닌 경우 즉시 중단
+      if (!error.message.includes('AuthenticationStatus') && !error.message.includes('BaseEntity$Status')) {
+        throw error;
       }
-    );
-    
-    return await response.json();
-  } catch (error) {
-    console.error('소속 요청 거절 API 오류:', error);
-    
-    // 타입 불일치 오류 특별 처리
-    if (error.message && error.message.includes('AuthenticationStatus') && error.message.includes('BaseEntity$Status')) {
-      console.error('🔍 타입 불일치 오류 감지: AuthenticationStatus와 BaseEntity.Status 타입이 맞지 않습니다.');
-      console.error('🔍 전달된 authType:', mappedAuthType);
-      throw new Error('상태값 타입 오류: 백엔드에서 기대하는 상태값과 다릅니다.');
+      
+      // 마지막 시도였다면 오류 정보 출력
+      if (statusValue === possibleStatusValues[possibleStatusValues.length - 1]) {
+        console.error('🔍 모든 상태값 시도 실패');
+        console.error('🔍 백엔드에서 기대하는 정확한 상태값을 확인해주세요');
+        throw new Error(`거절 실패: 모든 상태값 시도 실패. 백엔드 개발자에게 문의해주세요.`);
+      }
     }
-    
-    throw error;
   }
 };

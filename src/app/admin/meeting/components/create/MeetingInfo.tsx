@@ -35,6 +35,12 @@ export default function MeetingInfo({
   categories: Category[];
   readOnly?: boolean;
 }) {
+  // 디버깅을 위한 로그
+  console.log('🔍 MeetingInfo props:', { 
+    participants: form.participants, 
+    members: members.length,
+    readOnly 
+  });
   return (
     <>
       <div className="space-y-4 mb-6">
@@ -59,31 +65,39 @@ export default function MeetingInfo({
         <MeetingInputField label="참석자">
           {readOnly ? (
             <div className="flex flex-wrap gap-2">
-              {form.participants.map((id: number) => {
+              {form.participants.map((id: number, index: number) => {
                 const member = members.find((m) => m.userId === id);
                 return (
-                  <ParticipationChips key={id} avatar="" readOnly={true}>
+                  <ParticipationChips key={`participant-${id}-${index}`} avatar="" readOnly={true}>
                     {member?.userName || ""}
                   </ParticipationChips>
                 );
               })}
             </div>
           ) : (
-            <MeetingEntityPickerField
-              label="참석자 선택"
-              value={form.participants.map((id: number) => {
-                const member = members.find((m) => m.userId === id);
-                return {
-                  id: id.toString(),
-                  name: member?.userName || "",
-                  avatar: "",
-                };
-              })}
-              suggestions={members.map((member) => ({
-                id: member.userId.toString(),
-                name: member.userName,
-                avatar: "",
-              }))}
+                         <MeetingEntityPickerField
+               label="참석자 선택"
+               value={form.participants.map((id: number) => {
+                 const member = members.find((m) => m.userId === id);
+                 console.log('🔍 참석자 매핑:', { id, member, members: members.length });
+                 
+                 // 멤버를 찾을 수 없는 경우에도 기본 정보 제공
+                 if (!member) {
+                   console.warn(`🔍 멤버 ID ${id}를 찾을 수 없습니다.`);
+                   console.warn(`🔍 사용 가능한 멤버 ID들:`, members.map(m => m.userId));
+                 }
+                 
+                 return {
+                   id: id.toString(),
+                   name: member?.userName || `참석자 ${id}`,
+                   avatar: "",
+                 };
+               }).filter(item => item.name && item.name !== '')}
+               suggestions={members.map((member) => ({
+                 id: member.userId.toString(),
+                 name: member.userName,
+                 avatar: "",
+               }))}
               onAdd={(entities) => {
                 const ids = entities.map((e) => parseInt(e.id));
                 addParticipant(ids);
@@ -96,7 +110,7 @@ export default function MeetingInfo({
               readOnly={false}
               renderEntity={(entity, selected, onClick) => (
                 <ParticipationChips
-                  key={entity.id}
+                  key={`participant-picker-${entity.id}`}
                   avatar={entity.avatar || ""}
                   readOnly={false}
                   onClick={onClick}
@@ -111,10 +125,10 @@ export default function MeetingInfo({
         <MeetingInputField label="카테고리">
           {readOnly ? (
             <div className="flex flex-wrap gap-2">
-              {form.category.map((id: number) => {
+              {form.category.map((id: number, index: number) => {
                 const category = categories.find((c) => c.categoryId === id);
                 return (
-                  <CategoryChips key={id} readOnly={true}>
+                  <CategoryChips key={`category-${id}-${index}`} readOnly={true}>
                     {category?.categoryName || ""}
                   </CategoryChips>
                 );
@@ -148,7 +162,7 @@ export default function MeetingInfo({
               readOnly={false}
               renderEntity={(entity, selected, onClick) => (
                 <CategoryChips
-                  key={entity.id}
+                  key={`category-picker-${entity.id}`}
                   readOnly={false}
                   onClick={onClick}
                 >

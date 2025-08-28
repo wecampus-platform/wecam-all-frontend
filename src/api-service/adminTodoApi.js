@@ -165,26 +165,46 @@ export async function deleteTask(accessToken,councilName, todoId, councilId) {
 
 // 학생회 조직 멤버 조회
 export async function fetchCouncilMembers(accessToken, councilName, councilId) {
-  const url = `${API_BASE}/admin/council/${councilName}/member/list`;
+  try {
+    const url = `${API_BASE}/admin/council/${councilName}/member/list`;
+    console.log('🔍 fetchCouncilMembers 호출:', { url, councilName, councilId });
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'X-Council-Id': councilId,
-    },
-  });
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'X-Council-Id': councilId,
+      },
+    });
 
-  if (!res.ok) {
-    const msg = await res.text().catch(() => '');
-    throw new Error(`멤버 조회 실패 (${res.status}) ${msg}`);
+    console.log('🔍 fetchCouncilMembers 응답 상태:', res.status, res.ok);
+
+    if (!res.ok) {
+      const msg = await res.text().catch(() => '');
+      throw new Error(`멤버 조회 실패 (${res.status}) ${msg}`);
+    }
+
+    const contentType = res.headers.get("content-type");
+    const isJson = contentType?.includes("application/json");
+    const data = isJson ? await res.json() : await res.text();
+
+    console.log('🔍 fetchCouncilMembers 응답 데이터:', data);
+
+    // 응답 구조에 따라 안전하게 배열 반환
+    if (data && Array.isArray(data)) {
+      return data;
+    } else if (data && data.result && Array.isArray(data.result)) {
+      return data.result;
+    } else if (data && data.data && Array.isArray(data.data)) {
+      return data.data;
+    } else {
+      console.warn('🔍 예상과 다른 API 응답 구조:', data);
+      return [];
+    }
+  } catch (error) {
+    console.error('🔍 fetchCouncilMembers 오류:', error);
+    return [];
   }
-
-  const contentType = res.headers.get("content-type");
-  const isJson = contentType?.includes("application/json");
-  const data = isJson ? await res.json() : await res.text();
-
-  return data;
 }
 
 
