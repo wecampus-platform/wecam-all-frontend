@@ -10,6 +10,7 @@ import CustomScrollbar from '@/components/CustomScrollbar';
 export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
     const router = useRouter();
     const pathname = usePathname();
+    const [isMobile, setIsMobile] = useState(false);
 
     const role = useAuthStore((state) => state.role);
     const councilList = useAuthStore((state) => state.councilList);
@@ -17,6 +18,18 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
     const [showMoreMenu, setShowMoreMenu] = useState(false);
 
     const isActive = (path) => pathname?.startsWith(path);
+
+    // 모바일 감지
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 1024);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     // showMoreMenu 상태가 변경될 때마다 스크롤바 강제 업데이트
     useEffect(() => {
@@ -26,6 +39,15 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
         }, 100);
         return () => clearTimeout(timer);
     }, [showMoreMenu]);
+
+    // 메뉴 클릭 핸들러 - 모바일에서만 사이드바 닫기
+    const handleMenuClick = (path) => {
+        router.push(path);
+        // 모바일에서만 사이드바 닫기
+        if (isMobile && onToggleSidebar) {
+            onToggleSidebar();
+        }
+    };
 
     return (
         <CustomScrollbar
@@ -70,10 +92,7 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`mt-6 w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/main') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => {
-                            router.push('/admin/main');
-                            if (onToggleSidebar) onToggleSidebar();
-                        }}
+                        onClick={() => handleMenuClick('/admin/main')}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/main') ? 'text-point' : 'text-gray6'}`}>관리자페이지 홈</div>
                     </div>
@@ -81,10 +100,7 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/todo') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => {
-                            router.push('/admin/todo/main');
-                            if (onToggleSidebar) onToggleSidebar();
-                        }}
+                        onClick={() => handleMenuClick('/admin/todo/main')}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/todo') ? 'text-point' : 'text-gray6'}`}>할 일 관리</div>
                     </div>
@@ -92,10 +108,7 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/council-affiliation') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => {
-                            router.push('/admin/council-affiliation');
-                            if (onToggleSidebar) onToggleSidebar();
-                        }}
+                        onClick={() => handleMenuClick('/admin/council-affiliation')}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/council-affiliation') ? 'text-point' : 'text-gray6'}`}>소속 인증 관리</div>
                     </div>
@@ -107,10 +120,7 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/meeting') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => {
-                            router.push('/admin/meeting/main');
-                            if (onToggleSidebar) onToggleSidebar();
-                        }}
+                        onClick={() => handleMenuClick('/admin/meeting/main')}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/meeting/main') ? 'text-point' : 'text-gray6'}`}>회의록 작성 및 관리</div>
                     </div>
@@ -118,10 +128,7 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/member-manage') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => {
-                            router.push('/admin/member-manage');
-                            if (onToggleSidebar) onToggleSidebar();
-                        }}
+                        onClick={() => handleMenuClick('/admin/member-manage')}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/member-manage') ? 'text-point' : 'text-gray6'}`}>구성원 관리</div>
                     </div>
@@ -129,10 +136,7 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/invitation') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => {
-                            router.push('/admin/invitation');
-                            if (onToggleSidebar) onToggleSidebar();
-                        }}
+                        onClick={() => handleMenuClick('/admin/invitation')}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/invitation') ? 'text-point' : 'text-gray6'}`}>초대코드 생성</div>
                     </div>
@@ -154,14 +158,14 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                         <div
                             className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/category') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                                 }`}
-                            onClick={() => router.push('/admin/category')}
+                            onClick={() => handleMenuClick('/admin/category')}
                         >
                             <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/category') ? 'text-point' : 'text-gray6'}`}>카테고리 관리</div>
                         </div>
 
                         <div
                             className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/file') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'}`}
-                            onClick={() => router.push('/admin/file')}
+                            onClick={() => handleMenuClick('/admin/file')}
                         >
                             <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/file') ? 'text-point' : 'text-gray6'}`}>학생회 파일함</div>
                         </div>

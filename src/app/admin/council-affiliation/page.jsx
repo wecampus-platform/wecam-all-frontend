@@ -20,7 +20,7 @@ export default function CouncilAffiliationPage() {
             {/* 가장 오른쪽 공간 */}
             <div className="px-[76px] w-full flex flex-col gap-8">
                 <div className="w-full flex flex-col gap-2">
-                    <b className="relative text-[40px] font-pretendard text-darkslategray text-left mt-5">소속 인증 관리</b>
+                    <b className="relative text-[35px] font-pretendard text-darkslategray text-left mt-5">소속 인증 관리</b>
                     <div className="flex flex-row gap-4">
                         <div className="relative text-base font-pretendard text-dimgray text-left">증명서 유효 발급년도</div>
                         <div className="text-base text-point font-semibold">2025</div>

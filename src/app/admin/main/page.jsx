@@ -1,6 +1,6 @@
 'use client';
 
-import AdminLayout from '../layout';
+import AdminLayout from '../AdminLayout';
 import Link from 'next/link';
 
 export default function AdminMainPage() {
@@ -48,32 +48,31 @@ export default function AdminMainPage() {
     ];
 
     return (
-        <AdminLayout>
-            <div className="p-6">
-                <div className="mb-8">
-                    <h1 className="text-2xl font-semibold text-gray-800 mb-2">관리자 페이지</h1>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {adminPages.map((page, index) => (
-                        <Link 
-                            key={index} 
-                            href={page.path}
-                            className="block"
-                        >
-                            <div className="bg-white rounded-lg border border-gray-200 p-4 hover:border-gray-300 hover:shadow-sm transition-all duration-200">
-                                <h3 className="font-medium text-gray-800 mb-2">{page.title}</h3>
-                                <p className="text-sm text-gray-600 mb-3">
-                                    {page.description}
-                                </p>
-                                <div className="text-xs text-blue-600 font-medium">
-                                    이동하기 →
+        <AdminLayout
+            title="관리자 페이지 홈"
+            mainContent={
+                <div className="h-full w-full">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {adminPages.map((page, index) => (
+                            <Link 
+                                key={index} 
+                                href={page.path}
+                                className="block"
+                            >
+                                <div className="bg-white rounded-lg border border-gray-200 p-4 hover:border-gray-300 hover:shadow-sm transition-all duration-200">
+                                    <h3 className="font-medium text-gray-800 mb-2">{page.title}</h3>
+                                    <p className="text-sm text-gray-600 mb-3">
+                                        {page.description}
+                                    </p>
+                                    <div className="text-xs text-blue-600 font-medium">
+                                        이동하기 →
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    ))}
+                            </Link>
+                        ))}
+                    </div>
                 </div>
-            </div>
-        </AdminLayout>
+            }
+        />
     );
 }
