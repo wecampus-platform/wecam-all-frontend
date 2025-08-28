@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { useAuthStore } from '@/store/authStore';
-import { moveMemberToDepartment, fetchDepartments, fetchAllMembers } from '@/api-service/councilAffiliationApi';
+import { moveMemberToDepartment, fetchDepartments, fetchAllMembers } from '@/api-service/member-manage';
 
 import FilterTabs from '@/components/filterTabs';
 import { Search } from '@/components/search';

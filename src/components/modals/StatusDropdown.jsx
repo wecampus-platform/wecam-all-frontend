@@ -51,7 +51,7 @@ const handleClick = async (newStatus) => {
   }, []);
 
   return (
-    <div className="relative inline-block pl-0" ref={ref}>
+    <div className="relative inline-block" ref={ref}>
       <button
         onClick={() => setOpen((prev) => !prev)}
         className={styles[selected?.className ?? 'chipstatus']}

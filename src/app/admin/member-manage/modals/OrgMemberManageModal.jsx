@@ -12,7 +12,7 @@ export default function OrgMemberManageModal({
       className=" fixed inset-0 bg-black/50 flex items-center justify-center z-50 "
     >
       <div
-        className=" relative bg-[#F5F7FA] w-3/4 max-h-3/4 h-fit px-[56px] py-[64px] flex flex-col gap-[36px] overflow-auto"
+        className=" relative bg-[#F5F7FA] bw-3/4 max-h-3/4 h-fit px-[56px] py-[64px] flex flex-col gap-[36px] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex  justify-start items-center gap-2">

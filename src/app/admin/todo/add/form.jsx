@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import useTaskStore from '@/store/task-store'
 
 
-import { fetchAllMembers } from '@/api-service/councilAffiliationApi'; // 멤버 목록 조회 함수
+import { fetchAllMembers } from '@/api-service/member-manage'; // 멤버 목록 조회 함수
 
 
 import { useAuthStore } from '@/store/authStore';

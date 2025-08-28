@@ -4,7 +4,7 @@ import OptionsIcon from "@/components/icons/OptionsIcon";
 import useToggleMenu from "@/hooks/useToggleMenu";
 import { useState, useEffect } from "react";
 import { useAuthStore } from "@/store/authStore";
-import { fetchDepartmentRoles, moveMemberToDepartment } from "@/api-service/councilAffiliationApi";
+import { fetchDepartmentRoles, moveMemberToDepartment } from "@/api-service/member-manage";
 
 export default function AffiliationList({
   imgSrc,

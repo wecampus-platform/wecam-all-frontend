@@ -7,7 +7,7 @@ import NameTag from './nameTag';
 import OrgMemberManageModal from './modals/OrgMemberManageModal';
 import AffiliationList from './components/AffiliationList';
 import EditIcon from '@/components/icons/EditIcon';
-import { renameDepartment, createDepartment, fetchDepartments, fetchDepartmentRoles } from '@/api-service/councilAffiliationApi';
+import { renameDepartment, createDepartment, fetchDepartments, fetchDepartmentRoles } from '@/api-service/member-manage';
 import { useAuthStore } from '@/store/authStore';
 
 export default function CouncilMemberSection({ sections = [], setSections, setNotPlacedMembers: stableSetNotPlacedMembers, refreshDepartments }) {

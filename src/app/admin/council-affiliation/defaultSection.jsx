@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState,useMemo } from 'react';
 import { CheckIcon, XIcon } from "@/components/icons/check-icons";
 import Checkbox from '@/components/checkbox';
 import { useAuthStore } from '@/store/authStore';
@@ -10,16 +10,44 @@ import {
   rejectAffiliationRequest
 } from '@/api-service/councilAffiliationApi';
 import AffiliationDetailModal from './modals/affiliationDetailModal';
+import RejectReasonModal from '@/app/admin/council-affiliation/modals/rejectReasonModal';
 
-export function DefaultSection() {
+export function DefaultSection({ authFilterIndex }) {
   const [activeTab, setActiveTab] = useState('match');
   const [checkedList, setCheckedList] = useState([]);
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+
 
   const councilList = useAuthStore((state) => state.councilList);
   const currentCouncil = councilList?.[0];
+
+  const authTypeMap = {
+    0: null, // 전체
+    1: 'CURRENT_STUDENT', //재학
+    2: 'NEW_STUDENT', //신입
+  };
+
+
+  const filteredRequests = useMemo(() => {
+    const ocrFiltered = requests.filter((req) =>
+      activeTab === 'match' ? req.ocrResult === 'SUCCESS' : req.ocrResult === 'UNCLEAR'
+    );
+
+  
+    const targetAuth = authTypeMap[authFilterIndex];
+    return targetAuth
+      ? ocrFiltered.filter((req) => req.authenticationType === targetAuth)
+      : ocrFiltered;
+  }, [requests, activeTab, authFilterIndex]);
+  
+  
+  useEffect(() => {
+    setCheckedList(Array(filteredRequests.length).fill(false));
+  }, [filteredRequests]);
+  
 
   // 목업 데이터
   const mockRequests = [
@@ -81,16 +109,20 @@ export function DefaultSection() {
   ];
 
   const refreshRequests = async () => {
-    // 목업 데이터 사용 (백엔드 API 호출 대신)
-    console.log('🔍 목업 데이터로 소속 요청 목록 로드');
+    console.log('🔍 소속 요청 목록 새로고침 시작');
     
     try {
-      // 실제 API 호출 시도 (실패해도 목업 데이터 사용)
+      // 실제 API 호출 시도
       if (currentCouncil) {
+        console.log('🔍 API 호출 시도:', { councilName: currentCouncil.name });
+        
         try {
           const data = await fetchAffiliationRequests(currentCouncil.name);
-          if (data && Array.isArray(data.result)) {
-            const processedRequests = data.result.map(item => {
+          console.log('🔍 API 응답 데이터:', data);
+          
+          if (data && Array.isArray(data)) {
+            // 직접 배열인 경우
+            const processedRequests = data.map(item => {
               console.log('🔍 처리 중인 항목:', item);
               
               if (item.status && typeof item.status === 'string' && item.status !== 'string') {
@@ -109,13 +141,44 @@ export function DefaultSection() {
             setCheckedList(Array(processedRequests.length).fill(false));
             console.log('🔍 실제 API 데이터 로드 성공:', processedRequests.length, '개');
             return;
+          } else if (data && data.result && Array.isArray(data.result)) {
+            // result 필드에 배열이 있는 경우
+            const processedRequests = data.result.map(item => {
+              console.log('🔍 처리 중인 항목:', item);
+              
+              if (item.status && typeof item.status === 'string' && item.status !== 'string') {
+                return item;
+              } else {
+                console.warn('🔍 유효하지 않은 status 필드:', item.status);
+                return {
+                  ...item,
+                  status: 'PENDING',
+                  displayStatus: '대기중'
+                };
+              }
+            });
+            
+            setRequests(processedRequests);
+            setCheckedList(Array(processedRequests.length).fill(false));
+            console.log('🔍 실제 API 데이터 로드 성공 (result 필드):', processedRequests.length, '개');
+            return;
+          } else {
+            console.warn('🔍 예상과 다른 API 응답 구조:', data);
           }
         } catch (apiError) {
-          console.log('🔍 API 호출 실패, 목업 데이터 사용:', apiError.message);
+          console.error('🔍 API 호출 실패:', apiError);
+          console.log('🔍 API 오류 상세:', {
+            name: apiError.name,
+            message: apiError.message,
+            stack: apiError.stack
+          });
         }
+      } else {
+        console.warn('🔍 currentCouncil이 없음');
       }
       
-      // 목업 데이터 사용
+      // API 실패 시 목업 데이터 사용
+      console.log('🔍 목업 데이터 사용');
       setRequests(mockRequests);
       setCheckedList(Array(mockRequests.length).fill(false));
       console.log('🔍 목업 데이터 로드 성공:', mockRequests.length, '개');
@@ -128,95 +191,51 @@ export function DefaultSection() {
     }
   };
 
+
+
   useEffect(() => {
     refreshRequests();
   }, [currentCouncil]);
 
   const handleApprove = async (req) => {
+    if (!currentCouncil) return;
+
     try {
-      console.log('🔍 승인 요청 시작:', req);
-      
-      // 실제 API 호출 시도
-      if (currentCouncil) {
-        try {
-          await approveAffiliationRequest({
-            councilName: currentCouncil.name,
-            userId: req.userId ?? req.id,
-            authType: req.authType ?? 'NEW_STUDENT',
-          });
-          console.log(`✅ ${req.inputUserName}님의 요청이 승인되었습니다.`);
-          alert(`${req.inputUserName}님의 요청이 승인되었습니다.`);
-        } catch (apiError) {
-          console.log('🔍 API 승인 실패, 목업 데이터로 처리:', apiError.message);
-          // 목업 데이터에서 상태 업데이트
-          setRequests(prev => prev.map(item => 
-            item.userId === req.userId 
-              ? { ...item, status: 'APPROVED', displayStatus: '승인됨' }
-              : item
-          ));
-          alert(`${req.inputUserName}님의 요청이 승인되었습니다. (목업 데이터)`);
-        }
-      } else {
-        // 목업 데이터에서 상태 업데이트
-        setRequests(prev => prev.map(item => 
-          item.userId === req.userId 
-            ? { ...item, status: 'APPROVED', displayStatus: '승인됨' }
-            : item
-        ));
-        alert(`${req.inputUserName}님의 요청이 승인되었습니다. (목업 데이터)`);
-      }
-      
-      // 체크박스 초기화
-      setCheckedList(Array(requests.length).fill(false));
-      
+      await approveAffiliationRequest({
+        councilName: currentCouncil.name,
+        userId: req.userId ?? req.id,
+        authType: req.authType ?? 'CURRENT_STUDENT',
+      });
+
+      alert(`${req.inputUserName}님의 요청이 승인되었습니다.`);
+      refreshRequests();
     } catch (e) {
       console.error('❌ 승인 실패:', e);
       alert('승인 중 오류가 발생했습니다.\n다시 시도해주세요.');
     }
   };
 
-  const handleReject = async (req) => {
+  const handleReject = async (req, reason) => {
+    if (!currentCouncil) return;
+  
     try {
-      console.log('🔍 거절 요청 시작:', req);
-      
-      // 실제 API 호출 시도
-      if (currentCouncil) {
-        try {
-          await rejectAffiliationRequest({
-            councilName: currentCouncil.name,
-            userId: req.userId ?? req.id,
-            authType: req.authType ?? 'NEW_STUDENT',
-          });
-          console.log(`✅ ${req.inputUserName}님의 요청이 거절되었습니다.`);
-          alert(`${req.inputUserName}님의 요청이 거절되었습니다.`);
-        } catch (apiError) {
-          console.log('🔍 API 거절 실패, 목업 데이터로 처리:', apiError.message);
-          // 목업 데이터에서 상태 업데이트
-          setRequests(prev => prev.map(item => 
-            item.userId === req.userId 
-              ? { ...item, status: 'REJECTED', displayStatus: '거절됨' }
-              : item
-          ));
-          alert(`${req.inputUserName}님의 요청이 거절되었습니다. (목업 데이터)`);
-        }
-      } else {
-        // 목업 데이터에서 상태 업데이트
-        setRequests(prev => prev.map(item => 
-          item.userId === req.userId 
-            ? { ...item, status: 'REJECTED', displayStatus: '거절됨' }
-            : item
-        ));
-        alert(`${req.inputUserName}님의 요청이 거절되었습니다. (목업 데이터)`);
-      }
-      
-      // 체크박스 초기화
-      setCheckedList(Array(requests.length).fill(false));
-      
+      await rejectAffiliationRequest({
+        councilName: currentCouncil.name,
+        userId: req.userId ?? req.id,
+        authType: req.authType ?? 'CURRENT_STUDENT',
+        reason, // ✅ 여기 반영
+      });
+
+      console.log("reason:",reason);
+  
+      alert(`${req.inputUserName}님의 요청이 거절되었습니다.`);
+      refreshRequests();
     } catch (e) {
       console.error('❌ 거절 실패:', e);
       alert('거절 중 오류가 발생했습니다.\n다시 시도해주세요.');
     }
   };
+  
 
   const openModal = (req) => {
     setSelectedRequest(req);
@@ -241,11 +260,13 @@ export function DefaultSection() {
 
   const toggleAll = () => {
     const allChecked = checkedList.every(Boolean);
-    setCheckedList(checkedList.map(() => !allChecked));
+    setCheckedList(Array(checkedList.length).fill(!allChecked));
   };
 
+  
+
   return (
-    <div className="w-full flex flex-col bg-white items-start justify-start text-left text-base text-gray4 font-pretendard rounded">
+    <div className="w-full flex flex-col items-start justify-start text-left text-base text-gray4 font-pretendard rounded">
       {/* 탭 + 전체 체크 */}
       <div className="flex flex-row items-center w-full mx-10 my-6">
         <Checkbox className="mr-10" checked={checkedList.every(Boolean)} onChange={toggleAll} variant="filled" />
@@ -282,57 +303,57 @@ export function DefaultSection() {
              <div></div>
            </div>
 
-                 {/* 실제 목록 */}
-         {requests.map((req, idx) => (
-           <div key={req.id || idx} className="grid grid-cols-[40px_120px_80px_150px_1fr_120px_240px] items-center px-4 py-3">
-             <Checkbox checked={checkedList[idx]} onChange={() => toggleCheck(idx)} variant="filled" />
-             <div className="font-medium">{req.inputUserName || req.name || '이름 없음'}</div>
-             <div className="text-sm text-gray-600">{req.inputEnrollYear || req.studentNumber || '학번 없음'}</div>
-             <div className="truncate">{req.inputOrganizationName || req.department || '학부 없음'}</div>
-             <div className="text-sm text-gray-400">
-               {req.requestedAt ? new Date(req.requestedAt).toLocaleDateString('ko-KR') : '날짜 없음'}
-             </div>
-             <div className="text-sm">
-               <span className={`px-2 py-1 rounded-full text-xs ${
-                 req.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                 req.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
-                 req.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                 'bg-gray-100 text-gray-800'
-               }`}>
-                 {req.displayStatus || req.status || '대기중'}
-               </span>
-             </div>
-             <div className="flex gap-x-2 justify-end">
-               <button
-                 className="border border-gray-300 rounded px-2 py-1 text-sm cursor-pointer"
-                 onClick={() => openModal(req)}
-               >
-                 상세보기
-               </button>
-               <button
-                 onClick={() => handleApprove(req)}
-                 className="bg-green-500 text-white rounded px-3 py-1 text-sm"
-                 disabled={req.status === 'APPROVED' || req.status === 'REJECTED'}
-               >
-                 승인하기
-               </button>
-               <button
-                 onClick={() => handleReject(req)}
-                 className="bg-red-500 text-white rounded px-3 py-1 text-sm"
-                 disabled={req.status === 'APPROVED' || req.status === 'REJECTED'}
-               >
-                 거절하기
-               </button>
-             </div>
-           </div>
-         ))}
+        {/* 실제 목록 */}
+        {filteredRequests.map((req, idx) => (
+          <div key={req.id || idx} className="grid grid-cols-[40px_120px_80px_150px_1fr_240px] items-center px-4 py-3">
+            <Checkbox checked={checkedList[idx]} onChange={() => toggleCheck(idx)} variant="filled" />
+            <div className="font-medium">{req.inputUserName}</div>
+            <div className="text-sm text-gray-600">{req.inputEnrollYear}</div>
+            <div className="truncate">{req.inputOrganizationName}</div>
+            <div className="text-sm text-gray-400">{req.requestedAt?.replace('T', ' ') ?? '-'}</div>
+            <div className="flex gap-x-2 justify-end">
+              <button
+                className="border border-gray-300 rounded px-2 py-1 text-sm cursor-pointer"
+                onClick={() => openModal(req)}
+              >
+                상세보기
+              </button>
+              <button
+                onClick={() => handleApprove(req)}
+                className="bg-green-500 text-white rounded px-3 py-1 text-sm"
+              >
+                승인하기
+              </button>
+              <button
+  onClick={() => {
+    setSelectedRequest(req);            // ✅ 어떤 요청인지 지정
+    setRejectModalOpen(true);           // ✅ 모달 열기
+  }}
+  className="bg-red-500 text-white rounded px-3 py-1 text-sm"
+>
+  거절하기
+</button>
+            </div>
+          </div>
+        ))}
       </div>
 
       <AffiliationDetailModal
         isOpen={modalOpen}
         onClose={closeModal}
         request={selectedRequest}
+        refreshRequests={refreshRequests}
       />
+    <RejectReasonModal
+      isOpen={rejectModalOpen}
+      onClose={() => setRejectModalOpen(false)}
+      onConfirm={(reason) => {
+        if (selectedRequest) {
+          handleReject(selectedRequest, reason); // ✅ req + reason 전달
+        }
+        setRejectModalOpen(false);
+      }}
+    />
     </div>
   );
 }
