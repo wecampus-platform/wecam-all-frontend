@@ -7,6 +7,7 @@ import Task from './task';
 import { useAuthStore } from '@/store/authStore';
 import TaskModal from '../modals/task-modal';
 import DashboardSummary from './dashboardSummary';
+import AdminLayout from '../../AdminLayout';
 
 export default function MainPage() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function MainPage() {
 
   useEffect(() => {
     if (!accessToken || !councilName || !councilId) return;
-    
+
     getAllTasks(accessToken, councilName, councilId, todoType, progressStatus)
       .then(res => {
         // API가 이미 result 배열을 반환하므로 직접 사용
@@ -40,129 +41,131 @@ export default function MainPage() {
   const goToAddPage = () => router.push('/admin/todo/add');
 
   return (
-    <div className="h-full w-full bg-[#F5F7FA] flex flex-col">
-      <div className="px-[60px] w-full flex flex-col pb-[60px] pt-6">
-        <div className="flex justify-between items-center w-full mb-[24px]">
-          <h1 className="w-40 h-14 text-zinc-800 text-4xl font-bold">
-            할 일 관리
-          </h1>
-          <button
-            className="button-common w-[200px] h-[50px] flex items-center justify-center"
-            onClick={goToAddPage}
-          >
-            + 할 일 등록하기
-          </button>
-        </div>
+    <AdminLayout
+      title="할 일 관리"
+      actionButton={
+        <button
+          className="button-common w-[200px] h-[50px] flex items-center justify-center"
+          onClick={goToAddPage}
+        >
+          + 할 일 등록하기
+        </button>
+      }
+      mainContent={
+        <div className="h-full w-full bg-[#F5F7FA] flex flex-col">
+          <div className="w-full flex flex-col pb-[60px] pt-6">
 
-        {/* (예시) 검색·필터 바 ------------------------------------ */}
-        <DashboardSummary />
+            {/* (예시) 검색·필터 바 ------------------------------------ */}
+            <DashboardSummary />
 
-        {/* 역할별 + 상태별 필터 UI ------------------------------- */}
-        {/* …필터 UI 그대로 유지 (생략 없음) … */}
-        {/* === 역할별 필터 ===================================== */}
-        <div className="mt-[56px] mb-[28px] w-full flex">
-          {/* 역할별 ------------------------------------------ */}
-          <div className="flex flex-col gap-[12px]">
-            <div className="text-neutral-400 text-base font-bold">
-              역할별 필터
+            {/* 역할별 + 상태별 필터 UI ------------------------------- */}
+            {/* …필터 UI 그대로 유지 (생략 없음) … */}
+            {/* === 역할별 필터 ===================================== */}
+            <div className="mt-[56px] mb-[28px] w-full flex">
+              {/* 역할별 ------------------------------------------ */}
+              <div className="flex flex-col gap-[12px]">
+                <div className="text-neutral-400 text-base font-bold">
+                  역할별 필터
+                </div>
+                <div className="flex gap-[12px]">
+                  <div
+                    className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+        ${todoType === '' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+                    onClick={() => setTodoType('')}
+                  >
+                    <span className="text-xl">전체 할 일</span>
+                  </div>
+
+                  <div
+                    className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+        ${todoType === 'MY_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+                    onClick={() => setTodoType('MY_TODO')}
+                  >
+                    <span className="text-xl">내 할 일</span>
+                  </div>
+
+                  <div
+                    className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+        ${todoType === 'RECEIVED_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+                    onClick={() => setTodoType('RECEIVED_TODO')}
+                  >
+                    <span className="text-xl">받은 할 일</span>
+                  </div>
+
+                  <div
+                    className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+        ${todoType === 'SENT_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+                    onClick={() => setTodoType('SENT_TODO')}
+                  >
+                    <span className="text-xl">보낸 할 일</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-px h-16 bg-zinc-300 mx-[48px]" />
+
+              <div className="flex flex-col gap-[12px]">
+                <div className="text-neutral-400 text-base font-bold">
+                  상태별 필터
+                </div>
+                <div className="flex gap-[12px]">
+                  <div className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+        ${progressStatus === 'DUE_TODAY' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+                    onClick={() => setProgressStatus('DUE_TODAY')}>
+
+                    <span className="text-xl">
+                      오늘까지
+                    </span>
+                  </div>
+                  <div
+                    className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+        ${progressStatus === '' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+                    onClick={() => setProgressStatus('')}
+                  >
+                    <span className="text-xl">전체</span>
+                  </div>
+
+                  <div
+                    className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+        ${progressStatus === 'NOT_STARTED' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+                    onClick={() => setProgressStatus('NOT_STARTED')}
+                  >
+                    <span className="text-xl">진행 전</span>
+                  </div>
+
+                  <div
+                    className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+        ${progressStatus === 'IN_PROGRESS' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+                    onClick={() => setProgressStatus('IN_PROGRESS')}
+                  >
+                    <span className="text-xl">진행 중</span>
+                  </div>
+
+                  <div
+                    className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
+        ${progressStatus === 'COMPLETED' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
+                    onClick={() => setProgressStatus('COMPLETED')}
+                  >
+                    <span className="text-xl">진행 완료</span>
+                  </div>
+
+
+                </div>
+              </div>
             </div>
-            <div className="flex gap-[12px]">
-              <div
-                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
-    ${todoType === '' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-                onClick={() => setTodoType('')}
-              >
-                <span className="text-xl">전체 할 일</span>
-              </div>
 
-              <div
-                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
-    ${todoType === 'MY_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-                onClick={() => setTodoType('MY_TODO')}
-              >
-                <span className="text-xl">내 할 일</span>
-              </div>
-
-              <div
-                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
-    ${todoType === 'RECEIVED_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-                onClick={() => setTodoType('RECEIVED_TODO')}
-              >
-                <span className="text-xl">받은 할 일</span>
-              </div>
-
-              <div
-                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
-    ${todoType === 'SENT_TODO' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-                onClick={() => setTodoType('SENT_TODO')}
-              >
-                <span className="text-xl">보낸 할 일</span>
-              </div>
+            <div className="grid grid-cols-3 gap-x-[28px] gap-y-[24px]">
+              {tasks.map(task => (
+                <Task key={task.todoId} task={task} />
+              ))}
             </div>
+            <TaskModal
+              isOpen={showCreateModal}
+              onClose={() => setShowCreateModal(false)}
+            />
           </div>
-
-          <div className="w-px h-16 bg-zinc-300 mx-[48px]" />
-
-          <div className="flex flex-col gap-[12px]">
-            <div className="text-neutral-400 text-base font-bold">
-              상태별 필터
-            </div>
-            <div className="flex gap-[12px]">
-              <div className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
-    ${progressStatus === 'DUE_TODAY' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-                onClick={() => setProgressStatus('DUE_TODAY')}>
-
-                <span className="text-xl">
-                  오늘까지
-                </span>
-              </div>
-              <div
-                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
-    ${progressStatus === '' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-                onClick={() => setProgressStatus('')}
-              >
-                <span className="text-xl">전체</span>
-              </div>
-
-              <div
-                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
-    ${progressStatus === 'NOT_STARTED' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-                onClick={() => setProgressStatus('NOT_STARTED')}
-              >
-                <span className="text-xl">진행 전</span>
-              </div>
-
-              <div
-                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
-    ${progressStatus === 'IN_PROGRESS' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-                onClick={() => setProgressStatus('IN_PROGRESS')}
-              >
-                <span className="text-xl">진행 중</span>
-              </div>
-
-              <div
-                className={`px-4 py-2 rounded-[32px] inline-flex items-center gap-2 cursor-pointer 
-    ${progressStatus === 'COMPLETED' ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-200 text-zinc-400'}`}
-                onClick={() => setProgressStatus('COMPLETED')}
-              >
-                <span className="text-xl">진행 완료</span>
-              </div>
-
-
-            </div>
-          </div>
         </div>
-
-        <div className="grid grid-cols-3 gap-x-[28px] gap-y-[24px]">
-          {tasks.map(task => (
-            <Task key={task.todoId} task={task} />
-          ))}
-        </div>
-        <TaskModal 
-          isOpen={showCreateModal} 
-          onClose={() => setShowCreateModal(false)} 
-        />
-      </div>
-    </div>
+      }
+    />
   );
 }

@@ -143,7 +143,6 @@ export default function MeetingMainPage() {
                     + 새 회의록 작성하기
                 </Link>
             }
-            subtitle="회의록 목록"
             additionalContent={
                 <div className="flex gap-2">
                     <Search
