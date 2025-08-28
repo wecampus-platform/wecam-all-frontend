@@ -70,7 +70,10 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`mt-6 w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/main') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => router.push('/admin/main')}
+                        onClick={() => {
+                            router.push('/admin/main');
+                            if (onToggleSidebar) onToggleSidebar();
+                        }}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/main') ? 'text-point' : 'text-gray6'}`}>관리자페이지 홈</div>
                     </div>
@@ -78,7 +81,10 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/todo') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => router.push('/admin/todo/main')}
+                        onClick={() => {
+                            router.push('/admin/todo/main');
+                            if (onToggleSidebar) onToggleSidebar();
+                        }}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/todo') ? 'text-point' : 'text-gray6'}`}>할 일 관리</div>
                     </div>
@@ -86,7 +92,10 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/council-affiliation') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => router.push('/admin/council-affiliation')}
+                        onClick={() => {
+                            router.push('/admin/council-affiliation');
+                            if (onToggleSidebar) onToggleSidebar();
+                        }}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/council-affiliation') ? 'text-point' : 'text-gray6'}`}>소속 인증 관리</div>
                     </div>
@@ -98,7 +107,10 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/meeting') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => router.push('/admin/meeting/main')}
+                        onClick={() => {
+                            router.push('/admin/meeting/main');
+                            if (onToggleSidebar) onToggleSidebar();
+                        }}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/meeting/main') ? 'text-point' : 'text-gray6'}`}>회의록 작성 및 관리</div>
                     </div>
@@ -106,7 +118,10 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/member-manage') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => router.push('/admin/member-manage')}
+                        onClick={() => {
+                            router.push('/admin/member-manage');
+                            if (onToggleSidebar) onToggleSidebar();
+                        }}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/member-manage') ? 'text-point' : 'text-gray6'}`}>구성원 관리</div>
                     </div>
@@ -114,7 +129,10 @@ export default function RightMenuBar({ onToggleSidebar, isSidebarVisible }) {
                     <div
                         className={`w-full px-4 py-3 rounded-lg inline-flex justify-start items-center gap-2 cursor-pointer ${isActive('/admin/invitation') ? 'bg-gray-100 text-point font-bold' : 'hover:bg-gray-100 text-gray6 font-semibold'
                             }`}
-                        onClick={() => router.push('/admin/invitation')}
+                        onClick={() => {
+                            router.push('/admin/invitation');
+                            if (onToggleSidebar) onToggleSidebar();
+                        }}
                     >
                         <div className={`text-center justify-start text-xl font-semibold ${isActive('/admin/invitation') ? 'text-point' : 'text-gray6'}`}>초대코드 생성</div>
                     </div>

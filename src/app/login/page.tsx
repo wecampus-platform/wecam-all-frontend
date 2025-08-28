@@ -82,7 +82,7 @@ export default function LoginPage() {
         {/* 모바일 로그인 폼 */}
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-[400px] mx-auto rounded-2xl bg-white flex flex-col items-center justify-center py-8 px-6 gap-6 border border-gray2/50 shadow-lg backdrop-blur-sm"
+          className="w-full max-w-[400px] mx-auto rounded-2xl bg-white flex flex-col items-center justify-center py-8 px-6 gap-6 border border-gray2/50 shadow-[0_20px_40px_rgba(0,0,0,0.08)] backdrop-blur-sm"
         >
           <div className="text-2xl font-semibold text-darkslategray mb-2">로그인</div>
           
