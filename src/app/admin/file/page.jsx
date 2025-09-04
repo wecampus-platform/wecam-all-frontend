@@ -1,227 +1,238 @@
-///
+// src/app/admin/file/page.jsx
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useAuthStore } from '@/store/authStore';
-import AdminLayout from '../AdminLayout';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import AdminLayout from '@/app/admin/AdminLayout';
 import { Search } from '@/components/search';
-import CustomDropdown from '@/components/drop-down';
+import FileFilters from '@/app/admin/file/fileFilters';
 import FileUploadModal from './modals/FileUploadModal';
 import FileDetailModal from './modals/FileDetailModal';
+import {getCategoryList } from '@/api-service/meetingApi';
+import { useAuthStore } from '@/store/authStore';
+import { fetchFileAssets, uploadFileAsset } from '@/api-service/adminFileApi';
 
-// 임시 파일 데이터 (실제로는 API에서 가져올 예정)
-const mockFiles = [
-  {
-    id: 1,
-    fileName: '2024년 1학기 학생회 예산서.pdf',
-    menu: '할 일 관리',
-    category: '예산서',
-    status: '검토중',
-    uploader: '김학생',
-    uploadDate: '2024-03-15',
-    fileSize: 2048576, // 2MB
-    description: '2024년 1학기 학생회 활동 예산 계획서입니다.',
-    downloadUrl: '#'
-  },
-  {
-    id: 2,
-    fileName: '3월 정기회의록.docx',
-    menu: '공지 관리',
-    category: '회의록',
-    status: '승인됨',
-    uploader: '이학생',
-    uploadDate: '2024-03-10',
-    fileSize: 1048576, // 1MB
-    description: '3월 정기 회의에서 논의된 내용을 정리한 회의록입니다.',
-    downloadUrl: '#'
-  },
-  {
-    id: 3,
-    fileName: '학생회 활동보고서.pptx',
-    menu: '구성원 관리',
-    category: '활동보고서',
-    status: '검토중',
-    uploader: '박학생',
-    uploadDate: '2024-03-08',
-    fileSize: 5242880, // 5MB
-    description: '2024년 1학기 학생회 주요 활동 내용을 정리한 보고서입니다.',
-    downloadUrl: '#'
-  }
-];
+// sourceType → 라벨
+const SOURCE_LABEL = { TODO: '할일', MEETING: '회의록', FILE_ASSET: '파일운영함' };
+const toMenuLabel = (s) => SOURCE_LABEL[s] ?? '파일운영함';
+
+// 서버 아이템 → UI 아이템
+function mapFileItem(it = {}) {
+  const raw = it.raw ?? it; // raw가 없으면 it 자체를 백업처럼 사용
+
+  // sourceType 우선순위
+  const sourceType = it.sourceType ?? raw.sourceType ?? null;
+  console.log("raw",raw)
+  // 카테고리명: raw.categoryNames[0] → raw.categoryName → it.category
+  const categoryName =
+    (Array.isArray(raw?.categoryNames) && raw.categoryNames.length ? raw.categoryNames[0] : null) ??
+    raw?.categoryNames ??
+    it.category ??
+    '—';
+
+  // 업로더: it.uploader(1차 매핑) → raw.uploaderName → raw.createdByName → it.createdBy
+  const uploader =
+    it.uploader ??
+    raw?.uploaderName ??
+    raw?.createdByName ??
+    it.createdBy ??
+    '—';
+
+  // 날짜: it.uploadDate(1차 매핑) → raw.uploadedAt → it.createdAt → raw.createdAt
+  const uploadDate =
+    it.uploadDate ??
+    raw?.uploadedAt ??
+    it.createdAt ??
+    raw?.createdAt ??
+    new Date().toISOString();
+
+  // 파일 크기
+  const fileSize = it.fileSize ?? it.size ?? raw?.size ?? 0;
+
+  return {
+    id: it.id ?? it.fileAssetId ?? it.assetId ?? raw?.fileId ?? Math.random().toString(36).slice(2),
+    fileName: it.fileName ?? it.title ?? raw?.fileName ?? raw?.originalName ?? '—',
+    sourceType,
+    menuLabel: toMenuLabel(sourceType),
+    categoryName,                // ← 렌더에서 이 키를 사용
+    uploader,                    // ← 렌더에서 이 키를 사용
+    uploadDate,
+    fileSize,
+    description: it.description ?? raw?.sourceTitle ?? '',
+    downloadUrl: it.downloadUrl ?? raw?.downloadUrl ?? raw?.url ?? '#',
+    raw,                         // 원본 보관
+  };
+}
+
 
 export default function FileManagementPage() {
-  const { accessToken, councilList } = useAuthStore();
-  const [files, setFiles] = useState(mockFiles);
-  const [filteredFiles, setFilteredFiles] = useState(mockFiles);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedMenu, setSelectedMenu] = useState('');
+  const { councilName } = useAuthStore();
+
+  // 검색어
+  const [inputValue, setInputValue] = useState('');
+
+  // 필터 (회의록 패턴과 동일: value 문자열)
+  const [selectedCategory, setSelectedCategory] = useState(''); // '' | categoryId string
+  const [selectedMenu, setSelectedMenu] = useState('');         // '' | 'TODO'|'MEETING'|'FILE_ASSET'
+
+  // 데이터
+  const [categories, setCategories] = useState([]);
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // 페이지네이션
+  const [pageMeta, setPageMeta] = useState({ page: 0, size: 24, totalPages: 0, totalElements: 0 });
+
+  // 모달
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // 드롭다운 옵션
-  const categoryOptions = [
-    { id: 1, name: "전체" },
-    { id: 2, name: "공지사항" },
-    { id: 3, name: "회의록" },
-    { id: 4, name: "예산서" },
-    { id: 5, name: "활동보고서" },
-    { id: 6, name: "기타" },
-  ];
+  // 카테고리 로드
+  const fetchCategories = async () => {
+    if (!councilName) return;
+    try {
+      const data = await getCategoryList(councilName);
+      setCategories(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error('카테고리 목록 조회 실패:', e);
+      setCategories([]);
+    }
+  };
 
-  const menuOptions = [
-    { id: 1, name: "전체" },
-    { id: 2, name: "공지 관리" },
-    { id: 3, name: "할 일 관리" },
-    { id: 4, name: "소속 인증 관리" },
-    { id: 5, name: "구성원 관리" },
-    { id: 6, name: "초대코드 생성" },
-  ];
+  // 파일 목록 로드
+  const fetchFiles = async (page = 0) => {
+    if (!councilName) return;
+    setLoading(true);
+    try {
+      const { ok, page: p } = await fetchFileAssets({
+        councilName,
+        params: {
+          page,
+          size: pageMeta.size,
+          q: inputValue || undefined,
+          categoryId: selectedCategory || undefined,
+          sourceType: selectedMenu || undefined,
+        },
+      });
 
-  // 검색 및 필터링 적용
+      if (!ok) {
+        setFiles([]);
+        setPageMeta((m) => ({ ...m, page: 0, totalPages: 0, totalElements: 0 }));
+        return;
+      }
+
+      const mapped = (p.items || []).map(mapFileItem);
+      setFiles(mapped);
+      setPageMeta((m) => ({
+        ...m,
+        page: p.page ?? 0,
+        totalPages: p.totalPages ?? 0,
+        totalElements: p.totalElements ?? mapped.length,
+      }));
+    } catch (e) {
+      console.error('파일 목록 조회 실패:', e);
+      setFiles([]);
+      setPageMeta((m) => ({ ...m, page: 0, totalPages: 0, totalElements: 0 }));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 초기 로드
   useEffect(() => {
-    let result = files;
-
-    // 검색어 필터링
-    if (searchTerm) {
-      result = result.filter(file => 
-        file.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        file.uploader.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+    if (councilName) {
+      fetchCategories();
+      fetchFiles(0);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [councilName]);
 
-    // 카테고리 필터링
-    if (selectedCategory) {
-      result = result.filter(file => file.category === selectedCategory);
-    }
+  // 필터 변경 시 재조회
+  useEffect(() => {
+    fetchFiles(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory, selectedMenu]);
 
-    // 메뉴 필터링
-    if (selectedMenu) {
-      result = result.filter(file => file.menu === selectedMenu);
-    }
+  // 검색
+  const handleSearchClick = () => fetchFiles(0);
 
-    setFilteredFiles(result);
-  }, [files, searchTerm, selectedCategory, selectedMenu]);
+  // 업로드 완료 시 새로고침
+  const handleFileUpload = async ({ file, info }) => {
+    // modal의 카테고리명 → ID 매핑
+    const nameFromModal = info?.category || '';
+    const found = categories.find((c) => c.categoryName === nameFromModal);
+      const categoryIds = info?.categoryId
+      ? [Number(info.categoryId)]
+      : selectedCategory
+      ? [Number(selectedCategory)]
+      : [];
 
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-  };
-
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-  };
-
-  const handleMenuChange = (menu) => {
-    setSelectedMenu(menu);
-  };
-
-  const handleFileClick = (file) => {
-    setSelectedFile(file);
-    setShowDetailModal(true);
-  };
-
-  const handleFileUpload = (fileData) => {
-    // TODO: 실제 API 호출
-    const newFile = {
-      id: Date.now(),
-      fileName: fileData.fileName,
-      menu: fileData.menu,
-      category: fileData.category,
-      status: '검토중',
-      uploader: '현재 사용자', // TODO: 실제 사용자 정보
-      uploadDate: new Date().toISOString().split('T')[0],
-      fileSize: fileData.file.size,
-      description: fileData.description,
-      downloadUrl: '#'
+    const form = {
+      categoryIds,
+      isFinal: !!info?.isFinal,
+      title: info?.fileName || (Array.isArray(file) ? file[0]?.name : file?.name),
+      description: info?.description || '',
     };
-    
-    setFiles(prev => [newFile, ...prev]);
-    setShowUploadModal(false);
+
+    const { ok } = await uploadFileAsset({ councilName, file, form });
+    if (ok) {
+      setShowUploadModal(false);
+      fetchFiles(0);
+    } else {
+      alert('업로드에 실패했습니다.');
+    }
   };
 
-  const handleFileDelete = (fileId) => {
-    setFiles(prev => prev.filter(file => file.id !== fileId));
-    setShowDetailModal(false);
-    setSelectedFile(null);
-  };
-
-  const handleFileFinalize = (fileId) => {
-    setFiles(prev => prev.map(file => 
-      file.id === fileId ? { ...file, status: '승인됨' } : file
-    ));
-    setShowDetailModal(false);
-    setSelectedFile(null);
-  };
-
+  // 유틸
   const formatFileSize = (bytes) => {
+    if (!bytes && bytes !== 0) return '—';
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    });
-  };
+  const formatDate = (d) =>
+    new Date(d).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
   return (
-    <>
-      <AdminLayout
-        title="학생회 파일함"
-        description="학생회의 파일을 관리합니다"
-        actionButton={
-          <button
-            className="button-common w-[200px] h-[50px] flex items-center justify-center gap-2"
-            onClick={() => setShowUploadModal(true)}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            새 파일 업로드하기
-          </button>
-        }
-        additionalContent={
-          <div className="flex flex-col gap-8">
-            {/* 검색 섹션 */}
-            <Search 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onSearchClick={() => handleSearch(searchTerm)}
-              placeholder="파일의 이름이나 파일 업로더를 입력하세요"
+    <AdminLayout
+      title="학생회 파일함"
+      actionButton={
+        <button
+          className="button-common w-[200px] h-[50px] flex items-center justify-center"
+          onClick={() => setShowUploadModal(true)}
+        >
+          + 새 파일 업로드하기
+        </button>
+      }
+      additionalContent={
+        <div className="flex gap-2">
+          <Search
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onSearchClick={handleSearchClick}
+            placeholder="파일명, 업로더 등으로 검색하세요."
+          />
+        </div>
+      }
+      mainContent={
+        <div className="w-full">
+          {/* 필터 바 (회의록과 동일 UX) */}
+          <div className="flex items-center justify-between mb-6">
+            <FileFilters
+              selectedCategory={selectedCategory}
+              selectedMenu={selectedMenu}
+              onCategoryChange={setSelectedCategory}
+              onMenuChange={setSelectedMenu}
+              categories={categories}
             />
-
-            {/* 필터 섹션 */}
-            <div className="flex gap-4 mb-6">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700">카테고리별 필터:</span>
-                <CustomDropdown
-                  key="category-filter"
-                  options={categoryOptions}
-                  placeholder="카테고리 선택"
-                  onSelect={(option) => handleCategoryChange(option.name === "전체" ? "" : option.name)}
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700">메뉴 필터:</span>
-                <CustomDropdown
-                  key="menu-filter"
-                  options={menuOptions}
-                  placeholder="메뉴 선택"
-                  onSelect={(option) => handleMenuChange(option.name === "전체" ? "" : option.name)}
-                />
-              </div>
-            </div>
           </div>
-        }
-        mainContent={
+
+          {/* 리스트 */}
           <div className="bg-white rounded-lg p-6 w-full">
-            {/* 테이블 헤더 */}
+            {/* 헤더 */}
             <div className="grid grid-cols-6 gap-4 pb-4 border-b border-gray-200 mb-4">
               <div className="col-span-2 font-semibold text-gray-700">메뉴 / 파일명</div>
               <div className="font-semibold text-gray-700">카테고리</div>
@@ -230,66 +241,84 @@ export default function FileManagementPage() {
               <div className="font-semibold text-gray-700">파일 크기</div>
             </div>
 
-            {/* 파일 행들 */}
-            {filteredFiles.length > 0 ? (
-              filteredFiles.map((file) => (
-                <div
-                  key={file.id}
-                  className="grid grid-cols-6 gap-4 py-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
-                  onClick={() => handleFileClick(file)}
-                >
-                  {/* 메뉴 / 파일명 */}
-                  <div className="col-span-2">
-                    <div className="text-sm text-gray-500 mb-1">{file.menu}</div>
-                    <div className="font-medium text-gray-900">{file.fileName}</div>
-                  </div>
-                  
-                  {/* 카테고리 */}
-                  <div>
-                    <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                      {file.category}
-                    </span>
-                  </div>
-                  
-                  {/* 파일 업로더 */}
-                  <div className="text-gray-700">{file.uploader}</div>
-                  
-                  {/* 업로드 일자 */}
-                  <div className="text-gray-700">{formatDate(file.uploadDate)}</div>
-                  
-                  {/* 파일 크기 */}
-                  <div className="text-gray-700">{formatFileSize(file.fileSize)}</div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-12 text-gray-500">
-                {searchTerm || selectedCategory || selectedMenu 
-                  ? '검색 결과가 없습니다.' 
-                  : '등록된 파일이 없습니다.'}
+            {/* 바디 */}
+            {loading ? (
+              <div className="flex justify-center items-center py-8">
+                <div className="text-gray-600">로딩 중...</div>
               </div>
+            ) : files.length > 0 ? (
+              <>
+                {files.map((f) => (
+                  <div
+                    key={f.id}
+                    className="grid grid-cols-6 gap-4 py-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+                    onClick={() => {
+                      setSelectedFile(f);
+                      setShowDetailModal(true);
+                    }}
+                  >
+                    <div className="col-span-2">
+                      <div className="text-sm text-gray-500 mb-1">{f.menuLabel}</div>
+                      <div className="font-medium text-gray-900">{f.fileName}</div>
+                    </div>
+                    <div>
+                      <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                        {f.categoryName}
+                      </span>
+                    </div>
+                    <div className="text-gray-700">{f.uploader}</div>
+                    <div className="text-gray-700">{formatDate(f.uploadDate)}</div>
+                    <div className="text-gray-700">{formatFileSize(f.fileSize)}</div>
+                  </div>
+                ))}
+
+                {/* 페이지네이션 */}
+                <div className="flex items-center justify-between mt-4">
+                  <div className="text-sm text-gray-500">
+                    {pageMeta.totalElements}개 중 {pageMeta.page + 1} / {Math.max(pageMeta.totalPages, 1)} 페이지
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      className="px-3 py-1 border rounded disabled:opacity-50"
+                      onClick={() => fetchFiles(Math.max(0, pageMeta.page - 1))}
+                      disabled={pageMeta.page <= 0}
+                    >
+                      이전
+                    </button>
+                    <button
+                      className="px-3 py-1 border rounded disabled:opacity-50"
+                      onClick={() => fetchFiles(pageMeta.page + 1)}
+                      disabled={pageMeta.page + 1 >= pageMeta.totalPages}
+                    >
+                      다음
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-12 text-gray-500">등록된 파일이 없습니다.</div>
             )}
           </div>
-        }
-      />
 
-      {/* 파일 업로드 모달 */}
-      <FileUploadModal 
-        isOpen={showUploadModal}
-        onClose={() => setShowUploadModal(false)}
-        onSubmit={handleFileUpload}
-      />
+          {/* 업로드 모달 */}
+          <FileUploadModal
+            isOpen={showUploadModal}
+            onClose={() => setShowUploadModal(false)}
+            categories = {categories}
+            onSubmit={handleFileUpload}
+          />
 
-      {/* 파일 상세 정보 모달 */}
-      <FileDetailModal 
-        isOpen={showDetailModal}
-        onClose={() => {
-          setShowDetailModal(false);
-          setSelectedFile(null);
-        }}
-        file={selectedFile}
-        onFinalize={() => selectedFile && handleFileFinalize(selectedFile.id)}
-        onDelete={() => selectedFile && handleFileDelete(selectedFile.id)}
-      />
-    </>
+          {/* 상세 모달 */}
+          <FileDetailModal
+            isOpen={showDetailModal}
+            onClose={() => {
+              setShowDetailModal(false);
+              setSelectedFile(null);
+            }}
+            file={selectedFile}
+          />
+        </div>
+      }
+    />
   );
 }

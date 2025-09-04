@@ -65,7 +65,9 @@ export default function MeetingHeader({
         }))
       };
 
-      const success = await createMeeting(councilName, meetingData);
+      // form.attachments 를 File[] 로 보관했다고 가정
+      const files = Array.from(form.attachments ?? []); 
+      const success = await createMeeting(councilName, meetingData, files);
       if (success) {
         console.log("회의록이 성공적으로 저장되었습니다!");
         resetForm();

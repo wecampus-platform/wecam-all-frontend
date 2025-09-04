@@ -123,10 +123,15 @@ export function useMeetingForm() {
     }));
   };
 
-  const handleAttachmentsChange = (files: FileList | null) => {
-    if (files) {
-      updateField("attachments", Array.from(files));
-    }
+  // const handleAttachmentsChange = (files: FileList | null) => {
+  //   if (files) {
+  //     updateField("attachments", Array.from(files));
+  //   }
+  // };
+
+  const handleAttachmentsChange = (fileList: FileList | null) => {
+    const files = fileList ? Array.from(fileList) : [];
+    setForm(prev => ({ ...prev, attachments: files }));
   };
 
   const resetForm = () =>

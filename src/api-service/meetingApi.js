@@ -33,19 +33,39 @@ export const getMeetingDetail = async (councilName, meetingId) => {
     }
 };
 
-// 회의록 생성
-export const createMeeting = async (councilName, meetingData) => {
-    try {
-        const response = await adminapi(`/council/${encodeURIComponent(councilName)}/meeting/create`, {
-            method: 'POST',
-            body: JSON.stringify(meetingData)
-        });
-        return response.json();
-    } catch (error) {
-        console.error('회의록 생성 실패:', error);
-        throw error;
+// 회의록 생성 (+ 첨부파일)
+export const createMeeting = async (
+    councilName,
+    meetingData,
+    files,
+  ) => {
+    const fd = new FormData();
+  
+    // JSON을 'request' 파트로 담기 (서버에서 @RequestPart("request")로 받는 형태)
+    fd.append(
+      "request",
+      new Blob([JSON.stringify(meetingData)], { type: "application/json" }),
+      "request.json"
+    );
+  
+    // 파일들 추가 (서버에서 @RequestPart("files") List<MultipartFile> files)
+    for (const file of files) {
+      fd.append("files", file, file.name);
     }
-};
+  
+    const res = await adminapi(
+      `/council/${encodeURIComponent(councilName)}/meeting/create`,
+      {
+        method: "POST",
+        body: fd,
+        // ❗ FormData 보낼 땐 Content-Type을 직접 세팅하지 말고 브라우저에 맡기기
+        // headers: { ...X-Council-Id 등 필요한 헤더 }  // 필요시만
+      }
+    );
+  
+    return res.json();
+  };
+  
 
 // 회의록 수정
 export const updateMeeting = async (councilName, meetingId, meetingData) => {

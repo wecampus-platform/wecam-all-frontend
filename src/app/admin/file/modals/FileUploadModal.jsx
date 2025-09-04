@@ -1,72 +1,79 @@
+// src/app/admin/file/modals/FileUploadModal.jsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import CloseIcon from '@/components/icons/CloseIcon';
+import FileFilters from '@/app/admin/file/fileFilters';
 
-export default function FileUploadModal({ isOpen, onClose }) {
+export default function FileUploadModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  categories = [],       // 부모가 전달
+  defaultCategory = '',
+}) {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [fileInfo, setFileInfo] = useState({
-    fileName: '',
-    category: '',
-    menu: '',
-    description: ''
-  });
+  const [fileInfo, setFileInfo] = useState({ fileName: '', description: '', isFinal: false });
+  const [selectedCategory, setSelectedCategory] = useState(''); // categoryId string
 
-  const categories = ['공지사항', '회의록', '예산서', '활동보고서', '기타'];
-  const menus = ['공지 관리', '할 일 관리', '소속 인증 관리', '구성원 관리', '초대코드 생성'];
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedCategory(defaultCategory || '');
+      setFileInfo({ fileName: '', description: '', isFinal: false });
+      setSelectedFile(null);
+    }
+  }, [isOpen, defaultCategory]);
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
+  const fileInputRef = useRef(null);
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      setFileInfo(prev => ({ ...prev, fileName: file.name }));
+      setFileInfo((prev) => ({ ...prev, fileName: file.name }));
     }
   };
 
   const handleInputChange = (field, value) => {
-    setFileInfo(prev => ({ ...prev, [field]: value }));
+    setFileInfo((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = () => {
-    // TODO: 파일 업로드 API 호출
-    console.log('File upload:', { file: selectedFile, info: fileInfo });
+  const handleSubmit = async () => {
+    if (!selectedFile) return;
+    await onSubmit?.({
+      file: selectedFile,
+      info: {
+        fileName: fileInfo.fileName,
+        description: fileInfo.description,
+        isFinal: fileInfo.isFinal,
+        categoryId: selectedCategory ? Number(selectedCategory) : undefined,
+        // sourceType은 페이지에서 FILE_ASSET 고정
+      },
+    });
     onClose();
   };
 
-  const isFormValid = selectedFile && fileInfo.fileName && fileInfo.category && fileInfo.menu;
-
+  const isFormValid = !!(selectedFile && fileInfo.fileName && selectedCategory);
   if (!isOpen) return null;
 
   return (
-    <section
-      onClick={onClose}
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-    >
-      <div
-        className="relative bg-[#F5F7FA] w-3/4 max-h-3/4 h-fit px-[56px] py-[64px] flex flex-col gap-[36px] overflow-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 모달 내용 */}
+    <section onClick={onClose} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="relative bg-[#F5F7FA] w-3/4 max-h-3/4 h-fit px-[56px] py-[64px] flex flex-col gap-[36px] overflow-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex flex-col gap-[36px]">
-          {/* 제목 */}
-          <div className="w-full text-4xl font-semibold text-gray-900 cursor-default">
-            새 파일 업로드하기
-          </div>
+          <div className="w-full text-4xl font-semibold text-gray-900 cursor-default">새 파일 업로드하기</div>
 
-                    {/* 파일 업로드 섹션 */}
+          {/* 파일 업로드 */}
           <div className="space-y-4">
             <div className="text-lg font-semibold text-gray-800">파일을 업로드하세요</div>
             <div className="flex gap-3">
               <input
+                ref={fileInputRef}
                 type="file"
                 onChange={handleFileSelect}
                 className="flex-1 border border-gray-300 rounded-lg px-3 py-2"
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
               />
-              <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                onClick={() => document.querySelector('input[type="file"]').click()}
-              >
+              <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors" onClick={() => fileInputRef.current?.click()}>
                 파일 선택
               </button>
             </div>
@@ -77,10 +84,20 @@ export default function FileUploadModal({ isOpen, onClose }) {
             )}
           </div>
 
-          {/* 파일 정보 입력 */}
+          {/* 카테고리 선택 (메뉴 숨김) */}
+          <div className="space-y-6">
+            <div className="text-lg font-semibold text-gray-800">카테고리 선택</div>
+            <FileFilters
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              categories={categories}
+              showMenu={false}
+            />
+          </div>
+
+          {/* 파일 정보 */}
           <div className="space-y-6">
             <div className="text-lg font-semibold text-gray-800">파일 정보 입력하기</div>
-            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">파일명</label>
               <input
@@ -92,32 +109,9 @@ export default function FileUploadModal({ isOpen, onClose }) {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">카테고리</label>
-              <select
-                value={fileInfo.category}
-                onChange={(e) => handleInputChange('category', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="">카테고리를 선택하세요</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">메뉴</label>
-              <select
-                value={fileInfo.menu}
-                onChange={(e) => handleInputChange('menu', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="">메뉴를 선택하세요</option>
-                {menus.map((menu) => (
-                  <option key={menu} value={menu}>{menu}</option>
-                ))}
-              </select>
+            <div className="flex items-center gap-2">
+              <input id="isFinal" type="checkbox" checked={fileInfo.isFinal} onChange={(e) => handleInputChange('isFinal', e.target.checked)} />
+              <label htmlFor="isFinal" className="text-sm text-gray-700 select-none">최종본으로 업로드</label>
             </div>
 
             <div>
@@ -134,32 +128,21 @@ export default function FileUploadModal({ isOpen, onClose }) {
 
           {/* 버튼 */}
           <div className="flex gap-3 pt-4">
-            <button
-              onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-            >
+            <button onClick={onClose} className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
               취소
             </button>
             <button
               onClick={handleSubmit}
               disabled={!isFormValid}
-              className={`flex-1 px-4 py-2 rounded-lg transition-colors ${
-                isFormValid
-                  ? 'bg-blue-500 text-white hover:bg-blue-600'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              }`}
+              className={`flex-1 px-4 py-2 rounded-lg transition-colors ${isFormValid ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
             >
               업로드
             </button>
           </div>
         </div>
       </div>
-      
-      {/* CloseIcon - MeetingDetailModal과 동일한 위치 */}
-      <div
-        className="absolute top-1/8 right-1/10 cursor-pointer"
-        onClick={onClose}
-      >
+
+      <div className="absolute top-1/8 right-1/10 cursor-pointer" onClick={onClose}>
         <CloseIcon />
       </div>
     </section>

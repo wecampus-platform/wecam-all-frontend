@@ -49,7 +49,7 @@ export default function FileDetailModal({ isOpen, onClose, file, onFinalize, onD
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">메뉴</label>
               <div className="w-full text-lg text-gray-900 bg-gray-50 px-3 py-2 rounded cursor-default">
-                {file.menu}
+                {file.menuLabel}
               </div>
             </div>
 
@@ -57,7 +57,7 @@ export default function FileDetailModal({ isOpen, onClose, file, onFinalize, onD
               <label className="block text-sm font-medium text-gray-700 mb-1">카테고리</label>
               <div className="w-full text-lg text-gray-900 bg-gray-50 px-3 py-2 rounded cursor-default">
                 <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                  {file.category}
+                  {file.categoryName}
                 </span>
               </div>
             </div>
